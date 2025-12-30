@@ -48,6 +48,8 @@ Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallbac
 // Admin Routes (Keep old routes for backward compatibility)
 Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
 Route::post('/admin/authenticate', [AdminController::class, 'authenticate'])->name('admin.authenticate');
+// Dashboard entry (named route expected by controllers)
+Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
 Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
@@ -96,6 +98,8 @@ Route::get('/denda-saya', [\App\Http\Controllers\DendaController::class, 'userIn
 Route::get('/bayar-denda/{id}', [\App\Http\Controllers\DendaController::class, 'showPayment'])->name('denda.bayar');
 Route::post('/bayar-denda/{id}/upload', [\App\Http\Controllers\DendaController::class, 'storePayment'])->name('denda.bayar.upload');
 Route::post('/admin/pesanan/update-status/{id}', [AdminController::class, 'updatePesananStatus'])->name('admin.pesanan.update-status');
+// Admin delete pesanan (DELETE)
+Route::delete('/admin/pesanan/{id}/delete', [AdminController::class, 'deletePesanan'])->name('admin.pesanan.delete');
 
 // Data Pengguna (Users) Routes
 Route::get('/admin/data-pengguna', [AdminController::class, 'dataPengguna'])->name('admin.data-pengguna');

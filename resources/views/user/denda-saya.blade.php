@@ -178,7 +178,7 @@
                 </table>
             </div>
         @else
-            <div class="alert alert-info text-center">Belum ada data denda untuk akun Anda.</div>
+            <div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> Belum ada data denda untuk akun Anda.</div>
         @endif
     </div>
 </section>

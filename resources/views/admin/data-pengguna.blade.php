@@ -201,7 +201,7 @@
                                 </tr>
                             @empty
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted">Belum ada pengguna.</td>
+                                    <td colspan="9" class="text-center text-muted"><i class="bi bi-info-circle"></i> Belum ada pengguna.</td>
                                 </tr>
                             @endforelse
                         </tbody>

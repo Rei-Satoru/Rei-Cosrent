@@ -235,7 +235,7 @@
                                                     <img src="{{ $displayBuktiPath }}" alt="Bukti Pembayaran" class="img-fluid rounded" style="max-height:600px; object-fit:contain; width:100%;" onerror="this.outerHTML = '<a href=\'{{ $displayBuktiPath }}\' target=\'_blank\' class=\'btn btn-outline-secondary\'>Download / Lihat File</a>'">
                                                 @endif
                                         @else
-                                            <div class="alert alert-secondary">Belum ada bukti pembayaran untuk pesanan ini.</div>
+                                            <div class="alert alert-secondary"><i class="bi bi-info-circle"></i> Belum ada bukti pembayaran untuk pesanan ini.</div>
                                         @endif
                                     </div>
                                     <div class="modal-footer">

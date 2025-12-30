@@ -187,7 +187,7 @@
                                                     <i class="bi bi-save"></i>
                                                 </button>
                                             </form>
-                                            <form action="<?php echo e(route('user.pesanan.delete', $item->id)); ?>" method="POST" style="display:inline; margin-left:6px;">
+                                            <form action="<?php echo e(route('admin.pesanan.delete', $item->id)); ?>" method="POST" style="display:inline; margin-left:6px;">
                                                 <?php echo csrf_field(); ?>
                                                 <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">

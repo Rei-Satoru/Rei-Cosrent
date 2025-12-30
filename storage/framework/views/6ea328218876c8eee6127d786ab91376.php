@@ -419,7 +419,7 @@ body[data-bs-theme="dark"] footer {
                                     <option value="<?php echo e($kat); ?>"><?php echo e($kat); ?></option>
                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             <?php else: ?>
-                                <option value="" disabled selected>Belum ada data katalog</option>
+                                <option value="" disabled selected><i class="bi bi-info-circle"></i> Belum ada data katalog</option>
                             <?php endif; ?>
                         </select>
                         <?php if(!$kategori || count($kategori) == 0): ?>

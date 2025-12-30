@@ -417,7 +417,7 @@ body[data-bs-theme="dark"] footer {
                                     <option value="{{ $kat }}">{{ $kat }}</option>
                                 @endforeach
                             @else
-                                <option value="" disabled selected>Belum ada data katalog</option>
+                                <option value="" disabled selected><i class="bi bi-info-circle"></i> Belum ada data katalog</option>
                             @endif
                         </select>
                         @if(!$kategori || count($kategori) == 0)

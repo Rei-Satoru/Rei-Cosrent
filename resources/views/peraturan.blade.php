@@ -114,7 +114,7 @@
         <div class="card shadow-sm">
             <div class="card-body p-5 text-center">
                 <i class="bi bi-info-circle" style="font-size: 3rem; color: var(--bs-primary);"></i>
-                <h3 class="mt-3">Belum Ada Peraturan</h3>
+                <h3 class="mt-3"><i class="bi bi-info-circle"></i> Belum Ada Peraturan</h3>
                 <p class="text-muted">Peraturan sewa kostum belum tersedia saat ini.</p>
             </div>
         </div>

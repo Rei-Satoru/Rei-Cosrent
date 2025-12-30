@@ -190,12 +190,12 @@
                             $adminPhoto = $profile_contact && $profile_contact->photo
                                 ? asset('storage/' . $profile_contact->photo)
                                 : $adminPhoto ?? null;
-                            $profileName = $profile_contact ? $profile_contact->name : 'Belum diisi';
-                            $profileTitle = $profile_contact ? $profile_contact->title : 'Jabatan belum diisi';
-                            $profileVision = $profile_contact ? $profile_contact->vision : 'Belum ada deskripsi singkat.';
-                            $profileAddress = $profile_contact ? $profile_contact->address : 'Belum diisi';
-                            $profilePhone = $profile_contact ? $profile_contact->phone : 'Belum diisi';
-                            $profileEmail = $profile_contact ? $profile_contact->email : 'Belum diisi';
+                            $profileName = $profile_contact ? $profile_contact->name : "<i class='bi bi-info-circle'></i> Belum diisi";
+                            $profileTitle = $profile_contact ? $profile_contact->title : "<i class='bi bi-info-circle'></i> Jabatan belum diisi";
+                            $profileVision = $profile_contact ? $profile_contact->vision : "<i class='bi bi-info-circle'></i> Belum ada deskripsi singkat.";
+                            $profileAddress = $profile_contact ? $profile_contact->address : "<i class='bi bi-info-circle'></i> Belum diisi";
+                            $profilePhone = $profile_contact ? $profile_contact->phone : "<i class='bi bi-info-circle'></i> Belum diisi";
+                            $profileEmail = $profile_contact ? $profile_contact->email : "<i class='bi bi-info-circle'></i> Belum diisi";
                         ?>
                         <?php if($adminPhoto): ?>
                             <img src="<?php echo e($adminPhoto); ?>" alt="Foto Pengurus" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--bs-primary);">

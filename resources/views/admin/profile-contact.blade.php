@@ -219,7 +219,7 @@
                                                     <img id="qris_preview" src="{{ asset('storage/' . $profile->qris) }}" alt="QRIS" class="img-fluid rounded" style="max-width: 240px;">
                                                 @else
                                                     <img id="qris_preview" src="" alt="QRIS" class="img-fluid rounded d-none" style="max-width: 240px;">
-                                                    <div id="qris_none" class="text-muted">Belum ada QRIS diunggah.</div>
+                                                    <div id="qris_none" class="text-muted"><i class="bi bi-info-circle"></i> Belum ada QRIS diunggah.</div>
                                                 @endif
                                 </div>
                                 <div class="col-md-6 d-flex align-items-center">

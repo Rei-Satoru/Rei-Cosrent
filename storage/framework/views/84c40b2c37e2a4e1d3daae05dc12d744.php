@@ -203,7 +203,7 @@
                                 </tr>
                             <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted">Belum ada pengguna.</td>
+                                    <td colspan="9" class="text-center text-muted"><i class="bi bi-info-circle"></i> Belum ada pengguna.</td>
                                 </tr>
                             <?php endif; ?>
                         </tbody>

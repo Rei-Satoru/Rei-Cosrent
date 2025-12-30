@@ -10,6 +10,7 @@ use App\Models\Aturan;
 use App\Models\Formulir;
 use App\Models\User;
 use App\Models\Denda;
+use App\Models\Pembayaran;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
@@ -1043,6 +1044,49 @@ class AdminController extends Controller
             return redirect()->route('admin.data-pesanan')->with('success', 'Status pesanan berhasil diperbarui.');
         } catch (\Exception $e) {
             return redirect()->route('admin.data-pesanan')->with('error', 'Gagal memperbarui status: ' . $e->getMessage());
+        }
+    }
+
+    // Admin: delete a pesanan (order)
+    public function deletePesanan(Request $request, $id)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        try {
+            $order = Formulir::findOrFail($id);
+
+            // delete identity images if present
+            if ($order->foto_kartu_identitas && Storage::disk('public')->exists($order->foto_kartu_identitas)) {
+                Storage::disk('public')->delete($order->foto_kartu_identitas);
+            }
+            if ($order->selfie_kartu_identitas && Storage::disk('public')->exists($order->selfie_kartu_identitas)) {
+                Storage::disk('public')->delete($order->selfie_kartu_identitas);
+            }
+
+            // delete related pembayaran records and their files if the table exists
+            try {
+                if (Schema::hasTable('pembayaran')) {
+                    $pembayarans = Pembayaran::where('formulir_id', $order->id)->get();
+                    foreach ($pembayarans as $p) {
+                        if ($p->bukti_pembayaran && Storage::disk('public')->exists($p->bukti_pembayaran)) {
+                            Storage::disk('public')->delete($p->bukti_pembayaran);
+                        }
+                        $p->delete();
+                    }
+                }
+            } catch (\Exception $e) {
+                // If the pembayaran table doesn't exist or another error occurs, log and continue
+                \Log::warning('Skipping pembayaran cleanup: ' . $e->getMessage());
+            }
+
+            $order->delete();
+
+            return redirect()->route('admin.data-pesanan')->with('success', 'Pesanan berhasil dihapus.');
+        } catch (\Exception $e) {
+            \Log::error('Admin deletePesanan error: ' . $e->getMessage());
+            return redirect()->route('admin.data-pesanan')->with('error', 'Gagal menghapus pesanan: ' . $e->getMessage());
         }
     }
 

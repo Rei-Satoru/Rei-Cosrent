@@ -184,7 +184,7 @@
                                                     <i class="bi bi-save"></i>
                                                 </button>
                                             </form>
-                                            <form action="{{ route('user.pesanan.delete', $item->id) }}" method="POST" style="display:inline; margin-left:6px;">
+                                            <form action="{{ route('admin.pesanan.delete', $item->id) }}" method="POST" style="display:inline; margin-left:6px;">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">

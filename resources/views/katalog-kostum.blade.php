@@ -117,7 +117,9 @@
                             <i class="bi bi-search"></i> Pencarian tidak ditemukan. Coba ubah kata kunci atau reset.
                         </div>
                     @else
-                        <div class="alert alert-info rounded-3">Belum ada data kostum untuk katalog ini.</div>
+                        <div class="alert alert-info rounded-3 text-center">
+                            <i class="bi bi-info-circle"></i> Belum ada data kostum untuk katalog ini.
+                        </div>
                     @endif
                 @else
                     <div class="row g-3 row-cols-2 row-cols-md-4 row-cols-lg-5">
