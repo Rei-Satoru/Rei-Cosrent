@@ -5,6 +5,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PembayaranController;
+use App\Http\Controllers\UlasanController;
 
 Route::get('/', function () {
     return redirect()->route('home');
@@ -110,10 +111,12 @@ Route::post('/admin/pengguna/delete/{id}', [AdminController::class, 'deletePengg
 Route::get('/pembayaran/{id}', [PembayaranController::class, 'show'])->name('pembayaran');
 Route::post('/pembayaran/{id}/upload', [PembayaranController::class, 'store'])->name('pembayaran.upload');
 
-// User Reviews (Ulasan) - create / update / delete
-use App\Http\Controllers\UlasanController;
-Route::post('/user/ulasan', [UlasanController::class, 'store'])->name('user.ulasan.store');
-Route::put('/user/ulasan/{id}', [UlasanController::class, 'update'])->name('user.ulasan.update');
-Route::delete('/user/ulasan/{id}', [UlasanController::class, 'destroy'])->name('user.ulasan.delete');
-// Show review page for a pesanan (by order id)
-Route::get('/user/ulasan/{orderId}', [UlasanController::class, 'showByOrder'])->name('user.ulasan.show');
+// Ulasan (Review) Routes
+Route::get('/ulasan/{formulirId}', [UlasanController::class, 'createOrEdit'])->name('user.ulasan.form');
+Route::post('/ulasan/{formulirId}', [UlasanController::class, 'store'])->name('user.ulasan.store');
+Route::put('/ulasan/{formulirId}', [UlasanController::class, 'update'])->name('user.ulasan.update');
+Route::delete('/ulasan/{formulirId}/delete-image/{imageNumber}', [UlasanController::class, 'deleteImage'])->name('user.ulasan.delete-image');
+
+// Public: Lihat ulasan per kostum
+Route::get('/lihat-ulasan/{id_kostum}', [UlasanController::class, 'lihatUlasanKostum'])->name('lihat-ulasan');
+

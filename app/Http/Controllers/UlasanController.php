@@ -2,160 +2,178 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Ulasan;
 use App\Models\Formulir;
+use App\Models\DataKostum;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class UlasanController extends Controller
 {
-    public function store(Request $request)
+    /**
+     * Public page: list reviews for a given costume.
+     */
+    public function lihatUlasanKostum($id_kostum)
     {
-        $request->validate([
-            'order_id' => 'nullable|integer',
+        $kostum = DataKostum::find($id_kostum);
+
+        if (!$kostum) {
+            return redirect()->route('katalog.kostum')->with('error', 'Kostum tidak ditemukan.');
+        }
+
+        // Ulasan uses shared primary key with formulir.id.
+        // We filter by formulir.nama_kostum because formulir table stores the costume name.
+        $ulasanList = Ulasan::query()
+            ->join('formulir', 'ulasan.id', '=', 'formulir.id')
+            ->where('formulir.nama_kostum', $kostum->nama_kostum)
+            ->select([
+                'ulasan.*',
+                'formulir.nama as nama_user',
+                'formulir.email as email_user',
+            ])
+            ->orderByDesc('ulasan.created_at')
+            ->get();
+
+        return view('lihat-ulasan', [
+            'kostum' => $kostum,
+            'ulasanList' => $ulasanList,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new review or editing existing one.
+     */
+    public function createOrEdit($formulirId)
+    {
+        $formulir = Formulir::findOrFail($formulirId);
+        
+        // Check if user owns this order
+        if ($formulir->user_id !== Auth::id()) {
+            return redirect()->route('user.pesanan')->with('error', 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+
+        // Review is stored using the same id as formulir id
+        $ulasan = Ulasan::find($formulirId);
+
+        return view('user.ulasan', compact('formulir', 'ulasan'));
+    }
+
+    /**
+     * Store a newly created review in storage.
+     */
+    public function store(Request $request, $formulirId)
+    {
+        $formulir = Formulir::findOrFail($formulirId);
+        
+        // Check if user owns this order
+        if ($formulir->user_id !== Auth::id()) {
+            return redirect()->route('user.pesanan')->with('error', 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+
+        $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'review' => 'nullable|string|max:2000',
-            'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096'
+            'review' => 'nullable|string|max:5000',
+            'gambar_1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_3' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_4' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_5' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        try {
-            $data = [
-                'rating' => $request->input('rating'),
-                'review' => $request->filled('review') ? $request->input('review') : null,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ];
+        $data = [
+            'id' => $formulirId,
+            'rating' => $validated['rating'],
+            'review' => $validated['review'],
+        ];
 
-            if (Schema::hasColumn('ulasan', 'order_id') && $request->filled('order_id')) {
-                $data['order_id'] = $request->input('order_id');
+        // Handle image uploads
+        for ($i = 1; $i <= 5; $i++) {
+            $fieldName = 'gambar_' . $i;
+            if ($request->hasFile($fieldName)) {
+                $file = $request->file($fieldName);
+                $filename = 'ulasan_' . $formulirId . '_' . $i . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('ulasan', $filename, 'public');
+                $data[$fieldName] = $path;
             }
-
-            // handle image uploads (optional) and map to gambar_1..gambar_5 if those columns exist
-            if ($request->hasFile('gambar')) {
-                $files = $request->file('gambar');
-                $i = 1;
-                foreach ($files as $file) {
-                    if ($i > 5) break;
-                    $path = $file->store('ulasan', 'public');
-                    if (Schema::hasColumn('ulasan', 'gambar_' . $i)) {
-                        $data['gambar_' . $i] = $path;
-                    }
-                    $i++;
-                }
-            }
-
-            $id = DB::table('ulasan')->insertGetId($data);
-
-            // remember in session that this order got an ulasan (useful if DB doesn't have order_id column linked)
-            if (!empty($data['order_id'])) {
-                $orders = session('ulasan_for_orders', []);
-                if (!in_array($data['order_id'], $orders)) {
-                    $orders[] = $data['order_id'];
-                    session(['ulasan_for_orders' => $orders]);
-                }
-            }
-
-            return response()->json(['success' => true, 'id' => $id]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+
+        Ulasan::updateOrCreate(['id' => $formulirId], $data);
+
+        return redirect()->route('user.pesanan')->with('success', 'Ulasan berhasil ditambahkan!');
     }
 
-    public function update(Request $request, $id)
+    /**
+     * Update the specified review in storage.
+     */
+    public function update(Request $request, $formulirId)
     {
-        $request->validate([
+        $formulir = Formulir::findOrFail($formulirId);
+        
+        // Check if user owns this order
+        if ($formulir->user_id !== Auth::id()) {
+            return redirect()->route('user.pesanan')->with('error', 'Anda tidak memiliki akses ke pesanan ini.');
+        }
+
+        $ulasan = Ulasan::findOrFail($formulirId);
+
+        $validated = $request->validate([
             'rating' => 'required|integer|min:1|max:5',
-            'review' => 'nullable|string|max:2000',
-            'gambar.*' => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:4096'
+            'review' => 'nullable|string|max:5000',
+            'gambar_1' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_2' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_3' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_4' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'gambar_5' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        try {
+        $data = [
+            'rating' => $validated['rating'],
+            'review' => $validated['review'],
+        ];
 
-            $update = [
-                'rating' => $request->input('rating'),
-                'review' => $request->filled('review') ? $request->input('review') : null,
-                'updated_at' => now(),
-            ];
-
-            // handle new image uploads: append/replace gambar_1..gambar_5
-            if ($request->hasFile('gambar')) {
-                $files = $request->file('gambar');
-                $i = 1;
-                foreach ($files as $file) {
-                    if ($i > 5) break;
-                    $path = $file->store('ulasan', 'public');
-                    if (Schema::hasColumn('ulasan', 'gambar_' . $i)) {
-                        $update['gambar_' . $i] = $path;
-                    }
-                    $i++;
+        // Handle image uploads
+        for ($i = 1; $i <= 5; $i++) {
+            $fieldName = 'gambar_' . $i;
+            if ($request->hasFile($fieldName)) {
+                // Delete old image if exists
+                if ($ulasan->$fieldName) {
+                    Storage::disk('public')->delete($ulasan->$fieldName);
                 }
+                
+                $file = $request->file($fieldName);
+                $filename = 'ulasan_' . $formulirId . '_' . $i . '_' . time() . '.' . $file->getClientOriginalExtension();
+                $path = $file->storeAs('ulasan', $filename, 'public');
+                $data[$fieldName] = $path;
             }
-            DB::table('ulasan')->where('id', $id)->update($update);
-
-            // if this update included an order_id, ensure session flag is present
-            if ($request->filled('order_id')) {
-                $oid = $request->input('order_id');
-                $orders = session('ulasan_for_orders', []);
-                if (!in_array($oid, $orders)) {
-                    $orders[] = $oid;
-                    session(['ulasan_for_orders' => $orders]);
-                }
-            }
-
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
         }
+
+        $ulasan->update($data);
+
+        return redirect()->route('user.pesanan')->with('success', 'Ulasan berhasil diperbarui!');
     }
 
-    public function destroy($id)
+    /**
+     * Remove the specified image from review.
+     */
+    public function deleteImage($formulirId, $imageNumber)
     {
-        try {
-            // if possible, attempt to find order_id to update session
-            try {
-                $row = DB::table('ulasan')->where('id', $id)->first();
-                if ($row && isset($row->order_id) && $row->order_id) {
-                    $orders = session('ulasan_for_orders', []);
-                    $orders = array_values(array_filter($orders, function($v) use ($row) { return $v != $row->order_id; }));
-                    session(['ulasan_for_orders' => $orders]);
-                }
-            } catch (\Exception $e) {}
-
-            DB::table('ulasan')->where('id', $id)->delete();
-            return response()->json(['success' => true]);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => $e->getMessage()], 500);
-        }
-    }
-
-    // Show review page by order id (only for logged-in user and their order)
-    public function showByOrder($orderId)
-    {
-        if (!session('user_logged_in')) {
-            return redirect()->route('login');
+        // Ensure user owns the related order
+        $formulir = Formulir::findOrFail($formulirId);
+        if ($formulir->user_id !== Auth::id()) {
+            return response()->json(['success' => false], 403);
         }
 
-        $userEmail = session('user_email');
-        $order = Formulir::where('id', $orderId)->where('email', $userEmail)->first();
-        if (!$order) {
-            return redirect()->route('user.pesanan')->with('error', 'Pesanan tidak ditemukan atau bukan milik Anda.');
+        $ulasan = Ulasan::findOrFail($formulirId);
+
+        $fieldName = 'gambar_' . $imageNumber;
+        
+        if ($ulasan->$fieldName) {
+            Storage::disk('public')->delete($ulasan->$fieldName);
+            $ulasan->$fieldName = null;
+            $ulasan->save();
         }
 
-        $existingReview = null;
-        try {
-            if (Schema::hasColumn('ulasan', 'order_id')) {
-                $existingReview = DB::table('ulasan')->where('order_id', $orderId)->first();
-            }
-        } catch (\Exception $e) {
-            $existingReview = null;
-        }
-
-        return view('user.ulasan', [
-            'order' => $order,
-            'existingReview' => $existingReview,
-        ]);
+        return response()->json(['success' => true]);
     }
 }

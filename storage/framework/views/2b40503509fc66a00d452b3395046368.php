@@ -228,6 +228,9 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                        <a href="<?php echo e(route('lihat-ulasan', ['id_kostum' => $k->id_kostum])); ?>" class="btn btn-outline-warning">
+                                            <i class="bi bi-star"></i> Lihat Ulasan
+                                        </a>
                                         <a href="https://docs.google.com/spreadsheets/d/1Z3OneYIfDxKs0I0rX-_yZQfFLBb-UHf4TcC4P8oqZsI/edit?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnnjkGZH13OPjB23XrUTuuZOd1TJ_ahNiYf7BzJYyJf2lT-rjeBQvIysJ4Dx0_aem_2v0rLLt0XGAhaE4v5iCgYQ&gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary">
                                             <i class="bi bi-calendar3"></i> Lihat Tanggal
                                         </a>

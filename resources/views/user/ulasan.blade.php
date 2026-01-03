@@ -1,63 +1,127 @@
 @extends('layouts.main')
 
-@section('title', 'Ulasan - Rei Cosrent')
+@section('title', ($ulasan ? 'Edit' : 'Beri') . ' Ulasan - Rei Cosrent')
 
 @section('content')
 <section class="py-4">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Ulasan untuk Pesanan #{{ $order->id }}</h2>
-            <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">&larr; Kembali</a>
+            <h2 class="fw-bold mb-0">{{ $ulasan ? 'Edit' : 'Beri' }} Ulasan</h2>
+            <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">
+                <i class="bi bi-arrow-left"></i> Kembali ke Pesanan
+            </a>
         </div>
 
         @if(session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
         @endif
 
-        <div class="card">
-            <div class="card-body">
-                <form id="reviewPageForm">
-                    <input type="hidden" name="order_id" value="{{ $order->id }}">
-                    <input type="hidden" name="ulasan_id" value="{{ $existingReview->id ?? '' }}">
-
-                    <div class="mb-3">
-                        <label class="form-label">Rating</label>
-                        <div class="rating-stars" data-order-id="{{ $order->id }}">
-                            @for($i=1;$i<=5;$i++)
-                                <label class="me-1" style="cursor:pointer; font-size:1.6rem; color:#ddd;" data-value="{{ $i }}">&#9733;</label>
-                            @endfor
-                        </div>
-                        <input type="hidden" name="rating" value="{{ $existingReview->rating ?? 0 }}">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0"><i class="bi bi-star-fill"></i> Ulasan untuk Pesanan #{{ $formulir->id }}</h5>
                     </div>
+                    <div class="card-body">
 
-                    <div class="mb-3">
-                        <label class="form-label">Ulasan</label>
-                        <textarea name="review" class="form-control" rows="6" required>{{ $existingReview->review ?? '' }}</textarea>
-                    </div>
+                        <form method="POST" action="{{ $ulasan ? route('user.ulasan.update', $formulir->id) : route('user.ulasan.store', $formulir->id) }}" enctype="multipart/form-data">
+                            @csrf
+                            @if($ulasan)
+                                @method('PUT')
+                            @endif
 
-                    <div class="mb-3">
-                        <label class="form-label">Gambar (opsional)</label>
-                        @for($j=1;$j<=5;$j++)
-                        <div class="mb-2">
-                            <input type="file" name="gambar[]" accept="image/*" class="form-control gambar-input" data-order-id="{{ $order->id }}" data-index="{{ $j }}">
-                            <div class="mt-1 preview-single" id="preview-{{ $order->id }}-{{ $j }}">
-                                @php $col = 'gambar_' . $j; @endphp
-                                @if(!empty($existingReview) && !empty($existingReview->$col))
-                                    <img src="{{ asset('storage/' . $existingReview->$col) }}" alt="img" style="max-height:90px; display:block; margin-top:6px;"/>
-                                @endif
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Rating <span class="text-danger">*</span></label>
+                                <div class="rating-stars" id="ratingStars">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <i class="bi bi-star{{ ($ulasan && $ulasan->rating >= $i) ? '-fill text-warning' : '' }} fs-2" data-rating="{{ $i }}" style="cursor: pointer;"></i>
+                                    @endfor
+                                </div>
+                                <input type="hidden" name="rating" id="ratingInput" value="{{ $ulasan->rating ?? '' }}" required>
+                                @error('rating')
+                                    <div class="text-danger small mt-1">{{ $message }}</div>
+                                @enderror
                             </div>
-                        </div>
-                        @endfor
-                    </div>
 
-                    <div class="d-flex">
-                        @if(!empty($existingReview))
-                        <button type="button" class="btn btn-danger me-auto" id="deleteReviewBtn" data-ulasan-id="{{ $existingReview->id }}">Hapus Ulasan</button>
-                        @endif
-                        <button type="button" class="btn btn-secondary me-2" id="cancelBtn">Batal</button>
-                        <button type="button" class="btn btn-primary" id="saveReviewBtn">Simpan Ulasan</button>
+                            <div class="mb-4">
+                                <label for="review" class="form-label fw-bold">Ulasan Anda</label>
+                                <textarea class="form-control @error('review') is-invalid @enderror"
+                                          id="review"
+                                          name="review"
+                                          rows="5"
+                                          placeholder="Ceritakan pengalaman Anda...">{{ old('review', $ulasan->review ?? '') }}</textarea>
+                                @error('review')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-bold">Foto (Opsional - Maksimal 5 foto)</label>
+                                <div class="row g-3">
+                                    @for($i = 1; $i <= 5; $i++)
+                                        <div class="col-md-6">
+                                            <div class="card h-100">
+                                                <div class="card-body text-center">
+                                                    @if($ulasan && $ulasan->{'gambar_' . $i})
+                                                        <div class="position-relative mb-2">
+                                                            <img src="{{ asset('storage/' . $ulasan->{'gambar_' . $i}) }}"
+                                                                 alt="Gambar {{ $i }}"
+                                                                 class="img-fluid rounded mb-2"
+                                                                 style="max-height: 200px; object-fit: cover;"
+                                                                 id="preview_{{ $i }}">
+                                                            <button type="button"
+                                                                    class="btn btn-sm btn-danger position-absolute top-0 end-0 m-2"
+                                                                    onclick="deleteImage({{ $formulir->id }}, {{ $i }})">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </div>
+                                                    @else
+                                                        <div class="mb-2" id="preview_container_{{ $i }}" style="display: none;">
+                                                            <img src=""
+                                                                 alt="Preview {{ $i }}"
+                                                                 class="img-fluid rounded mb-2"
+                                                                 style="max-height: 200px; object-fit: cover;"
+                                                                 id="preview_{{ $i }}">
+                                                        </div>
+                                                    @endif
+                                                    <label for="gambar_{{ $i }}" class="btn btn-outline-secondary btn-sm w-100">
+                                                        <i class="bi bi-image"></i> Pilih Foto {{ $i }}
+                                                    </label>
+                                                    <input type="file"
+                                                           class="d-none"
+                                                           id="gambar_{{ $i }}"
+                                                           name="gambar_{{ $i }}"
+                                                           accept="image/jpeg,image/png,image/jpg"
+                                                           onchange="previewImage({{ $i }})">
+                                                    @error('gambar_' . $i)
+                                                        <div class="text-danger small mt-1">{{ $message }}</div>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
+                                    @endfor
+                                </div>
+                                <small class="text-muted">Format: JPG, JPEG, PNG. Maksimal 2MB per foto.</small>
+                            </div>
+
+                            @if($ulasan && $ulasan->balasan)
+                                <div class="alert alert-success">
+                                    <h6 class="fw-bold"><i class="bi bi-chat-left-text"></i> Balasan dari Admin:</h6>
+                                    <p class="mb-0">{{ $ulasan->balasan }}</p>
+                                </div>
+                            @endif
+
+                            <div class="d-grid gap-2">
+                                <button type="submit" class="btn btn-primary btn-lg">
+                                    <i class="bi bi-check-circle"></i> {{ $ulasan ? 'Update Ulasan' : 'Kirim Ulasan' }}
+                                </button>
+                            </div>
+                        </form>
                     </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -66,97 +130,86 @@
 
 @section('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function(){
-    const orderId = '{{ $order->id }}';
-    const form = document.getElementById('reviewPageForm');
+    const stars = document.querySelectorAll('#ratingStars i');
+    const ratingInput = document.getElementById('ratingInput');
 
-    // set initial star highlight
-    document.querySelectorAll('.rating-stars').forEach(function(starWrap){
-        const hiddenInput = form.querySelector('input[name="rating"]');
-        const initial = parseInt(hiddenInput.value) || 0;
-        Array.from(starWrap.children).forEach(function(lbl){
-            const val = parseInt(lbl.getAttribute('data-value')) || 0;
-            lbl.style.color = (val <= initial) ? '#ffc107' : '#ddd';
-            lbl.setAttribute('tabindex', '0');
+    stars.forEach(star => {
+        star.addEventListener('click', function() {
+            const rating = this.getAttribute('data-rating');
+            ratingInput.value = rating;
 
-            lbl.addEventListener('click', function(e){
-                const v = lbl.getAttribute('data-value');
-                hiddenInput.value = v; 
-                Array.from(starWrap.children).forEach(function(ch){
-                    const chVal = parseInt(ch.getAttribute('data-value')) || 0;
-                    ch.style.color = (chVal <= parseInt(v)) ? '#ffc107' : '#ddd';
-                });
-            });
-
-            lbl.addEventListener('keydown', function(ev){
-                if (ev.key === 'Enter' || ev.key === ' ') {
-                    ev.preventDefault(); lbl.click();
-                }
-            });
-        });
-    });
-
-    // per-input preview
-    document.querySelectorAll('.gambar-input').forEach(function(inp){
-        inp.addEventListener('change', function(){
-            const idx = inp.getAttribute('data-index');
-            const preview = document.getElementById('preview-' + orderId + '-' + idx);
-            preview.innerHTML = '';
-            if (inp.files && inp.files.length) {
-                const f = inp.files[0];
-                const url = URL.createObjectURL(f);
-                const img = document.createElement('img');
-                img.src = url; img.style.maxHeight = '90px'; img.style.display = 'block'; img.style.marginTop = '6px';
-                preview.appendChild(img);
-            }
-        });
-    });
-
-    // save
-    document.getElementById('saveReviewBtn').addEventListener('click', function(){
-        const fd = new FormData(form);
-        // collect files from inputs
-        const fileInputs = form.querySelectorAll('input[name="gambar[]"]');
-        const appended = [];
-        fileInputs.forEach(function(fi){ if (fi.files && fi.files.length) {
-            Array.from(fi.files).forEach(function(f){ if (appended.length < 5) { fd.append('gambar[]', f); appended.push(f); } });
-        }});
-
-        const rating = fd.get('rating');
-        if (!rating || rating === '0') { alert('Pilih rating (bintang) terlebih dahulu'); return; }
-
-        const ulasanId = fd.get('ulasan_id');
-        let url = '/user/ulasan';
-        if (ulasanId && ulasanId.length) { fd.append('_method', 'PUT'); url = '/user/ulasan/' + ulasanId; }
-
-        const btn = this; btn.disabled = true; const original = btn.innerHTML; btn.innerHTML = 'Menyimpan...';
-        fetch(url, { method: 'POST', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json'}, body: fd })
-            .then(r => r.json()).then(data => {
-                if (data && data.success) {
-                    // langsung kembali ke halaman Pesanan Saya
-                    window.location.href = '{{ route('user.pesanan') }}';
-                } else if (data && data.message) {
-                    alert(data.message);
+            stars.forEach(s => {
+                const starRating = s.getAttribute('data-rating');
+                if (starRating <= rating) {
+                    s.classList.remove('bi-star');
+                    s.classList.add('bi-star-fill', 'text-warning');
                 } else {
-                    alert('Gagal menyimpan ulasan');
+                    s.classList.remove('bi-star-fill', 'text-warning');
+                    s.classList.add('bi-star');
                 }
-            }).catch(err => { console.error(err); alert('Terjadi kesalahan saat menyimpan ulasan'); })
-            .finally(()=>{ btn.disabled=false; btn.innerHTML = original; });
+            });
+        });
+
+        star.addEventListener('mouseenter', function() {
+            const rating = this.getAttribute('data-rating');
+            stars.forEach(s => {
+                const starRating = s.getAttribute('data-rating');
+                if (starRating <= rating) {
+                    s.classList.add('text-warning');
+                }
+            });
+        });
+
+        star.addEventListener('mouseleave', function() {
+            const currentRating = ratingInput.value;
+            stars.forEach(s => {
+                const starRating = s.getAttribute('data-rating');
+                if (starRating > currentRating) {
+                    s.classList.remove('text-warning');
+                }
+            });
+        });
     });
 
-    // delete
-    const delBtn = document.getElementById('deleteReviewBtn');
-        if (delBtn) {
-            delBtn.addEventListener('click', function(){
-                const id = delBtn.getAttribute('data-ulasan-id');
-                if (!confirm('Hapus ulasan?')) return;
-                fetch('/user/ulasan/' + id, { method: 'DELETE', headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}', 'Accept': 'application/json'} })
-                    .then(r => r.json()).then(data => { if (data && data.success) { window.location.href = '{{ route('user.pesanan') }}'; } else alert('Gagal menghapus ulasan'); })
-                    .catch(e => { console.error(e); alert('Error'); });
+    function previewImage(number) {
+        const input = document.getElementById('gambar_' + number);
+        const preview = document.getElementById('preview_' + number);
+        const container = document.getElementById('preview_container_' + number);
+
+        if (input.files && input.files[0]) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                if (container) {
+                    container.style.display = 'block';
+                }
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function deleteImage(formulirId, imageNumber) {
+        if (confirm('Apakah Anda yakin ingin menghapus gambar ini?')) {
+            fetch(`/ulasan/${formulirId}/delete-image/${imageNumber}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    location.reload();
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Terjadi kesalahan saat menghapus gambar');
             });
         }
-
-    document.getElementById('cancelBtn').addEventListener('click', function(){ window.location.href = '{{ route('user.pesanan') }}'; });
-});
+    }
 </script>
 @endsection
