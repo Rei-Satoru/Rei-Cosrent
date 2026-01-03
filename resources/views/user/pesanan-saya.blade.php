@@ -141,6 +141,37 @@
                                         <i class="bi bi-x-octagon"></i> Batalkan/Hapus
                                     </button>
                                 @endif
+                                @if($order->status === 'selesai')
+                                    @php
+                                        $hasReview = false;
+                                        try {
+                                            if (\Illuminate\Support\Facades\Schema::hasColumn('ulasan', 'order_id')) {
+                                                $hasReview = \Illuminate\Support\Facades\DB::table('ulasan')->where('order_id', $order->id)->exists();
+                                            }
+                                        } catch (\Exception $e) {
+                                            $hasReview = false;
+                                        }
+
+                                        // also check recent session flags (covers cases where DB doesn't have order_id linkage)
+                                        try {
+                                            $sessionUl = session('ulasan_for_orders', []);
+                                            if (!$hasReview && is_array($sessionUl) && in_array($order->id, $sessionUl)) {
+                                                $hasReview = true;
+                                            }
+                                        } catch (\Exception $e) {}
+                                    @endphp
+
+                                    @if($hasReview)
+                                        <a href="{{ route('user.ulasan.show', ['orderId' => $order->id]) }}" class="btn btn-sm btn-outline-success ms-2">
+                                            <i class="bi bi-pencil-square"></i> Edit Ulasan
+                                        </a>
+                                        <span class="badge bg-success ms-2">Ulasan Terkirim</span>
+                                    @else
+                                        <a href="{{ route('user.ulasan.show', ['orderId' => $order->id]) }}" class="btn btn-sm btn-outline-success ms-2">
+                                            <i class="bi bi-chat-left-text"></i> Berikan Ulasan
+                                        </a>
+                                    @endif
+                                @endif
                             </td>
                         </tr>
 
@@ -162,8 +193,7 @@
                                                 <div class="mb-2"><strong>Tgl Kembali:</strong><br>{{ $order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-' }}</div>
                                                 <div class="mb-2"><strong>Total Harga:</strong><br>Rp {{ number_format((float) $order->total_harga, 0, ',', '.') }}</div>
                                                 <div class="mb-2"><strong>Metode Pembayaran:</strong><br>{{ $order->metode_pembayaran ?? '-' }}</div>
-                                                <div class="mb-2"><strong>Status:</strong><br>{{ ucfirst($order->status) }}</div>
-                                                <div class="mb-2"><strong>Keterangan:</strong><br>{{ $order->keterangan ?? '-' }}</div>
+                                                
                                             </div>
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br>{{ $order->nama }}</div>
@@ -271,6 +301,8 @@
                             </div>
                         </div>
                         @endif
+                        
+                        
                         @endforeach
                     </tbody>
                 </table>
@@ -283,25 +315,250 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // No dynamic actions needed; delete is permanent by default
         // Auto-dismiss success alert after 5 seconds
         const successAlert = document.querySelector('.alert-success');
         if (successAlert) {
             try {
                 setTimeout(() => {
-                    // Use Bootstrap's Alert instance to close (if available)
                     if (window.bootstrap && typeof window.bootstrap.Alert !== 'undefined') {
                         const instance = window.bootstrap.Alert.getOrCreateInstance(successAlert);
                         instance.close();
                     } else {
-                        // Fallback: remove element
                         successAlert.remove();
                     }
                 }, 5000);
-            } catch (e) {
-                // ignore
-            }
+            } catch (e) {}
         }
+
+        // Star rating click handlers (delegated)
+        document.querySelectorAll('.rating-stars').forEach(function(starWrap) {
+            const orderId = starWrap.getAttribute('data-order-id');
+            const hiddenInput = document.querySelector('#reviewForm-' + orderId + ' input[name="rating"]');
+
+            // highlight initial
+            const initial = parseInt(hiddenInput.value) || 0;
+            if (initial > 0) {
+                Array.from(starWrap.children).forEach(function(lbl) {
+                    const val = parseInt(lbl.getAttribute('data-value'));
+                    lbl.style.color = (val <= initial) ? '#ffc107' : '#ddd';
+                });
+            }
+
+            // handle click (robust to text-node targets) and keyboard
+            starWrap.addEventListener('click', function(e) {
+                let el = e.target;
+                while (el && el !== starWrap && el.nodeType === 3) el = el.parentElement; // climb from text nodes
+                while (el && el !== starWrap && el.tagName !== 'LABEL') el = el.parentElement;
+                if (!el || el === starWrap) return;
+                const val = el.getAttribute('data-value');
+                if (!hiddenInput) return;
+                hiddenInput.value = val;
+                Array.from(starWrap.children).forEach(function(ch) {
+                    const chVal = parseInt(ch.getAttribute('data-value')) || 0;
+                    ch.style.color = (chVal <= parseInt(val)) ? '#ffc107' : '#ddd';
+                });
+            });
+
+            // support keyboard (focus on labels) - allow Enter/Space to set
+            Array.from(starWrap.children).forEach(function(lbl) {
+                lbl.setAttribute('tabindex', '0');
+                lbl.addEventListener('keydown', function(ev) {
+                    if (ev.key === 'Enter' || ev.key === ' ') {
+                        ev.preventDefault();
+                        const v = lbl.getAttribute('data-value');
+                        if (!hiddenInput) return;
+                        hiddenInput.value = v;
+                        Array.from(starWrap.children).forEach(function(ch) {
+                            const chVal = parseInt(ch.getAttribute('data-value')) || 0;
+                            ch.style.color = (chVal <= parseInt(v)) ? '#ffc107' : '#ddd';
+                        });
+                    }
+                });
+            });
+        });
+
+    // Save / Delete handlers (delegated)
+        document.body.addEventListener('click', function(e) {
+            const btn = e.target.closest('button[data-action]');
+            if (!btn) return;
+            const action = btn.getAttribute('data-action');
+            const orderId = btn.getAttribute('data-order-id');
+
+                if (action === 'save') {
+                const form = document.getElementById('reviewForm-' + orderId);
+                if (!form) return;
+
+                const formElem = form;
+                const fd = new FormData(formElem);
+                // include files from input (some browsers require explicit append)
+                // collect files from all gambar[] inputs (five separate inputs)
+                const fileInputs = formElem.querySelectorAll('input[name="gambar[]"]');
+                const appended = [];
+                if (fileInputs && fileInputs.length) {
+                    Array.from(fileInputs).forEach(function(fi){
+                        if (fi.files && fi.files.length) {
+                            Array.from(fi.files).forEach(function(f){
+                                if (appended.length < 5) {
+                                    fd.append('gambar[]', f);
+                                    appended.push(f);
+                                }
+                            });
+                        }
+                    });
+                }
+
+                const ulasanId = fd.get('ulasan_id');
+                // client-side check: rating must be set
+                const ratingVal = fd.get('rating');
+                if (!ratingVal || ratingVal === '0') {
+                    alert('Silakan pilih rating (bintang) terlebih dahulu.');
+                    return;
+                }
+                let url = '/user/ulasan';
+                if (ulasanId && ulasanId.length) {
+                    // use POST with _method override to support file uploads
+                    fd.append('_method', 'PUT');
+                    url = '/user/ulasan/' + ulasanId;
+                }
+                const saveBtn = btn;
+                saveBtn.disabled = true;
+                const originalText = saveBtn.innerHTML;
+                saveBtn.innerHTML = 'Menyimpan...';
+
+                fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                        'Accept': 'application/json'
+                    },
+                    body: fd
+                }).then(async (r) => {
+                    let body = null;
+                    try { body = await r.json(); } catch (e) { body = null; }
+                    console.log('Ulasan save response', r.status, body);
+                    if (r.ok && body && body.success) {
+                        // set ulasan_id if returned
+                        try {
+                            const formIdInput = formElem.querySelector('input[name="ulasan_id"]');
+                            if (body.id && formIdInput) {
+                                formIdInput.value = body.id;
+                            }
+                        } catch (e) {}
+
+                        // close modal
+                        try {
+                            const modalEl = document.getElementById('reviewModal-' + orderId);
+                            if (modalEl && window.bootstrap && window.bootstrap.Modal) {
+                                const inst = window.bootstrap.Modal.getInstance(modalEl) || new window.bootstrap.Modal(modalEl);
+                                inst.hide();
+                            }
+                        } catch (e) { console.warn(e); }
+
+                        // update badge near the button if not exists
+                        try {
+                            const opener = document.querySelector('button[data-bs-target="#reviewModal-' + orderId + '"]');
+                            if (opener) {
+                                const existingBadge = opener.parentElement.querySelector('.badge.ulasan-sent');
+                                if (!existingBadge) {
+                                    const b = document.createElement('span');
+                                    b.className = 'badge bg-success ms-2 ulasan-sent';
+                                    b.textContent = 'Ulasan Terkirim';
+                                    opener.parentElement.appendChild(b);
+                                }
+                            }
+                        } catch (e) { console.warn(e); }
+
+                        // show inline alert success
+                        try {
+                            const container = document.querySelector('.container');
+                            if (container) {
+                                const alertDiv = document.createElement('div');
+                                alertDiv.className = 'alert alert-success alert-dismissible fade show mt-3';
+                                alertDiv.role = 'alert';
+                                alertDiv.innerHTML = '<strong>Sukses!</strong> Ulasan berhasil dikirim.' +
+                                    '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+                                container.insertBefore(alertDiv, container.firstChild);
+                                // auto dismiss after 5s
+                                setTimeout(() => {
+                                    try {
+                                        if (window.bootstrap && window.bootstrap.Alert) {
+                                            const ainst = window.bootstrap.Alert.getOrCreateInstance(alertDiv);
+                                            ainst.close();
+                                        } else {
+                                            alertDiv.remove();
+                                        }
+                                    } catch (e) { alertDiv.remove(); }
+                                }, 5000);
+                            }
+                        } catch (e) { console.warn(e); }
+
+                        return;
+                    }
+
+                    // show validation errors or message
+                    if (body && body.errors) {
+                        const msgs = Object.values(body.errors).flat().join('\n');
+                        alert(msgs);
+                    } else if (body && body.message) {
+                        alert(body.message);
+                    } else if (!r.ok) {
+                        alert('Gagal menyimpan ulasan. Status: ' + r.status);
+                    }
+                }).catch(err => {
+                    console.error('Fetch error saving ulasan', err);
+                    alert('Terjadi kesalahan saat menyimpan ulasan. Cek console untuk detail.');
+                }).finally(() => {
+                    saveBtn.disabled = false;
+                    saveBtn.innerHTML = originalText;
+                });
+            }
+
+            if (action === 'delete') {
+                const ulasanId = btn.getAttribute('data-ulasan-id');
+                if (!ulasanId) return alert('ID ulasan tidak ditemukan');
+
+                if (!confirm('Hapus ulasan ini?')) return;
+
+                fetch('/user/ulasan/' + ulasanId, {
+                    method: 'DELETE',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    }
+                }).then(r => r.json()).then(data => {
+                    if (data && data.success) {
+                        location.reload();
+                    } else {
+                        alert((data && data.message) ? data.message : 'Gagal menghapus ulasan');
+                    }
+                }).catch(err => {
+                    console.error(err);
+                    alert('Terjadi kesalahan saat menghapus ulasan.');
+                });
+            }
+        });
+
+        // per-input preview: when a specific input changes, show its preview beneath it
+        document.querySelectorAll('.gambar-input').forEach(function(inp) {
+            inp.addEventListener('change', function(e) {
+                const orderId = inp.getAttribute('data-order-id');
+                const idx = inp.getAttribute('data-index');
+                const preview = document.getElementById('preview-' + orderId + '-' + idx);
+                if (!preview) return;
+                preview.innerHTML = '';
+                if (inp.files && inp.files.length) {
+                    // show first file only for this slot
+                    const f = inp.files[0];
+                    const url = URL.createObjectURL(f);
+                    const img = document.createElement('img');
+                    img.src = url;
+                    img.style.maxHeight = '90px';
+                    img.style.display = 'block';
+                    img.style.marginTop = '6px';
+                    preview.appendChild(img);
+                }
+            });
+        });
     });
 </script>
 @endsection

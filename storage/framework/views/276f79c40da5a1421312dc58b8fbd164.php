@@ -112,13 +112,12 @@
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br><?php echo e($d->nama ?? '-'); ?></div>
                                                 <div class="mb-2"><strong>Nama Kostum:</strong><br><?php echo e($d->nama_kostum ?? '-'); ?></div>
+                                                <div class="mb-2"><strong>Dibuat:</strong><br><?php echo e($d->created_at ? $d->created_at->format('d M Y H:i') : '-'); ?></div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="mb-2"><strong>Jenis Denda:</strong><br><?php echo e($d->jenis_denda ?? '-'); ?></div>
                                                 <div class="mb-2"><strong>Keterangan:</strong><br><?php echo nl2br(e($d->keterangan)); ?></div>
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp<?php echo e($d->jumlah_denda ? number_format($d->jumlah_denda,0,',','.') : '-'); ?></div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-2"><strong>Dibuat:</strong><br><?php echo e($d->created_at ? $d->created_at->format('d M Y H:i') : '-'); ?></div>
-                                                <div class="mb-2"><strong>Status:</strong><br><?php echo e($d->status ?? '-'); ?></div>
                                             </div>
                                         </div>
                                         <hr>
@@ -179,7 +178,7 @@
                 </table>
             </div>
         <?php else: ?>
-            <div class="alert alert-info text-center">Belum ada data denda untuk akun Anda.</div>
+            <div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> Belum ada data denda untuk akun Anda.</div>
         <?php endif; ?>
     </div>
 </section>

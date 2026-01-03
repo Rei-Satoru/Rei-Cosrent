@@ -36,7 +36,6 @@
                     }
                 ?>
                 <h5 class="card-title">Detail Pembayaran</h5>
-                <p class="mb-2"><strong>No. Urut Pesanan:</strong> <?php echo e($orderId ?? '-'); ?></p>
                 <p class="mb-2"><strong>ID Pesanan:</strong> <?php echo e($orderId ?? '-'); ?></p>
                 <p class="mb-2"><strong>Nama Kostum:</strong> <?php echo e($nama_kostum); ?></p>
                 <p class="mb-2"><strong>Total Harga:</strong> Rp <?php echo e(number_format((float) $total_harga, 0, ',', '.')); ?></p>

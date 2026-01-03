@@ -169,22 +169,13 @@
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br>{{ $item->nama ?? '-' }}</div>
                                                 <div class="mb-2"><strong>Nama Kostum:</strong><br>{{ $item->nama_kostum ?? '-' }}</div>
+                                                <div class="mb-2"><strong>Dibuat:</strong><br>{{ $item->created_at ? $item->created_at->format('d M Y H:i') : '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="mb-2"><strong>Jenis Denda:</strong><br>{{ $item->jenis_denda ?? '-' }}</div>
                                                 <div class="mb-2"><strong>Keterangan:</strong><br>{!! nl2br(e($item->keterangan)) !!}</div>
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp{{ $item->jumlah_denda ? number_format($item->jumlah_denda,0,',','.') : '-' }}</div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-2"><strong>Dibuat:</strong><br>{{ $item->created_at ? $item->created_at->format('d M Y H:i') : '-' }}</div>
-                                                <div class="mb-2"><strong>Status:</strong><br>{{ $item->status ?? '-' }}</div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="mb-2"><strong>Foto Bukti:</strong><br>
-                                            @if($item->bukti_foto)
-                                                <img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Foto Bukti" class="img-fluid rounded" style="max-height:300px; object-fit:contain; width:100%;">
-                                            @else
-                                                <div class="text-muted">Tidak tersedia</div>
-                                            @endif
                                         </div>
                                     </div>
                                     <div class="modal-footer">

@@ -172,12 +172,7 @@
                 <h3 class="fw-bold mb-0">Profil & Kontak</h3>
             </div>
             <div class="d-flex align-items-center gap-2">
-                <?php if(session('admin_logged_in') && request()->routeIs('admin.profile')): ?>
-                    <button id="openSidebar" type="button" aria-controls="appSidebar" aria-expanded="false" class="btn btn-outline-secondary" aria-label="Buka sidebar"><i class="bi bi-list"></i> Kelola</button>
-                <?php endif; ?>
-
                 <a href="<?php echo e(route('admin.profile-contact')); ?>" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Kelola Profil</a>
-
                 <a href="<?php echo e(route('admin.logout')); ?>" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
             </div>
         </div>
@@ -284,7 +279,7 @@
                 </div>
 
                 <div class="row g-3 mb-3">
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="p-3 rounded stat-card bg-body-tertiary">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -295,7 +290,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
                         <div class="p-3 rounded stat-card bg-body-tertiary">
                             <div class="d-flex justify-content-between align-items-center">
                                 <div>
@@ -325,8 +320,6 @@
             </div>
         </div>
 
-        <hr class="my-5">
-
         <div id="admin-app">
             <!-- Sidebar (only shown to admin actor accounts) -->
             <?php if(session('admin_logged_in') && request()->routeIs('admin.profile')): ?>
@@ -335,9 +328,9 @@
                     <h5 class="mb-0">Kelola Data</h5>
                     <button id="sidebarClose" class="sidebar-close" aria-label="Tutup sidebar"><i class="bi bi-x-lg"></i></button>
                 </div>
-
                 <div class="p-3">
                     <div class="d-grid gap-3">
+
                         <a href="<?php echo e(route('admin.data-pengguna')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-people"></i></div>
@@ -347,7 +340,7 @@
                                 </div>
                             </div>
                         </a>
-
+                        
                         <a href="<?php echo e(route('admin.data-katalog')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-collection"></i></div>

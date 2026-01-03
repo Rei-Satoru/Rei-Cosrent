@@ -170,22 +170,13 @@
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br><?php echo e($item->nama ?? '-'); ?></div>
                                                 <div class="mb-2"><strong>Nama Kostum:</strong><br><?php echo e($item->nama_kostum ?? '-'); ?></div>
+                                                <div class="mb-2"><strong>Dibuat:</strong><br><?php echo e($item->created_at ? $item->created_at->format('d M Y H:i') : '-'); ?></div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="mb-2"><strong>Jenis Denda:</strong><br><?php echo e($item->jenis_denda ?? '-'); ?></div>
                                                 <div class="mb-2"><strong>Keterangan:</strong><br><?php echo nl2br(e($item->keterangan)); ?></div>
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp<?php echo e($item->jumlah_denda ? number_format($item->jumlah_denda,0,',','.') : '-'); ?></div>
                                             </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-2"><strong>Dibuat:</strong><br><?php echo e($item->created_at ? $item->created_at->format('d M Y H:i') : '-'); ?></div>
-                                                <div class="mb-2"><strong>Status:</strong><br><?php echo e($item->status ?? '-'); ?></div>
-                                            </div>
-                                        </div>
-                                        <hr>
-                                        <div class="mb-2"><strong>Foto Bukti:</strong><br>
-                                            <?php if($item->bukti_foto): ?>
-                                                <img src="<?php echo e(asset('storage/' . $item->bukti_foto)); ?>" alt="Foto Bukti" class="img-fluid rounded" style="max-height:300px; object-fit:contain; width:100%;">
-                                            <?php else: ?>
-                                                <div class="text-muted">Tidak tersedia</div>
-                                            <?php endif; ?>
                                         </div>
                                     </div>
                                     <div class="modal-footer">

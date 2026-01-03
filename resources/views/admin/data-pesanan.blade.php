@@ -97,7 +97,7 @@
                                     <th>Tgl Kembali</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
-                                    <th>Keterangan</th>
+                                    <th>Catatan</th>
                                     <th>Pembayaran</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -213,8 +213,8 @@
                                                     <div class="mb-2"><strong>Tgl Kembali:</strong><br>{{ $item->tanggal_pengembalian ? \Carbon\Carbon::parse($item->tanggal_pengembalian)->format('d M Y') : '-' }}</div>
                                                     <div class="mb-2"><strong>Total Harga:</strong><br>Rp {{ number_format((float) $item->total_harga, 0, ',', '.') }}</div>
                                                     <div class="mb-2"><strong>Metode Pembayaran:</strong><br>{{ $item->metode_pembayaran ?? '-' }}</div>
-                                                    <div class="mb-2"><strong>Status:</strong><br>{{ ucfirst($item->status) }}</div>
-                                                    <div class="mb-2"><strong>Keterangan:</strong><br>{{ $item->keterangan ?? '-' }}</div>
+                                                    
+                                                    
                                                 </div>
                                                 <div class="col-md-6">
                                                     <div class="mb-2"><strong>Nama:</strong><br>{{ $item->nama }}</div>

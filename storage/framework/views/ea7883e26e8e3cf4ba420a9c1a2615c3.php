@@ -36,7 +36,6 @@
                     }
                 ?>
                 <h5 class="card-title">Detail Pembayaran</h5>
-                <p class="mb-2"><strong>No. Urut Denda:</strong> <?php echo e($dendaId ?? '-'); ?></p>
                 <p class="mb-2"><strong>ID Denda:</strong> <?php echo e($dendaId ?? '-'); ?></p>
                 <p class="mb-2"><strong>Nama Kostum:</strong> <?php echo e($nama_kostum); ?></p>
                 <p class="mb-2"><strong>Jumlah Denda:</strong> Rp <?php echo e(number_format((float) $total_harga, 0, ',', '.')); ?></p>

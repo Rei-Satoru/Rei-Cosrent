@@ -111,13 +111,12 @@
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br>{{ $d->nama ?? '-' }}</div>
                                                 <div class="mb-2"><strong>Nama Kostum:</strong><br>{{ $d->nama_kostum ?? '-' }}</div>
+                                                <div class="mb-2"><strong>Dibuat:</strong><br>{{ $d->created_at ? $d->created_at->format('d M Y H:i') : '-' }}</div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="mb-2"><strong>Jenis Denda:</strong><br>{{ $d->jenis_denda ?? '-' }}</div>
                                                 <div class="mb-2"><strong>Keterangan:</strong><br>{!! nl2br(e($d->keterangan)) !!}</div>
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp{{ $d->jumlah_denda ? number_format($d->jumlah_denda,0,',','.') : '-' }}</div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="mb-2"><strong>Dibuat:</strong><br>{{ $d->created_at ? $d->created_at->format('d M Y H:i') : '-' }}</div>
-                                                <div class="mb-2"><strong>Status:</strong><br>{{ $d->status ?? '-' }}</div>
                                             </div>
                                         </div>
                                         <hr>

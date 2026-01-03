@@ -36,7 +36,6 @@
                     }
                 @endphp
                 <h5 class="card-title">Detail Pembayaran</h5>
-                <p class="mb-2"><strong>No. Urut Pesanan:</strong> {{ $orderId ?? '-' }}</p>
                 <p class="mb-2"><strong>ID Pesanan:</strong> {{ $orderId ?? '-' }}</p>
                 <p class="mb-2"><strong>Nama Kostum:</strong> {{ $nama_kostum }}</p>
                 <p class="mb-2"><strong>Total Harga:</strong> Rp {{ number_format((float) $total_harga, 0, ',', '.') }}</p>
