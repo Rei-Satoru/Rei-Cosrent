@@ -11,10 +11,12 @@ use App\Models\Formulir;
 use App\Models\User;
 use App\Models\Denda;
 use App\Models\Pembayaran;
+use App\Models\Ulasan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Hash;
 
 class AdminController extends Controller
 {
@@ -37,6 +39,7 @@ class AdminController extends Controller
 
         $admin_username = "admin";
 
+        $profile = null;
         $admin_password = null;
         try {
             $profile = ProfileContact::find(1);
@@ -50,7 +53,32 @@ class AdminController extends Controller
             return redirect()->route('admin.login')->with('error', 'Gagal memeriksa password admin.');
         }
 
-        if ($username === $admin_username && $password === $admin_password) {
+        $adminLoginOk = false;
+        $shouldUpgradePasswordHash = false;
+
+        if (password_verify($password, $admin_password)) {
+            $adminLoginOk = true;
+            try {
+                if (Hash::needsRehash($admin_password)) {
+                    $shouldUpgradePasswordHash = true;
+                }
+            } catch (\Throwable $e) {
+                $shouldUpgradePasswordHash = true;
+            }
+        } elseif (hash_equals($admin_password, $password)) {
+            $adminLoginOk = true;
+            $shouldUpgradePasswordHash = true;
+        }
+
+        if ($username === $admin_username && $adminLoginOk) {
+            if ($profile && $shouldUpgradePasswordHash) {
+                try {
+                    $profile->password = Hash::make($password);
+                    $profile->save();
+                } catch (\Illuminate\Database\QueryException $e) {
+                    \Log::warning('Failed upgrading admin password hash (profile_contacts.password too short?): ' . $e->getMessage());
+                }
+            }
             session(['admin_logged_in' => true, 'admin_name' => $username]);
             return redirect()->route('admin.dashboard');
         } else {
@@ -84,6 +112,7 @@ class AdminController extends Controller
         $pesanan_count = Formulir::count();
         $users_count = User::count();
         $denda_count = Denda::count();
+        $ulasan_count = Ulasan::count();
         $profile_contact = ProfileContact::find(1);
 
         return view('admin.profile', [
@@ -94,8 +123,60 @@ class AdminController extends Controller
             'pesanan_count' => $pesanan_count,
             'denda_count' => $denda_count,
             'users_count' => $users_count,
+            'ulasan_count' => $ulasan_count,
             'profile_contact' => $profile_contact,
         ]);
+    }
+
+    // ==================== DATA ULASAN ====================
+
+    public function dataUlasan()
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $ulasanList = Ulasan::query()
+            ->leftJoin('formulir', 'ulasan.id', '=', 'formulir.id')
+            ->select([
+                'ulasan.*',
+                'formulir.nama as nama_user',
+                'formulir.email as email_user',
+                'formulir.nama_kostum as nama_kostum',
+                'formulir.status as status_pesanan',
+            ])
+            ->orderByDesc('ulasan.created_at')
+            ->get();
+
+        return view('admin.data-ulasan', [
+            'ulasanList' => $ulasanList,
+        ]);
+    }
+
+    public function balasUlasan(Request $request)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $validated = $request->validate([
+            'formulir_id' => 'required|integer|exists:ulasan,id',
+            'balasan' => 'required|string|max:5000',
+        ], [
+            'formulir_id.required' => 'ID pesanan wajib diisi.',
+            'formulir_id.exists' => 'Ulasan untuk pesanan tersebut tidak ditemukan.',
+            'balasan.required' => 'Balasan wajib diisi.',
+        ]);
+
+        try {
+            $ulasan = Ulasan::findOrFail($validated['formulir_id']);
+            $ulasan->balasan = $validated['balasan'];
+            $ulasan->save();
+
+            return redirect()->route('admin.data-ulasan')->with('success', 'Balasan berhasil disimpan.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.data-ulasan')->with('error', 'Gagal menyimpan balasan: ' . $e->getMessage());
+        }
     }
 
     // AJAX stats endpoint for dashboard charts (orders, revenue)

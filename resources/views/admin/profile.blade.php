@@ -391,6 +391,16 @@
                             </div>
                         </a>
 
+                        <a href="{{ route('admin.data-ulasan') }}" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+                            <div class="card-body p-3 d-flex align-items-center">
+                                <div class="menu-icon me-3 mb-0"><i class="bi bi-chat-square-text"></i></div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-semibold mb-0">Kelola Data Ulasan</h6>
+                                    <small class="text-muted">Total: {{ $ulasan_count }}</small>
+                                </div>
+                            </div>
+                        </a>
+
                         <a href="https://docs.google.com/spreadsheets/d/1Z3OneYIfDxKs0I0rX-_yZQfFLBb-UHf4TcC4P8oqZsI/edit" target="_blank" rel="noopener noreferrer" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-calendar3"></i></div>

@@ -4,21 +4,14 @@
 
 <?php $__env->startSection('styles'); ?>
 <style>
-    .ulasan-card-header,
-    .ulasan-modal-header {
+    .ulasan-card-header {
         background-color: var(--bs-tertiary-bg);
         color: var(--bs-body-color);
     }
 
-    [data-bs-theme="dark"] .ulasan-card-header,
-    [data-bs-theme="dark"] .ulasan-modal-header {
+    [data-bs-theme="dark"] .ulasan-card-header {
         background-color: #212529;
         color: #fff;
-    }
-
-    [data-bs-theme="dark"] .ulasan-modal-header .btn-close {
-        filter: invert(1) grayscale(100%);
-        opacity: .9;
     }
 
     .ulasan-detail-image { cursor: pointer; }
@@ -105,9 +98,6 @@
                                             <i class="bi <?php echo e(((int)$u->rating >= $i) ? 'bi-star-fill' : 'bi-star'); ?>"></i>
                                         <?php endfor; ?>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#ulasanDetailModal<?php echo e($u->id); ?>">
-                                        <i class="bi bi-eye"></i> Lihat Detail
-                                    </button>
                                 </div>
                             </div>
                             <div class="card-body">
@@ -121,10 +111,17 @@
                                     <div class="row g-2 mb-3">
                                         <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                             <div class="col-6 col-md-3 col-lg-2">
-                                                <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="Gambar ulasan" class="img-fluid rounded" style="aspect-ratio:1/1;object-fit:cover;">
+                                                <img
+                                                    src="<?php echo e(asset('storage/' . $img)); ?>"
+                                                    alt="Gambar ulasan"
+                                                    class="img-fluid rounded ulasan-detail-image"
+                                                    style="aspect-ratio:1/1;object-fit:cover;"
+                                                    onclick="showUlasanImage('<?php echo e(asset('storage/' . $img)); ?>')"
+                                                >
                                             </div>
                                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                     </div>
+                                    <div class="text-body-secondary" style="font-size:0.85rem;">Klik gambar untuk melihat lebih besar.</div>
                                 <?php endif; ?>
 
                                 <?php if(!empty($u->balasan)): ?>
@@ -133,69 +130,6 @@
                                         <div><?php echo e($u->balasan); ?></div>
                                     </div>
                                 <?php endif; ?>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="modal fade" id="ulasanDetailModal<?php echo e($u->id); ?>" tabindex="-1" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                            <div class="modal-content">
-                                <div class="modal-header ulasan-modal-header">
-                                    <h5 class="modal-title">Detail Ulasan</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="mb-2">
-                                        <div class="fw-bold"><?php echo e($u->nama_user ?? 'User'); ?></div>
-                                        <div class="text-body-secondary" style="font-size:0.9rem;"><?php echo e($createdAtLabel); ?></div>
-                                    </div>
-
-                                    <div class="mb-3 text-warning" aria-label="Rating">
-                                        <?php for($i = 1; $i <= 5; $i++): ?>
-                                            <i class="bi <?php echo e(((int)$u->rating >= $i) ? 'bi-star-fill' : 'bi-star'); ?>"></i>
-                                        <?php endfor; ?>
-                                        <span class="text-body ms-2">(<?php echo e((int)$u->rating); ?>/5)</span>
-                                    </div>
-
-                                    <div class="mb-3">
-                                        <div class="fw-bold mb-1">Ulasan</div>
-                                        <?php if(!empty($u->review)): ?>
-                                            <div><?php echo e($u->review); ?></div>
-                                        <?php else: ?>
-                                            <div class="text-muted">(Tidak ada teks ulasan)</div>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <?php if(!empty($images)): ?>
-                                        <div class="mb-3">
-                                            <div class="fw-bold mb-2">Foto</div>
-                                            <div class="row g-2">
-                                                <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                    <div class="col-6 col-md-4">
-                                                        <img
-                                                            src="<?php echo e(asset('storage/' . $img)); ?>"
-                                                            alt="Gambar ulasan"
-                                                            class="img-fluid rounded ulasan-detail-image"
-                                                            style="aspect-ratio:1/1;object-fit:cover;"
-                                                            onclick="showUlasanImage('<?php echo e(asset('storage/' . $img)); ?>')"
-                                                        >
-                                                    </div>
-                                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                            </div>
-                                            <div class="text-body-secondary mt-2" style="font-size:0.85rem;">Klik gambar untuk melihat lebih besar.</div>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <?php if(!empty($u->balasan)): ?>
-                                        <div class="alert alert-success mb-0">
-                                            <div class="fw-bold"><i class="bi bi-chat-left-text"></i> Balasan Admin</div>
-                                            <div><?php echo e($u->balasan); ?></div>
-                                        </div>
-                                    <?php endif; ?>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -222,21 +156,9 @@
 
 <?php $__env->startSection('scripts'); ?>
 <script>
-    let lastDetailModalId = null;
-
     function showUlasanImage(src) {
         const img = document.getElementById('ulasanImagePreview');
         img.src = src;
-
-        // Hide currently open detail modal so the image preview truly "overlays" it.
-        const openModalEl = document.querySelector('.modal.show');
-        if (openModalEl && openModalEl.id && openModalEl.id !== 'ulasanImagePreviewModal') {
-            lastDetailModalId = openModalEl.id;
-            const openModal = bootstrap.Modal.getInstance(openModalEl);
-            if (openModal) {
-                openModal.hide();
-            }
-        }
 
         const modalEl = document.getElementById('ulasanImagePreviewModal');
         const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
@@ -249,16 +171,6 @@
         modalEl.addEventListener('hidden.bs.modal', function () {
             const img = document.getElementById('ulasanImagePreview');
             img.src = '';
-
-            // Restore the last detail modal after closing image preview.
-            if (lastDetailModalId) {
-                const detailEl = document.getElementById(lastDetailModalId);
-                if (detailEl) {
-                    const detailModal = bootstrap.Modal.getOrCreateInstance(detailEl);
-                    detailModal.show();
-                }
-                lastDetailModalId = null;
-            }
         });
     });
 </script>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 03 Jan 2026 pada 10.57
+-- Waktu pembuatan: 05 Jan 2026 pada 11.49
 -- Versi server: 8.4.3
 -- Versi PHP: 8.2.28
 
@@ -286,7 +286,7 @@ CREATE TABLE `password_reset_tokens` (
 CREATE TABLE `profile_contacts` (
   `id` bigint UNSIGNED NOT NULL,
   `name` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
-  `password` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `title` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `photo` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `vision` text CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -303,7 +303,7 @@ CREATE TABLE `profile_contacts` (
 --
 
 INSERT INTO `profile_contacts` (`id`, `name`, `password`, `title`, `photo`, `vision`, `address`, `phone`, `email`, `nomor_ewallet`, `nomor_bank`, `qris`) VALUES
-(1, 'Reithesley', '25122004', 'Pemilik', 'profile_photos/remWB4mrRws3X85hybYyPXwdV0fOLbVInzqJOWgG.webp', 'Pemilik Rei Cosrent', 'Jl. Rumah', '08123456789', 'admin@gmail.com', '08123456789', '08123456789 - Bank', 'payment_qris/VBhl06DmT0SzWEYR5puOxPPlv34XU5BOmnrdGDd2.jpg');
+(1, 'Reithesley', '$2y$12$0RTAQ2qIXmzn1EHvKtceF.VLbn2YnCLJeTi9wcQhxSHF1aN91Nfi2', 'Pemilik', 'profile_photos/remWB4mrRws3X85hybYyPXwdV0fOLbVInzqJOWgG.webp', 'Pemilik Rei Cosrent', 'Jl. Rumah', '08123456789', 'admin@gmail.com', '08123456789', '08123456789 - Bank', 'payment_qris/VBhl06DmT0SzWEYR5puOxPPlv34XU5BOmnrdGDd2.jpg');
 
 -- --------------------------------------------------------
 
@@ -325,8 +325,11 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
+('fzt3HxR53QcJhcIBRFJFRnHcK0XlNZBxI9liwWkB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czozOToiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL2RhdGEtdWxhc2FuIjtzOjU6InJvdXRlIjtzOjE3OiJhZG1pbi5kYXRhLXVsYXNhbiI7fXM6NjoiX3Rva2VuIjtzOjQwOiIzMnhheU1WeUVjbUNpczBZY0dGZXgzczhCN3FETUNaSjlRSEJGVFJJIjtzOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1767613663),
+('GWgGCcjH2fLFuzk3M10hMXj2AORQj4bGCNqrY2Yf', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiTGhsRTgzSkNBSnF4bE04QlFhZHFySE5OSGdkaFhoVkU3cWc4SktDMyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjtzOjU6InJvdXRlIjtzOjQ6ImhvbWUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJ1c2VyX2xvZ2dlZF9pbiI7YjoxO3M6NzoidXNlcl9pZCI7aTo1O3M6OToidXNlcl9uYW1lIjtzOjM6InJlaSI7czoxMDoidXNlcl9lbWFpbCI7czoyNDoicmVpc2F0b3J1LmNvc3VAZ21haWwuY29tIjtzOjE4OiJ1c2VyX2dhbWJhcl9wcm9maWwiO3M6NTk6InByb2ZpbGVfaW1hZ2VzLzU0ODhrREVBVmNyRUpDNEQ4OWUyWVJGNVJ4Sk5UUUkwbWM2T3o3N0MuanBnIjt9', 1767604845),
 ('sewrLFIcXDM6QTDHnBk5kudM6JDuXNVn7IVFf9aK', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiTHMyaWVXeVVPQldFaUgxcDBoQVcxZzlWRXhadXg1MUtha3lndXdtRiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZXNhbmFuLXNheWEiO3M6NToicm91dGUiO3M6MTI6InVzZXIucGVzYW5hbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO3M6MTc6InVsYXNhbl9mb3Jfb3JkZXJzIjthOjE6e2k6MDtzOjI6IjEwIjt9fQ==', 1767437733),
-('ZjEeQtp7PljqOshndsQUDCrZcjgCowzPEXkKN1xs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czo0NToiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3N0YXRzP3BlcmlvZD13ZWVrIjtzOjU6InJvdXRlIjtzOjExOiJhZG1pbi5zdGF0cyI7fXM6NjoiX3Rva2VuIjtzOjQwOiJ6UG5pazRXS3h3bTlZVEJMUnhZemdORkFjcnFzdHZUazNPS21RUjFFIjtzOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1767437800);
+('WxBJDRFX6qVWZBRiVbwDueW6UpjFyuFivsQItvZl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Blc2FuYW4tc2F5YSI7czo1OiJyb3V0ZSI7czoxMjoidXNlci5wZXNhbmFuIjt9czo2OiJfdG9rZW4iO3M6NDA6ImJuSmpRVmc5RVk3UGZXeDBmV29YUXJxUkd2bGFJcmxuT3NYeng2REwiO3M6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO30=', 1767613652),
+('ZjEeQtp7PljqOshndsQUDCrZcjgCowzPEXkKN1xs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czo0NToiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3N0YXRzP3BlcmlvZD13ZWVrIjtzOjU6InJvdXRlIjtzOjExOiJhZG1pbi5zdGF0cyI7fXM6NjoiX3Rva2VuIjtzOjQwOiJ6UG5pazRXS3h3bTlZVEJMUnhZemdORkFjcnFzdHZUazNPS21RUjFFIjtzOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1767443073);
 
 -- --------------------------------------------------------
 
@@ -353,7 +356,7 @@ CREATE TABLE `ulasan` (
 --
 
 INSERT INTO `ulasan` (`id`, `rating`, `review`, `balasan`, `gambar_1`, `gambar_2`, `gambar_3`, `gambar_4`, `gambar_5`, `created_at`, `updated_at`) VALUES
-(10, 5, 'bagus', NULL, 'ulasan/ulasan_10_1_1767437433.jpg', 'ulasan/ulasan_10_2_1767437433.jfif', NULL, NULL, NULL, '2026-01-03 03:17:24', '2026-01-03 03:50:33');
+(10, 5, 'bagus', 'yes', 'ulasan/ulasan_10_1_1767437433.jpg', 'ulasan/ulasan_10_2_1767437433.jfif', 'ulasan/ulasan_10_3_1767613652.jfif', 'ulasan/ulasan_10_4_1767613652.jfif', 'ulasan/ulasan_10_5_1767613652.jfif', '2026-01-03 03:17:24', '2026-01-05 04:47:32');
 
 -- --------------------------------------------------------
 

@@ -42,6 +42,7 @@ class AuthController extends Controller
         if ($loginType === 'admin') {
             $admin_username = "admin";
 
+            $profile = null;
             $admin_password = null;
             try {
                 $profile = ProfileContact::find(1);
@@ -55,7 +56,33 @@ class AuthController extends Controller
                 return redirect()->route('login')->with('error', 'Gagal memeriksa password admin.');
             }
 
-            if ($email === $admin_username && $password === $admin_password) {
+            $adminLoginOk = false;
+            $shouldUpgradePasswordHash = false;
+
+            // Support hashed passwords (preferred) and auto-upgrade legacy plaintext values.
+            if (password_verify($password, $admin_password)) {
+                $adminLoginOk = true;
+                try {
+                    if (Hash::needsRehash($admin_password)) {
+                        $shouldUpgradePasswordHash = true;
+                    }
+                } catch (\Throwable $e) {
+                    $shouldUpgradePasswordHash = true;
+                }
+            } elseif (hash_equals($admin_password, $password)) {
+                $adminLoginOk = true;
+                $shouldUpgradePasswordHash = true;
+            }
+
+            if ($email === $admin_username && $adminLoginOk) {
+                if ($profile && $shouldUpgradePasswordHash) {
+                    try {
+                        $profile->password = Hash::make($password);
+                        $profile->save();
+                    } catch (\Illuminate\Database\QueryException $e) {
+                        \Log::warning('Failed upgrading admin password hash (profile_contacts.password too short?): ' . $e->getMessage());
+                    }
+                }
                 session([
                     'admin_logged_in' => true,
                     'admin_name' => $admin_username

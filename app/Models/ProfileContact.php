@@ -20,9 +20,17 @@ class ProfileContact extends Model
         'address',
         'phone',
         'email',
+        'password',
         // Payment fields
         'nomor_ewallet',
         'nomor_bank',
         'qris',
     ];
+
+    protected function casts(): array
+    {
+        return [
+            'password' => 'hashed',
+        ];
+    }
 }

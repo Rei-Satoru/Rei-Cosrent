@@ -107,6 +107,10 @@ Route::get('/admin/data-pengguna', [AdminController::class, 'dataPengguna'])->na
 Route::post('/admin/pengguna/update', [AdminController::class, 'updatePengguna'])->name('admin.pengguna.update');
 Route::post('/admin/pengguna/delete/{id}', [AdminController::class, 'deletePengguna'])->name('admin.pengguna.delete');
 
+// Data Ulasan Routes
+Route::get('/admin/data-ulasan', [AdminController::class, 'dataUlasan'])->name('admin.data-ulasan');
+Route::post('/admin/ulasan/balas', [AdminController::class, 'balasUlasan'])->name('admin.ulasan.balas');
+
 // Pembayaran Pesanan
 Route::get('/pembayaran/{id}', [PembayaranController::class, 'show'])->name('pembayaran');
 Route::post('/pembayaran/{id}/upload', [PembayaranController::class, 'store'])->name('pembayaran.upload');
