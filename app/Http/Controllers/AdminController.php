@@ -161,16 +161,16 @@ class AdminController extends Controller
 
         $validated = $request->validate([
             'formulir_id' => 'required|integer|exists:ulasan,id',
-            'balasan' => 'required|string|max:5000',
+            'balasan' => 'nullable|string|max:5000',
         ], [
             'formulir_id.required' => 'ID pesanan wajib diisi.',
             'formulir_id.exists' => 'Ulasan untuk pesanan tersebut tidak ditemukan.',
-            'balasan.required' => 'Balasan wajib diisi.',
         ]);
 
         try {
             $ulasan = Ulasan::findOrFail($validated['formulir_id']);
-            $ulasan->balasan = $validated['balasan'];
+            $balasan = isset($validated['balasan']) ? trim((string) $validated['balasan']) : '';
+            $ulasan->balasan = ($balasan === '') ? null : $balasan;
             $ulasan->save();
 
             return redirect()->route('admin.data-ulasan')->with('success', 'Balasan berhasil disimpan.');

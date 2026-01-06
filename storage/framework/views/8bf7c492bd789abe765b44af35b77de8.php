@@ -62,7 +62,6 @@
                             <th>Jumlah</th>
                             <th>Status</th>
                             <th>Dibuat</th>
-                            <th>Bukti Foto</th>
                             <th>Bukti Pembayaran</th>
                             <th>Aksi</th>
                         </tr>
@@ -101,13 +100,6 @@
                             ?>
                             <td class="field-status text-center"><span class="badge <?php echo e($badgeClass); ?>"><i class="bi <?php echo e($badgeIcon); ?> me-1"></i> <?php echo e(ucfirst($item->status)); ?></span></td>
                             <td class="text-center"><?php echo e($item->created_at ? $item->created_at->format('d/m/Y') : '-'); ?></td>
-                            <td class="text-center">
-                                <?php if(!empty($item->bukti_foto)): ?>
-                                    <img src="<?php echo e(asset('storage/' . $item->bukti_foto)); ?>" alt="Foto Bukti" class="thumb rounded">
-                                <?php else: ?>
-                                    -
-                                <?php endif; ?>
-                            </td>
                             <td class="text-center">
                                 <?php
                                     $displayBuktiPath = null;
@@ -158,12 +150,12 @@
                         <div class="modal fade" id="dendaDetailModal-<?php echo e($item->id); ?>" tabindex="-1" aria-labelledby="dendaDetailLabel-<?php echo e($item->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-success text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="dendaDetailLabel-<?php echo e($item->id); ?>">
                                             <i class="bi bi-card-list"></i> Detail Denda #<?php echo e($item->id); ?>
 
                                         </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -178,6 +170,33 @@
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp<?php echo e($item->jumlah_denda ? number_format($item->jumlah_denda,0,',','.') : '-'); ?></div>
                                             </div>
                                         </div>
+
+                                        <?php
+                                            $buktiFotos = collect([
+                                                $item->bukti_foto_1 ?? null,
+                                                $item->bukti_foto_2 ?? null,
+                                                $item->bukti_foto_3 ?? null,
+                                                $item->bukti_foto_4 ?? null,
+                                                $item->bukti_foto_5 ?? null,
+                                            ])->filter();
+                                        ?>
+                                        <hr>
+                                        <div>
+                                            <strong>Bukti Foto:</strong>
+                                            <?php if($buktiFotos->isNotEmpty()): ?>
+                                                <div class="row g-2 mt-1">
+                                                    <?php $__currentLoopData = $buktiFotos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 d-block" onclick="showDendaBuktiFotoPreview('<?php echo e(asset('storage/' . $bf)); ?>')" aria-label="Lihat bukti foto">
+                                                                <img src="<?php echo e(asset('storage/' . $bf)); ?>" alt="Bukti Foto" class="img-fluid rounded" style="max-height:160px; object-fit:cover; width:100%; cursor:pointer;" onerror="this.outerHTML = '<a href=\'<?php echo e(asset('storage/' . $bf)); ?>\' target=\'_blank\' class=\'btn btn-outline-secondary btn-sm\'>Lihat File</a>'">
+                                                            </button>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </div>
+                                            <?php else: ?>
+                                                <div class="text-muted mt-1">Tidak tersedia</div>
+                                            <?php endif; ?>
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -190,9 +209,9 @@
                         <div class="modal fade" id="adminDendaBuktiModal-<?php echo e($item->id); ?>" tabindex="-1" aria-labelledby="adminDendaBuktiLabel-<?php echo e($item->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="adminDendaBuktiLabel-<?php echo e($item->id); ?>">Bukti Pembayaran - Denda #<?php echo e($item->id); ?></h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <?php
@@ -241,9 +260,9 @@
                         <div class="modal fade" id="editModal<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-warning text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title">Edit Denda</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="<?php echo e(route('admin.denda.update', $item->id)); ?>" enctype="multipart/form-data">
                                         <?php echo csrf_field(); ?>
@@ -285,10 +304,38 @@
                                                     <textarea name="keterangan" class="form-control" rows="4"><?php echo e(e($item->keterangan)); ?></textarea>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Foto Bukti (opsional)</label>
-                                                    <input type="file" name="bukti_foto" class="form-control" accept="image/*">
-                                                    <?php if($item->bukti_foto): ?>
-                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <label class="form-label">Foto Bukti 1 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_1" class="form-control" accept="image/*">
+                                                    <?php if(!empty($item->bukti_foto_1)): ?>
+                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto_1)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 2 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_2" class="form-control" accept="image/*">
+                                                    <?php if(!empty($item->bukti_foto_2)): ?>
+                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto_2)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 3 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_3" class="form-control" accept="image/*">
+                                                    <?php if(!empty($item->bukti_foto_3)): ?>
+                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto_3)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 4 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_4" class="form-control" accept="image/*">
+                                                    <?php if(!empty($item->bukti_foto_4)): ?>
+                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto_4)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 5 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_5" class="form-control" accept="image/*">
+                                                    <?php if(!empty($item->bukti_foto_5)): ?>
+                                                        <div class="mt-2"><img src="<?php echo e(asset('storage/' . $item->bukti_foto_5)); ?>" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
                                                     <?php endif; ?>
                                                 </div>
                                             </div>
@@ -306,9 +353,9 @@
                         <div class="modal fade" id="deleteModal<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-danger text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title">Hapus Data</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="<?php echo e(route('admin.denda.destroy', $item->id)); ?>">
                                         <?php echo csrf_field(); ?>
@@ -337,13 +384,28 @@
     </div>
 </section>
 
+    <!-- Bukti Foto Preview Modal (must be inside content section) -->
+    <div class="modal fade" id="dendaBuktiFotoPreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header modal-header-surface">
+                    <h5 class="modal-title">Bukti Foto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="dendaBuktiFotoPreviewImg" src="" alt="Preview" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header modal-header-surface">
                 <h5 class="modal-title">Tambah Data Denda / Kerusakan</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="<?php echo e(route('admin.denda.store')); ?>" enctype="multipart/form-data">
                 <?php echo csrf_field(); ?>
@@ -395,10 +457,26 @@
                             <textarea name="keterangan" class="form-control" rows="4"></textarea>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Foto Bukti (opsional)</label>
-                            <input type="file" name="bukti_foto" class="form-control" accept="image/*">
+                            <label class="form-label">Foto Bukti 1 (opsional)</label>
+                            <input type="file" name="bukti_foto_1" class="form-control" accept="image/*">
                         </div>
-                        <!-- Note: status kept minimal; bukti_foto can be uploaded here -->
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 2 (opsional)</label>
+                            <input type="file" name="bukti_foto_2" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 3 (opsional)</label>
+                            <input type="file" name="bukti_foto_3" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 4 (opsional)</label>
+                            <input type="file" name="bukti_foto_4" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 5 (opsional)</label>
+                            <input type="file" name="bukti_foto_5" class="form-control" accept="image/*">
+                        </div>
+                        <!-- Note: status kept minimal; bukti foto opsional -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -417,6 +495,27 @@
     document.addEventListener('DOMContentLoaded', function(){
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(a => setTimeout(()=> new bootstrap.Alert(a).close(), 3000));
+    });
+</script>
+<script>
+    function showDendaBuktiFotoPreview(src) {
+        const img = document.getElementById('dendaBuktiFotoPreviewImg');
+        if (!img) return;
+        img.src = src;
+
+        const modalEl = document.getElementById('dendaBuktiFotoPreviewModal');
+        if (!modalEl || !window.bootstrap) return;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('dendaBuktiFotoPreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('dendaBuktiFotoPreviewImg');
+            if (img) img.src = '';
+        });
     });
 </script>
 <script>

@@ -36,11 +36,11 @@
     }
 
     .ulasan-thumb {
-        width: 96px;
-        height: 96px;
+        width: 100%;
+        height: 180px;
         object-fit: cover;
         border-radius: 0;
-        border: 2px solid var(--bs-primary);
+        border: 0;
     }
 </style>
 <?php $__env->stopSection(); ?>
@@ -135,7 +135,7 @@
                                             <div class="modal fade" id="ulasanImagesModal<?php echo e($u->id); ?>" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content">
-                                                        <div class="modal-header">
+                                                        <div class="modal-header modal-header-surface">
                                                             <h5 class="modal-title">Gambar Ulasan (Pesanan #<?php echo e($u->id); ?>)</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
@@ -143,7 +143,14 @@
                                                             <div class="row g-3">
                                                                 <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                                     <div class="col-6 col-md-4">
-                                                                        <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#ulasanImageModal<?php echo e($u->id); ?>_<?php echo e($num); ?>" aria-label="Lihat Gambar <?php echo e($num); ?>">
+                                                                        <button
+                                                                            type="button"
+                                                                            class="btn p-0 border-0 bg-transparent"
+                                                                            data-preview-src="<?php echo e(asset('storage/' . $img)); ?>"
+                                                                            data-preview-title="Gambar <?php echo e($num); ?> (Pesanan #<?php echo e($u->id); ?>)"
+                                                                            onclick="return openUlasanAdminImagePreview(this.dataset.previewSrc, this.dataset.previewTitle)"
+                                                                            aria-label="Lihat Gambar <?php echo e($num); ?>"
+                                                                        >
                                                                             <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="Gambar <?php echo e($num); ?>" class="img-fluid ulasan-thumb">
                                                                         </button>
                                                                     </div>
@@ -157,25 +164,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            <?php $__currentLoopData = $images; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $num => $img): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                <div class="modal fade" id="ulasanImageModal<?php echo e($u->id); ?>_<?php echo e($num); ?>" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Gambar <?php echo e($num); ?> (Pesanan #<?php echo e($u->id); ?>)</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="<?php echo e(asset('storage/' . $img)); ?>" alt="Gambar <?php echo e($num); ?>" class="img-fluid rounded">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         <?php else: ?>
                                             <span class="text-muted">-</span>
                                         <?php endif; ?>
@@ -184,7 +172,7 @@
                                         <form method="POST" action="<?php echo e(route('admin.ulasan.balas')); ?>">
                                             <?php echo csrf_field(); ?>
                                             <input type="hidden" name="formulir_id" value="<?php echo e($u->id); ?>">
-                                            <textarea name="balasan" class="form-control balasan-textarea" placeholder="Tulis balasan admin..." required><?php echo e(old('balasan', $u->balasan)); ?></textarea>
+                                            <textarea name="balasan" class="form-control balasan-textarea" placeholder="Tulis balasan admin..."><?php echo e(old('balasan', $u->balasan)); ?></textarea>
                                             <div class="d-flex justify-content-end mt-2">
                                                 <button type="submit" class="btn btn-success btn-sm">
                                                     <i class="bi bi-send"></i> Simpan Balasan
@@ -203,6 +191,52 @@
         </div>
     </div>
 </section>
+
+<!-- Preview Modal Gambar Ulasan (reusable) -->
+<div class="modal fade" id="ulasanAdminImagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header modal-header-surface">
+                <h5 class="modal-title" id="ulasanAdminImagePreviewTitle">Gambar Ulasan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="ulasanAdminImagePreviewImg" src="" alt="Preview" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+<?php $__env->stopSection(); ?>
+
+<?php $__env->startSection('scripts'); ?>
+<script>
+    function openUlasanAdminImagePreview(src, title) {
+        const img = document.getElementById('ulasanAdminImagePreviewImg');
+        if (img) img.src = src;
+
+        const titleEl = document.getElementById('ulasanAdminImagePreviewTitle');
+        if (titleEl) titleEl.textContent = title || 'Gambar Ulasan';
+
+        const modalEl = document.getElementById('ulasanAdminImagePreviewModal');
+        if (!modalEl || !window.bootstrap) return false;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+
+        return false;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('ulasanAdminImagePreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('ulasanAdminImagePreviewImg');
+            if (img) img.src = '';
+
+            const titleEl = document.getElementById('ulasanAdminImagePreviewTitle');
+            if (titleEl) titleEl.textContent = 'Gambar Ulasan';
+        });
+    });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\rc_laravel\resources\views/admin/data-ulasan.blade.php ENDPATH**/ ?>

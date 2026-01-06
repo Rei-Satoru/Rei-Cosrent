@@ -175,6 +175,17 @@
             flex-shrink: 0;
         }
 
+        /* Neutral modal header surface (consistent across admin pages; adapts to light/dark) */
+        .modal-header-surface {
+            background-color: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            border-bottom: 1px solid var(--bs-border-color);
+        }
+
+        .modal-header-surface .btn-close {
+            filter: var(--bs-btn-close-filter, none);
+        }
+
         @yield('styles')
     </style>
     <script>
@@ -269,7 +280,7 @@
                         <li class="nav-item dropdown ms-lg-3">
                             <a class="nav-link dropdown-toggle fw-semibold d-flex align-items-center gap-2" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                 @if(session('user_gambar_profil'))
-                                    <div style="width: 32px; height: 32px; border-radius: 50%; background-size: cover; background-position: center; background-image: url('{{ asset('storage/' . session('user_gambar_profil')) }}'); border: 2px solid var(--bs-primary);"></div>
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background-size: cover; background-position: center; background-image: url('{{ asset('storage/' . session('user_gambar_profil')) }}'); border: 1px solid var(--bs-border-color);"></div>
                                 @else
                                     <i class="bi bi-person-circle"></i>
                                 @endif

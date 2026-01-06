@@ -93,6 +93,8 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama Kostum</th>
+                                    <th>Pesanan Dibuat</th>
+                                    <th>Pesanan Diupdate</th>
                                     <th>Tgl Pakai</th>
                                     <th>Tgl Kembali</th>
                                     <th>Total Harga</th>
@@ -107,6 +109,18 @@
                                 <tr>
                                     <td>{{ (isset($pesanan) && method_exists($pesanan, 'firstItem') && $pesanan->firstItem() !== null) ? $pesanan->firstItem() + $loop->index : $loop->iteration }}</td>
                                     <td>{{ $item->nama_kostum }}</td>
+                                    <td>
+                                        @if($item->created_at)
+                                            {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}<br>
+                                            {{ \Carbon\Carbon::parse($item->created_at)->format('H:i:s') }}
+                                        @endif
+                                    </td>
+                                    <td>
+                                        @if($item->updated_at)
+                                            {{ \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') }}<br>
+                                            {{ \Carbon\Carbon::parse($item->updated_at)->format('H:i:s') }}
+                                        @endif
+                                    </td>
                                     <td>{{ $item->tanggal_pemakaian ? \Carbon\Carbon::parse($item->tanggal_pemakaian)->format('d M Y') : '-' }}</td>
                                     <td>{{ $item->tanggal_pengembalian ? \Carbon\Carbon::parse($item->tanggal_pengembalian)->format('d M Y') : '-' }}</td>
                                     <td>Rp {{ number_format((float) $item->total_harga, 0, ',', '.') }}</td>
@@ -199,11 +213,11 @@
                             <div class="modal fade" id="pesananDetail{{ $item->id }}" tabindex="-1" aria-labelledby="pesananDetailLabel{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
+                                                <div class="modal-header modal-header-surface">
                                             <h5 class="modal-title" id="pesananDetailLabel{{ $item->id }}">
                                                 <i class="bi bi-card-list"></i> Detail Pesanan #{{ $item->id }}
                                             </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="row g-3">
@@ -256,9 +270,9 @@
                                 <div class="modal fade" id="adminBuktiModal-{{ $item->id }}" tabindex="-1" aria-labelledby="adminBuktiLabel-{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-primary text-white">
+                                            <div class="modal-header modal-header-surface">
                                                 <h5 class="modal-title" id="adminBuktiLabel-{{ $item->id }}">Bukti Pembayaran - Pesanan #{{ $item->id }}</h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 @php

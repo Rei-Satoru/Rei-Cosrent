@@ -34,7 +34,11 @@ class DendaController extends Controller
             'keterangan' => 'nullable|string',
             'jumlah_denda' => 'nullable|numeric',
             'status' => 'nullable|in:Belum Lunas,Lunas',
-            'bukti_foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_4' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_5' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'bukti_pembayaran' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
@@ -42,11 +46,14 @@ class DendaController extends Controller
             $data = $validated;
 
             // Ensure fields exist so MySQL strict mode doesn't fail when columns have no default
-            $data['bukti_foto'] = '';
             $data['bukti_pembayaran'] = '';
 
-            if ($request->hasFile('bukti_foto')) {
-                $data['bukti_foto'] = $request->file('bukti_foto')->store('denda', 'public');
+            for ($i = 1; $i <= 5; $i++) {
+                $field = 'bukti_foto_' . $i;
+                $data[$field] = null;
+                if ($request->hasFile($field)) {
+                    $data[$field] = $request->file($field)->store('denda', 'public');
+                }
             }
 
             if ($request->hasFile('bukti_pembayaran')) {
@@ -81,18 +88,25 @@ class DendaController extends Controller
             'keterangan' => 'nullable|string',
             'jumlah_denda' => 'nullable|numeric',
             'status' => 'nullable|in:Belum Lunas,Lunas',
-            'bukti_foto' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_4' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'bukti_foto_5' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'bukti_pembayaran' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
         ]);
 
         try {
             $data = $validated;
 
-            if ($request->hasFile('bukti_foto')) {
-                if ($denda->bukti_foto && Storage::disk('public')->exists($denda->bukti_foto)) {
-                    Storage::disk('public')->delete($denda->bukti_foto);
+            for ($i = 1; $i <= 5; $i++) {
+                $field = 'bukti_foto_' . $i;
+                if ($request->hasFile($field)) {
+                    if ($denda->$field && Storage::disk('public')->exists($denda->$field)) {
+                        Storage::disk('public')->delete($denda->$field);
+                    }
+                    $data[$field] = $request->file($field)->store('denda', 'public');
                 }
-                $data['bukti_foto'] = $request->file('bukti_foto')->store('denda', 'public');
             }
 
             if ($request->hasFile('bukti_pembayaran')) {
@@ -119,8 +133,11 @@ class DendaController extends Controller
         try {
             $denda = Denda::findOrFail($id);
 
-            if ($denda->bukti_foto && Storage::disk('public')->exists($denda->bukti_foto)) {
-                Storage::disk('public')->delete($denda->bukti_foto);
+            for ($i = 1; $i <= 5; $i++) {
+                $field = 'bukti_foto_' . $i;
+                if ($denda->$field && Storage::disk('public')->exists($denda->$field)) {
+                    Storage::disk('public')->delete($denda->$field);
+                }
             }
             if ($denda->bukti_pembayaran && Storage::disk('public')->exists($denda->bukti_pembayaran)) {
                 Storage::disk('public')->delete($denda->bukti_pembayaran);

@@ -100,12 +100,12 @@
                         <div class="modal fade" id="dendaDetailModal-<?php echo e($d->id); ?>" tabindex="-1" aria-labelledby="dendaDetailLabel-<?php echo e($d->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-info text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="dendaDetailLabel-<?php echo e($d->id); ?>">
                                             <i class="bi bi-card-list"></i> Detail Denda #<?php echo e($d->id); ?>
 
                                         </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -122,8 +122,25 @@
                                         </div>
                                         <hr>
                                         <div class="mb-2"><strong>Foto Bukti:</strong><br>
-                                            <?php if(!empty($d->bukti_foto)): ?>
-                                                <img src="<?php echo e(asset('storage/' . $d->bukti_foto)); ?>" alt="Foto Bukti" class="img-fluid rounded" style="max-height:300px; object-fit:contain; width:100%;">
+                                            <?php
+                                                $buktiFotos = collect([
+                                                    $d->bukti_foto_1 ?? null,
+                                                    $d->bukti_foto_2 ?? null,
+                                                    $d->bukti_foto_3 ?? null,
+                                                    $d->bukti_foto_4 ?? null,
+                                                    $d->bukti_foto_5 ?? null,
+                                                ])->filter();
+                                            ?>
+                                            <?php if($buktiFotos->isNotEmpty()): ?>
+                                                <div class="row g-2 mt-1">
+                                                    <?php $__currentLoopData = $buktiFotos; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $bf): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 d-block" onclick="showUserDendaBuktiFotoPreview('<?php echo e(asset('storage/' . $bf)); ?>')" aria-label="Lihat foto bukti">
+                                                                <img src="<?php echo e(asset('storage/' . $bf)); ?>" alt="Foto Bukti" class="img-fluid rounded" style="max-height:160px; object-fit:cover; width:100%; cursor:pointer;" onerror="this.outerHTML = '<a href=\'<?php echo e(asset('storage/' . $bf)); ?>\' target=\'_blank\' class=\'btn btn-outline-secondary btn-sm\'>Lihat File</a>'">
+                                                            </button>
+                                                        </div>
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </div>
                                             <?php else: ?>
                                                 <div class="text-muted">Tidak tersedia</div>
                                             <?php endif; ?>
@@ -140,9 +157,9 @@
                         <div class="modal fade" id="buktiModal-<?php echo e($d->id); ?>" tabindex="-1" aria-labelledby="buktiModalLabel-<?php echo e($d->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="buktiModalLabel-<?php echo e($d->id); ?>">Bukti Pembayaran - Denda #<?php echo e($d->id); ?></h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <?php
@@ -182,6 +199,21 @@
         <?php endif; ?>
     </div>
 </section>
+<!-- Foto Bukti Preview Modal (inside content) -->
+<div class="modal fade" id="userDendaBuktiFotoPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header modal-header-surface">
+                <h5 class="modal-title">Foto Bukti</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="userDendaBuktiFotoPreviewImg" src="" alt="Preview" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
@@ -201,6 +233,27 @@
                 }, 5000);
             } catch (e) {}
         }
+    });
+</script>
+<script>
+    function showUserDendaBuktiFotoPreview(src) {
+        const img = document.getElementById('userDendaBuktiFotoPreviewImg');
+        if (!img) return;
+        img.src = src;
+
+        const modalEl = document.getElementById('userDendaBuktiFotoPreviewModal');
+        if (!modalEl || !window.bootstrap) return;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('userDendaBuktiFotoPreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('userDendaBuktiFotoPreviewImg');
+            if (img) img.src = '';
+        });
     });
 </script>
 <?php $__env->stopSection(); ?>

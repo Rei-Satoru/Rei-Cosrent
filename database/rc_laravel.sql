@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 05 Jan 2026 pada 11.49
+-- Waktu pembuatan: 06 Jan 2026 pada 15.14
 -- Versi server: 8.4.3
 -- Versi PHP: 8.2.28
 
@@ -137,7 +137,11 @@ CREATE TABLE `denda` (
   `keterangan` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `jumlah_denda` decimal(12,2) NOT NULL,
   `status` enum('Belum Lunas','Lunas') DEFAULT 'Belum Lunas',
-  `bukti_foto` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `bukti_foto_1` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `bukti_foto_2` varchar(255) DEFAULT NULL,
+  `bukti_foto_3` varchar(255) DEFAULT NULL,
+  `bukti_foto_4` varchar(255) DEFAULT NULL,
+  `bukti_foto_5` varchar(255) DEFAULT NULL,
   `bukti_pembayaran` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -147,8 +151,8 @@ CREATE TABLE `denda` (
 -- Dumping data untuk tabel `denda`
 --
 
-INSERT INTO `denda` (`id`, `nama`, `nama_kostum`, `jenis_denda`, `keterangan`, `jumlah_denda`, `status`, `bukti_foto`, `bukti_pembayaran`, `created_at`, `updated_at`) VALUES
-(3, 'rehan wangsaf', 'Gojo Satoru', 'telat balikin', 'telat wok', 15000.00, 'Lunas', '', 'denda/bukti_denda_3_1767267848.jfif', '2026-01-01 04:41:25', '2026-01-01 04:44:08');
+INSERT INTO `denda` (`id`, `nama`, `nama_kostum`, `jenis_denda`, `keterangan`, `jumlah_denda`, `status`, `bukti_foto_1`, `bukti_foto_2`, `bukti_foto_3`, `bukti_foto_4`, `bukti_foto_5`, `bukti_pembayaran`, `created_at`, `updated_at`) VALUES
+(3, 'rehan wangsaf', 'Gojo Satoru', 'telat balikin', 'telat wok', 15000.00, 'Lunas', 'denda/GQFuvSef2UneWHOuTmARN1ZeP1kRkDpKxuiQIGYR.png', 'denda/pYvZQriJfIEIm6JRUvCwxAm1BazwCn7iX0wckHJe.jpg', NULL, NULL, NULL, 'denda/bukti_denda_3_1767267848.jfif', '2026-01-01 04:41:25', '2026-01-06 04:51:15');
 
 -- --------------------------------------------------------
 
@@ -325,11 +329,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('fzt3HxR53QcJhcIBRFJFRnHcK0XlNZBxI9liwWkB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czozOToiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL2RhdGEtdWxhc2FuIjtzOjU6InJvdXRlIjtzOjE3OiJhZG1pbi5kYXRhLXVsYXNhbiI7fXM6NjoiX3Rva2VuIjtzOjQwOiIzMnhheU1WeUVjbUNpczBZY0dGZXgzczhCN3FETUNaSjlRSEJGVFJJIjtzOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1767613663),
-('GWgGCcjH2fLFuzk3M10hMXj2AORQj4bGCNqrY2Yf', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiTGhsRTgzSkNBSnF4bE04QlFhZHFySE5OSGdkaFhoVkU3cWc4SktDMyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjtzOjU6InJvdXRlIjtzOjQ6ImhvbWUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE0OiJ1c2VyX2xvZ2dlZF9pbiI7YjoxO3M6NzoidXNlcl9pZCI7aTo1O3M6OToidXNlcl9uYW1lIjtzOjM6InJlaSI7czoxMDoidXNlcl9lbWFpbCI7czoyNDoicmVpc2F0b3J1LmNvc3VAZ21haWwuY29tIjtzOjE4OiJ1c2VyX2dhbWJhcl9wcm9maWwiO3M6NTk6InByb2ZpbGVfaW1hZ2VzLzU0ODhrREVBVmNyRUpDNEQ4OWUyWVJGNVJ4Sk5UUUkwbWM2T3o3N0MuanBnIjt9', 1767604845),
-('sewrLFIcXDM6QTDHnBk5kudM6JDuXNVn7IVFf9aK', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiTHMyaWVXeVVPQldFaUgxcDBoQVcxZzlWRXhadXg1MUtha3lndXdtRiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZXNhbmFuLXNheWEiO3M6NToicm91dGUiO3M6MTI6InVzZXIucGVzYW5hbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO3M6MTc6InVsYXNhbl9mb3Jfb3JkZXJzIjthOjE6e2k6MDtzOjI6IjEwIjt9fQ==', 1767437733),
-('WxBJDRFX6qVWZBRiVbwDueW6UpjFyuFivsQItvZl', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czozNDoiaHR0cDovLzEyNy4wLjAuMTo4MDAwL3Blc2FuYW4tc2F5YSI7czo1OiJyb3V0ZSI7czoxMjoidXNlci5wZXNhbmFuIjt9czo2OiJfdG9rZW4iO3M6NDA6ImJuSmpRVmc5RVk3UGZXeDBmV29YUXJxUkd2bGFJcmxuT3NYeng2REwiO3M6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO30=', 1767613652),
-('ZjEeQtp7PljqOshndsQUDCrZcjgCowzPEXkKN1xs', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il9mbGFzaCI7YToyOntzOjM6Im5ldyI7YTowOnt9czozOiJvbGQiO2E6MDp7fX1zOjk6Il9wcmV2aW91cyI7YToyOntzOjM6InVybCI7czo0NToiaHR0cDovLzEyNy4wLjAuMTo4MDAwL2FkbWluL3N0YXRzP3BlcmlvZD13ZWVrIjtzOjU6InJvdXRlIjtzOjExOiJhZG1pbi5zdGF0cyI7fXM6NjoiX3Rva2VuIjtzOjQwOiJ6UG5pazRXS3h3bTlZVEJMUnhZemdORkFjcnFzdHZUazNPS21RUjFFIjtzOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1767443073);
+('X3De8tHFATm2A7GKuqkE6jDnYXRyaae6n4Y4u5lW', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiM3FZRzRFR1E3VGpMTVdRbHd0OTU1UTgyTkpYekU3eFdCVVN2Q0Q1aSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZXNhbmFuLXNheWEiO3M6NToicm91dGUiO3M6MTI6InVzZXIucGVzYW5hbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO30=', 1767712327),
+('ZD724zPfjvK7KPEe3CmB6tihVDGXdgaXec49veZn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSHpFT3JwTkZXRTRkVDljQ0w5aVZGZ2V3aW9vQU8zcVV6WXJrY0dhQyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXRhLXBlbmdndW5hIjtzOjU6InJvdXRlIjtzOjE5OiJhZG1pbi5kYXRhLXBlbmdndW5hIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNToiYWRtaW5fbG9nZ2VkX2luIjtiOjE7czoxMDoiYWRtaW5fbmFtZSI7czo1OiJhZG1pbiI7fQ==', 1767712354);
 
 -- --------------------------------------------------------
 
@@ -356,7 +357,7 @@ CREATE TABLE `ulasan` (
 --
 
 INSERT INTO `ulasan` (`id`, `rating`, `review`, `balasan`, `gambar_1`, `gambar_2`, `gambar_3`, `gambar_4`, `gambar_5`, `created_at`, `updated_at`) VALUES
-(10, 5, 'bagus', 'yes', 'ulasan/ulasan_10_1_1767437433.jpg', 'ulasan/ulasan_10_2_1767437433.jfif', 'ulasan/ulasan_10_3_1767613652.jfif', 'ulasan/ulasan_10_4_1767613652.jfif', 'ulasan/ulasan_10_5_1767613652.jfif', '2026-01-03 03:17:24', '2026-01-05 04:47:32');
+(10, 5, 'bagus', 'y', 'ulasan/ulasan_10_1_1767437433.jpg', 'ulasan/ulasan_10_2_1767437433.jfif', 'ulasan/ulasan_10_3_1767613652.jfif', 'ulasan/ulasan_10_4_1767613652.jfif', 'ulasan/ulasan_10_5_1767613652.jfif', '2026-01-03 03:17:24', '2026-01-06 06:37:05');
 
 -- --------------------------------------------------------
 

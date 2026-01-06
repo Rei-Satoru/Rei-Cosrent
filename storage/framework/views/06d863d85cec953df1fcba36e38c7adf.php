@@ -39,10 +39,11 @@
                         <tr>
                             <th>ID</th>
                             <th>Nama Kostum</th>
+                            <th>Pesanan Dibuat</th>
+                            <th>Pesanan Diupdate</th>
                             <th>Tgl Pakai</th>
                             <th>Tgl Kembali</th>
                             <th>Total</th>
-                            <th>Dibuat</th>
                             <th>Status</th>
                             <th>Catatan</th>
                             <th class="text-end">Aksi</th>
@@ -53,10 +54,23 @@
                         <tr>
                             <td><?php echo e($index + 1); ?></td>
                             <td><?php echo e($order->nama_kostum ?? '-'); ?></td>
+                            <td class="text-center">
+                                <?php if($order->created_at): ?>
+                                    <?php echo e(\Carbon\Carbon::parse($order->created_at)->format('d-m-Y')); ?><br>
+                                    <?php echo e(\Carbon\Carbon::parse($order->created_at)->format('H:i:s')); ?>
+
+                                <?php endif; ?>
+                            </td>
+                            <td class="text-center">
+                                <?php if($order->updated_at): ?>
+                                    <?php echo e(\Carbon\Carbon::parse($order->updated_at)->format('d-m-Y')); ?><br>
+                                    <?php echo e(\Carbon\Carbon::parse($order->updated_at)->format('H:i:s')); ?>
+
+                                <?php endif; ?>
+                            </td>
                             <td><?php echo e($order->tanggal_pemakaian ? \Carbon\Carbon::parse($order->tanggal_pemakaian)->format('d M Y') : '-'); ?></td>
                             <td><?php echo e($order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-'); ?></td>
                             <td>Rp <?php echo e(number_format((float) $order->total_harga, 0, ',', '.')); ?></td>
-                            <td class="text-center"><?php echo e($order->created_at ? \Carbon\Carbon::parse($order->created_at)->format('d M Y') : '-'); ?></td>
                             <td>
                                 <?php
                                     $statusClass = [
@@ -162,12 +176,12 @@
                         <div class="modal fade" id="orderDetailModal-<?php echo e($order->id); ?>" tabindex="-1" aria-labelledby="orderDetailLabel-<?php echo e($order->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-info text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="orderDetailLabel-<?php echo e($order->id); ?>">
                                             <i class="bi bi-card-list"></i> Detail Pesanan #<?php echo e($order->id); ?>
 
                                         </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -218,9 +232,9 @@
                         <div class="modal fade" id="buktiModal-<?php echo e($order->id); ?>" tabindex="-1" aria-labelledby="buktiModalLabel-<?php echo e($order->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="buktiModalLabel-<?php echo e($order->id); ?>">Bukti Pembayaran - Pesanan #<?php echo e($order->id); ?></h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <?php
@@ -264,9 +278,9 @@
                         <div class="modal fade" id="orderActionModal-<?php echo e($order->id); ?>" tabindex="-1" aria-labelledby="orderActionLabel-<?php echo e($order->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-danger text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="orderActionLabel-<?php echo e($order->id); ?>"><i class="bi bi-x-octagon"></i> Hapus Pesanan Permanen</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <p class="mb-3">Pesanan #<?php echo e($order->id); ?> akan dihapus secara permanen. Tindakan ini tidak dapat dibatalkan.</p>

@@ -95,6 +95,8 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama Kostum</th>
+                                    <th>Pesanan Dibuat</th>
+                                    <th>Pesanan Diupdate</th>
                                     <th>Tgl Pakai</th>
                                     <th>Tgl Kembali</th>
                                     <th>Total Harga</th>
@@ -109,6 +111,20 @@
                                 <tr>
                                     <td><?php echo e((isset($pesanan) && method_exists($pesanan, 'firstItem') && $pesanan->firstItem() !== null) ? $pesanan->firstItem() + $loop->index : $loop->iteration); ?></td>
                                     <td><?php echo e($item->nama_kostum); ?></td>
+                                    <td>
+                                        <?php if($item->created_at): ?>
+                                            <?php echo e(\Carbon\Carbon::parse($item->created_at)->format('d-m-Y')); ?><br>
+                                            <?php echo e(\Carbon\Carbon::parse($item->created_at)->format('H:i:s')); ?>
+
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <?php if($item->updated_at): ?>
+                                            <?php echo e(\Carbon\Carbon::parse($item->updated_at)->format('d-m-Y')); ?><br>
+                                            <?php echo e(\Carbon\Carbon::parse($item->updated_at)->format('H:i:s')); ?>
+
+                                        <?php endif; ?>
+                                    </td>
                                     <td><?php echo e($item->tanggal_pemakaian ? \Carbon\Carbon::parse($item->tanggal_pemakaian)->format('d M Y') : '-'); ?></td>
                                     <td><?php echo e($item->tanggal_pengembalian ? \Carbon\Carbon::parse($item->tanggal_pengembalian)->format('d M Y') : '-'); ?></td>
                                     <td>Rp <?php echo e(number_format((float) $item->total_harga, 0, ',', '.')); ?></td>
@@ -202,12 +218,12 @@
                             <div class="modal fade" id="pesananDetail<?php echo e($item->id); ?>" tabindex="-1" aria-labelledby="pesananDetailLabel<?php echo e($item->id); ?>" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                                <div class="modal-header bg-success text-white">
+                                                <div class="modal-header modal-header-surface">
                                             <h5 class="modal-title" id="pesananDetailLabel<?php echo e($item->id); ?>">
                                                 <i class="bi bi-card-list"></i> Detail Pesanan #<?php echo e($item->id); ?>
 
                                             </h5>
-                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="row g-3">
@@ -260,9 +276,9 @@
                                 <div class="modal fade" id="adminBuktiModal-<?php echo e($item->id); ?>" tabindex="-1" aria-labelledby="adminBuktiLabel-<?php echo e($item->id); ?>" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header bg-primary text-white">
+                                            <div class="modal-header modal-header-surface">
                                                 <h5 class="modal-title" id="adminBuktiLabel-<?php echo e($item->id); ?>">Bukti Pembayaran - Pesanan #<?php echo e($item->id); ?></h5>
-                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 <?php

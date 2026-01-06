@@ -51,7 +51,7 @@
                         <div class="row g-0 align-items-center">
                             <div class="col-md-4 text-center p-3">
                                 <?php if($profile && $profile->photo): ?>
-                                    <img src="<?php echo e(asset('storage/' . $profile->photo)); ?>" class="img-fluid rounded-circle border border-primary border-4 mb-3" alt="Foto Pengurus" style="width: 150px; height: 150px; object-fit: cover;">
+                                    <img src="<?php echo e(asset('storage/' . $profile->photo)); ?>" class="img-fluid rounded-circle border mb-3" alt="Foto Pengurus" style="width: 150px; height: 150px; object-fit: cover; border-color: var(--bs-border-color) !important;">
                                 <?php else: ?>
                                     <div class="mb-3">
                                         <i class="bi bi-person-circle text-primary" style="font-size: 150px;"></i>

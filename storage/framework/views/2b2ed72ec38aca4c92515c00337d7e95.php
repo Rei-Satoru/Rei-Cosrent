@@ -125,10 +125,9 @@
                                 <?php endif; ?>
 
                                 <?php if(!empty($u->balasan)): ?>
-                                    <div class="alert alert-success mb-0">
-                                        <div class="fw-bold"><i class="bi bi-chat-left-text"></i> Balasan Admin</div>
-                                        <div><?php echo e($u->balasan); ?></div>
-                                    </div>
+                                    <hr class="my-3">
+                                    <div class="fw-bold mb-1"><i class="bi bi-chat-left-text"></i> Balasan Admin:</div>
+                                    <div class="mb-0"><?php echo e($u->balasan); ?></div>
                                 <?php endif; ?>
                             </div>
                         </div>

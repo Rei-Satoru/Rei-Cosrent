@@ -103,9 +103,9 @@
                                                 $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
                                             @endphp
                                             @if($avatarPath)
-                                                <img src="{{ $avatarPath }}" alt="Avatar" style="width:48px; height:48px; object-fit:cover; border:2px solid var(--bs-primary); border-radius:0;">
+                                                <img src="{{ $avatarPath }}" alt="Avatar" style="width:72px; height:72px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
                                             @else
-                                                <i class="bi bi-person-square" style="font-size: 1.5rem; color: var(--bs-body-color);"></i>
+                                                <i class="bi bi-person-square" style="font-size: 2rem; color: var(--bs-body-color);"></i>
                                             @endif
                                         </td>
                                         <td>
@@ -149,21 +149,21 @@
                                                                         <input type="text" name="nomor_telepon" class="form-control" value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
                                                                     </div>
                                                                     <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Password (opsional, minimal 8 karakter)</label>
-                                                                        <input type="password" name="password" class="form-control" placeholder="Biarkan kosong jika tidak diubah" minlength="8">
-                                                                    </div>
-                                                                    <div class="col-12">
                                                                         <label class="form-label fw-semibold">Alamat</label>
                                                                         <textarea name="alamat" class="form-control" rows="3">{{ old('alamat', $user->alamat) }}</textarea>
+                                                                    </div>
+                                                                    <div class="col-12">
+                                                                        <label class="form-label fw-semibold">Password (opsional, minimal 8 karakter)</label>
+                                                                        <input type="password" name="password" class="form-control" placeholder="Biarkan kosong jika tidak diubah" minlength="8">
                                                                     </div>
                                                                     <div class="col-12">
                                                                         <div class="row g-3 align-items-start">
                                                                             <div class="col-md-6">
                                                                                 <label class="form-label fw-semibold">Gambar Profil</label>
                                                                                 <div class="d-flex align-items-center gap-3 flex-wrap">
-                                                                                    <img class="user-preview {{ $user->gambar_profil ? '' : 'd-none' }}" src="{{ $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : '' }}" alt="Preview" style="width:96px; height:96px; object-fit:cover; border:2px solid var(--bs-primary); border-radius:0;">
-                                                                                    <div class="user-fallback {{ $user->gambar_profil ? 'd-none' : '' }}" style="width:96px; height:96px; display:flex; align-items:center; justify-content:center; border:2px dashed var(--bs-primary); border-radius:0;">
-                                                                                        <i class="bi bi-person-square" style="font-size: 2rem; color: var(--bs-body-color);"></i>
+                                                                                    <img class="user-preview {{ $user->gambar_profil ? '' : 'd-none' }}" src="{{ $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : '' }}" alt="Preview" style="width:140px; height:140px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
+                                                                                    <div class="user-fallback {{ $user->gambar_profil ? 'd-none' : '' }}" style="width:140px; height:140px; display:flex; align-items:center; justify-content:center; border:2px dashed var(--bs-border-color); border-radius:0;">
+                                                                                        <i class="bi bi-person-square" style="font-size: 2.25rem; color: var(--bs-body-color);"></i>
                                                                                     </div>
                                                                                     <div class="d-flex flex-column gap-2">
                                                                                         <button type="button" class="btn btn-outline-primary btn-sm btn-upload-user"><i class="bi bi-upload"></i> Unggah</button>

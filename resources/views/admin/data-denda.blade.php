@@ -62,7 +62,6 @@
                             <th>Jumlah</th>
                             <th>Status</th>
                             <th>Dibuat</th>
-                            <th>Bukti Foto</th>
                             <th>Bukti Pembayaran</th>
                             <th>Aksi</th>
                         </tr>
@@ -101,13 +100,6 @@
                             @endphp
                             <td class="field-status text-center"><span class="badge {{ $badgeClass }}"><i class="bi {{ $badgeIcon }} me-1"></i> {{ ucfirst($item->status) }}</span></td>
                             <td class="text-center">{{ $item->created_at ? $item->created_at->format('d/m/Y') : '-' }}</td>
-                            <td class="text-center">
-                                @if(!empty($item->bukti_foto))
-                                    <img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Foto Bukti" class="thumb rounded">
-                                @else
-                                    -
-                                @endif
-                            </td>
                             <td class="text-center">
                                 @php
                                     $displayBuktiPath = null;
@@ -158,11 +150,11 @@
                         <div class="modal fade" id="dendaDetailModal-{{ $item->id }}" tabindex="-1" aria-labelledby="dendaDetailLabel-{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-success text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="dendaDetailLabel-{{ $item->id }}">
                                             <i class="bi bi-card-list"></i> Detail Denda #{{ $item->id }}
                                         </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -177,6 +169,33 @@
                                                 <div class="mb-2"><strong>Jumlah Denda:</strong><br>Rp{{ $item->jumlah_denda ? number_format($item->jumlah_denda,0,',','.') : '-' }}</div>
                                             </div>
                                         </div>
+
+                                        @php
+                                            $buktiFotos = collect([
+                                                $item->bukti_foto_1 ?? null,
+                                                $item->bukti_foto_2 ?? null,
+                                                $item->bukti_foto_3 ?? null,
+                                                $item->bukti_foto_4 ?? null,
+                                                $item->bukti_foto_5 ?? null,
+                                            ])->filter();
+                                        @endphp
+                                        <hr>
+                                        <div>
+                                            <strong>Bukti Foto:</strong>
+                                            @if($buktiFotos->isNotEmpty())
+                                                <div class="row g-2 mt-1">
+                                                    @foreach($buktiFotos as $bf)
+                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 d-block" onclick="showDendaBuktiFotoPreview('{{ asset('storage/' . $bf) }}')" aria-label="Lihat bukti foto">
+                                                                <img src="{{ asset('storage/' . $bf) }}" alt="Bukti Foto" class="img-fluid rounded" style="max-height:160px; object-fit:cover; width:100%; cursor:pointer;" onerror="this.outerHTML = '<a href=\'{{ asset('storage/' . $bf) }}\' target=\'_blank\' class=\'btn btn-outline-secondary btn-sm\'>Lihat File</a>'">
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
+                                            @else
+                                                <div class="text-muted mt-1">Tidak tersedia</div>
+                                            @endif
+                                        </div>
                                     </div>
                                     <div class="modal-footer">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
@@ -189,9 +208,9 @@
                         <div class="modal fade" id="adminDendaBuktiModal-{{ $item->id }}" tabindex="-1" aria-labelledby="adminDendaBuktiLabel-{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="adminDendaBuktiLabel-{{ $item->id }}">Bukti Pembayaran - Denda #{{ $item->id }}</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         @php
@@ -240,9 +259,9 @@
                         <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-warning text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title">Edit Denda</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="{{ route('admin.denda.update', $item->id) }}" enctype="multipart/form-data">
                                         @csrf
@@ -284,10 +303,38 @@
                                                     <textarea name="keterangan" class="form-control" rows="4">{{ e($item->keterangan) }}</textarea>
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <label class="form-label">Foto Bukti (opsional)</label>
-                                                    <input type="file" name="bukti_foto" class="form-control" accept="image/*">
-                                                    @if($item->bukti_foto)
-                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    <label class="form-label">Foto Bukti 1 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_1" class="form-control" accept="image/*">
+                                                    @if(!empty($item->bukti_foto_1))
+                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto_1) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 2 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_2" class="form-control" accept="image/*">
+                                                    @if(!empty($item->bukti_foto_2))
+                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto_2) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 3 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_3" class="form-control" accept="image/*">
+                                                    @if(!empty($item->bukti_foto_3))
+                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto_3) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 4 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_4" class="form-control" accept="image/*">
+                                                    @if(!empty($item->bukti_foto_4))
+                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto_4) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
+                                                    @endif
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Foto Bukti 5 (opsional)</label>
+                                                    <input type="file" name="bukti_foto_5" class="form-control" accept="image/*">
+                                                    @if(!empty($item->bukti_foto_5))
+                                                        <div class="mt-2"><img src="{{ asset('storage/' . $item->bukti_foto_5) }}" alt="Preview" class="img-fluid rounded" style="max-height:120px; object-fit:contain;"></div>
                                                     @endif
                                                 </div>
                                             </div>
@@ -305,9 +352,9 @@
                         <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-danger text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title">Hapus Data</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="{{ route('admin.denda.destroy', $item->id) }}">
                                         @csrf
@@ -336,13 +383,28 @@
     </div>
 </section>
 
+    <!-- Bukti Foto Preview Modal (must be inside content section) -->
+    <div class="modal fade" id="dendaBuktiFotoPreviewModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header modal-header-surface">
+                    <h5 class="modal-title">Bukti Foto</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="dendaBuktiFotoPreviewImg" src="" alt="Preview" class="img-fluid rounded">
+                </div>
+            </div>
+        </div>
+    </div>
+
 <!-- Add Modal -->
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
+            <div class="modal-header modal-header-surface">
                 <h5 class="modal-title">Tambah Data Denda / Kerusakan</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ route('admin.denda.store') }}" enctype="multipart/form-data">
                 @csrf
@@ -394,10 +456,26 @@
                             <textarea name="keterangan" class="form-control" rows="4"></textarea>
                         </div>
                         <div class="col-md-6">
-                            <label class="form-label">Foto Bukti (opsional)</label>
-                            <input type="file" name="bukti_foto" class="form-control" accept="image/*">
+                            <label class="form-label">Foto Bukti 1 (opsional)</label>
+                            <input type="file" name="bukti_foto_1" class="form-control" accept="image/*">
                         </div>
-                        <!-- Note: status kept minimal; bukti_foto can be uploaded here -->
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 2 (opsional)</label>
+                            <input type="file" name="bukti_foto_2" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 3 (opsional)</label>
+                            <input type="file" name="bukti_foto_3" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 4 (opsional)</label>
+                            <input type="file" name="bukti_foto_4" class="form-control" accept="image/*">
+                        </div>
+                        <div class="col-md-6">
+                            <label class="form-label">Foto Bukti 5 (opsional)</label>
+                            <input type="file" name="bukti_foto_5" class="form-control" accept="image/*">
+                        </div>
+                        <!-- Note: status kept minimal; bukti foto opsional -->
                     </div>
                 </div>
                 <div class="modal-footer">
@@ -416,6 +494,27 @@
     document.addEventListener('DOMContentLoaded', function(){
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(a => setTimeout(()=> new bootstrap.Alert(a).close(), 3000));
+    });
+</script>
+<script>
+    function showDendaBuktiFotoPreview(src) {
+        const img = document.getElementById('dendaBuktiFotoPreviewImg');
+        if (!img) return;
+        img.src = src;
+
+        const modalEl = document.getElementById('dendaBuktiFotoPreviewModal');
+        if (!modalEl || !window.bootstrap) return;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('dendaBuktiFotoPreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('dendaBuktiFotoPreviewImg');
+            if (img) img.src = '';
+        });
     });
 </script>
 <script>

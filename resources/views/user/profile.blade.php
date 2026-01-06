@@ -121,7 +121,7 @@
                             src="{{ $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : '' }}"
                             alt=""
                             class="img-fluid rounded-circle mb-3 {{ $user->gambar_profil ? '' : 'd-none' }}"
-                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--bs-primary);">
+                            style="width: 150px; height: 150px; object-fit: cover; border: 1px solid var(--bs-border-color);">
                         <div id="profile_image_fallback" class="mb-3 {{ $user->gambar_profil ? 'd-none' : '' }}" style="width: 150px; height: 150px; align-items: center; justify-content: center; display: flex;">
                             <i class="bi bi-person-circle" style="font-size: 96px; color: var(--bs-body-color);"></i>
                         </div>

@@ -100,11 +100,11 @@
                         <div class="modal fade" id="dendaDetailModal-{{ $d->id }}" tabindex="-1" aria-labelledby="dendaDetailLabel-{{ $d->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-info text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="dendaDetailLabel-{{ $d->id }}">
                                             <i class="bi bi-card-list"></i> Detail Denda #{{ $d->id }}
                                         </h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -121,8 +121,25 @@
                                         </div>
                                         <hr>
                                         <div class="mb-2"><strong>Foto Bukti:</strong><br>
-                                            @if(!empty($d->bukti_foto))
-                                                <img src="{{ asset('storage/' . $d->bukti_foto) }}" alt="Foto Bukti" class="img-fluid rounded" style="max-height:300px; object-fit:contain; width:100%;">
+                                            @php
+                                                $buktiFotos = collect([
+                                                    $d->bukti_foto_1 ?? null,
+                                                    $d->bukti_foto_2 ?? null,
+                                                    $d->bukti_foto_3 ?? null,
+                                                    $d->bukti_foto_4 ?? null,
+                                                    $d->bukti_foto_5 ?? null,
+                                                ])->filter();
+                                            @endphp
+                                            @if($buktiFotos->isNotEmpty())
+                                                <div class="row g-2 mt-1">
+                                                    @foreach($buktiFotos as $bf)
+                                                        <div class="col-6 col-md-4 col-lg-3">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 d-block" onclick="showUserDendaBuktiFotoPreview('{{ asset('storage/' . $bf) }}')" aria-label="Lihat foto bukti">
+                                                                <img src="{{ asset('storage/' . $bf) }}" alt="Foto Bukti" class="img-fluid rounded" style="max-height:160px; object-fit:cover; width:100%; cursor:pointer;" onerror="this.outerHTML = '<a href=\'{{ asset('storage/' . $bf) }}\' target=\'_blank\' class=\'btn btn-outline-secondary btn-sm\'>Lihat File</a>'">
+                                                            </button>
+                                                        </div>
+                                                    @endforeach
+                                                </div>
                                             @else
                                                 <div class="text-muted">Tidak tersedia</div>
                                             @endif
@@ -139,9 +156,9 @@
                         <div class="modal fade" id="buktiModal-{{ $d->id }}" tabindex="-1" aria-labelledby="buktiModalLabel-{{ $d->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header bg-primary text-white">
+                                    <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="buktiModalLabel-{{ $d->id }}">Bukti Pembayaran - Denda #{{ $d->id }}</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         @php
@@ -181,6 +198,21 @@
         @endif
     </div>
 </section>
+<!-- Foto Bukti Preview Modal (inside content) -->
+<div class="modal fade" id="userDendaBuktiFotoPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header modal-header-surface">
+                <h5 class="modal-title">Foto Bukti</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="userDendaBuktiFotoPreviewImg" src="" alt="Preview" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+
 @endsection
 
 @section('scripts')
@@ -200,6 +232,27 @@
                 }, 5000);
             } catch (e) {}
         }
+    });
+</script>
+<script>
+    function showUserDendaBuktiFotoPreview(src) {
+        const img = document.getElementById('userDendaBuktiFotoPreviewImg');
+        if (!img) return;
+        img.src = src;
+
+        const modalEl = document.getElementById('userDendaBuktiFotoPreviewModal');
+        if (!modalEl || !window.bootstrap) return;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('userDendaBuktiFotoPreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('userDendaBuktiFotoPreviewImg');
+            if (img) img.src = '';
+        });
     });
 </script>
 @endsection

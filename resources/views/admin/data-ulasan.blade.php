@@ -36,11 +36,11 @@
     }
 
     .ulasan-thumb {
-        width: 96px;
-        height: 96px;
+        width: 100%;
+        height: 180px;
         object-fit: cover;
         border-radius: 0;
-        border: 2px solid var(--bs-primary);
+        border: 0;
     }
 </style>
 @endsection
@@ -132,7 +132,7 @@
                                             <div class="modal fade" id="ulasanImagesModal{{ $u->id }}" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content">
-                                                        <div class="modal-header">
+                                                        <div class="modal-header modal-header-surface">
                                                             <h5 class="modal-title">Gambar Ulasan (Pesanan #{{ $u->id }})</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
@@ -140,7 +140,14 @@
                                                             <div class="row g-3">
                                                                 @foreach($images as $num => $img)
                                                                     <div class="col-6 col-md-4">
-                                                                        <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#ulasanImageModal{{ $u->id }}_{{ $num }}" aria-label="Lihat Gambar {{ $num }}">
+                                                                        <button
+                                                                            type="button"
+                                                                            class="btn p-0 border-0 bg-transparent"
+                                                                            data-preview-src="{{ asset('storage/' . $img) }}"
+                                                                            data-preview-title="Gambar {{ $num }} (Pesanan #{{ $u->id }})"
+                                                                            onclick="return openUlasanAdminImagePreview(this.dataset.previewSrc, this.dataset.previewTitle)"
+                                                                            aria-label="Lihat Gambar {{ $num }}"
+                                                                        >
                                                                             <img src="{{ asset('storage/' . $img) }}" alt="Gambar {{ $num }}" class="img-fluid ulasan-thumb">
                                                                         </button>
                                                                     </div>
@@ -154,25 +161,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-
-                                            @foreach($images as $num => $img)
-                                                <div class="modal fade" id="ulasanImageModal{{ $u->id }}_{{ $num }}" tabindex="-1" aria-hidden="true">
-                                                    <div class="modal-dialog modal-dialog-centered modal-lg">
-                                                        <div class="modal-content">
-                                                            <div class="modal-header">
-                                                                <h5 class="modal-title">Gambar {{ $num }} (Pesanan #{{ $u->id }})</h5>
-                                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                                            </div>
-                                                            <div class="modal-body text-center">
-                                                                <img src="{{ asset('storage/' . $img) }}" alt="Gambar {{ $num }}" class="img-fluid rounded">
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            @endforeach
                                         @else
                                             <span class="text-muted">-</span>
                                         @endif
@@ -181,7 +169,7 @@
                                         <form method="POST" action="{{ route('admin.ulasan.balas') }}">
                                             @csrf
                                             <input type="hidden" name="formulir_id" value="{{ $u->id }}">
-                                            <textarea name="balasan" class="form-control balasan-textarea" placeholder="Tulis balasan admin..." required>{{ old('balasan', $u->balasan) }}</textarea>
+                                            <textarea name="balasan" class="form-control balasan-textarea" placeholder="Tulis balasan admin...">{{ old('balasan', $u->balasan) }}</textarea>
                                             <div class="d-flex justify-content-end mt-2">
                                                 <button type="submit" class="btn btn-success btn-sm">
                                                     <i class="bi bi-send"></i> Simpan Balasan
@@ -200,4 +188,50 @@
         </div>
     </div>
 </section>
+
+<!-- Preview Modal Gambar Ulasan (reusable) -->
+<div class="modal fade" id="ulasanAdminImagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header modal-header-surface">
+                <h5 class="modal-title" id="ulasanAdminImagePreviewTitle">Gambar Ulasan</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="ulasanAdminImagePreviewImg" src="" alt="Preview" class="img-fluid rounded">
+            </div>
+        </div>
+    </div>
+</div>
+@endsection
+
+@section('scripts')
+<script>
+    function openUlasanAdminImagePreview(src, title) {
+        const img = document.getElementById('ulasanAdminImagePreviewImg');
+        if (img) img.src = src;
+
+        const titleEl = document.getElementById('ulasanAdminImagePreviewTitle');
+        if (titleEl) titleEl.textContent = title || 'Gambar Ulasan';
+
+        const modalEl = document.getElementById('ulasanAdminImagePreviewModal');
+        if (!modalEl || !window.bootstrap) return false;
+        const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+        modal.show();
+
+        return false;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const modalEl = document.getElementById('ulasanAdminImagePreviewModal');
+        if (!modalEl) return;
+        modalEl.addEventListener('hidden.bs.modal', function () {
+            const img = document.getElementById('ulasanAdminImagePreviewImg');
+            if (img) img.src = '';
+
+            const titleEl = document.getElementById('ulasanAdminImagePreviewTitle');
+            if (titleEl) titleEl.textContent = 'Gambar Ulasan';
+        });
+    });
+</script>
 @endsection

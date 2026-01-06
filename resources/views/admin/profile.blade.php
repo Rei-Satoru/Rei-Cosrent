@@ -193,7 +193,7 @@
                             $profileEmail = $profile_contact ? $profile_contact->email : "<i class='bi bi-info-circle'></i> Belum diisi";
                         @endphp
                         @if($adminPhoto)
-                            <img src="{{ $adminPhoto }}" alt="Foto Pengurus" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 3px solid var(--bs-primary);">
+                            <img src="{{ $adminPhoto }}" alt="Foto Pengurus" class="rounded-circle mb-3" style="width: 120px; height: 120px; object-fit: cover; border: 1px solid var(--bs-border-color);">
                         @else
                             <div class="d-inline-flex align-items-center justify-content-center mb-3">
                                 <i class="bi bi-person-circle text-primary" style="font-size: 120px;"></i>
@@ -335,7 +335,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-people"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Data Pengguna</h6>
+                                    <h6 class="fw-semibold mb-0">Data Pengguna</h6>
                                     <small class="text-muted">Total: {{ $users_count }}</small>
                                 </div>
                             </div>
@@ -345,7 +345,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-collection"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Data Katalog</h6>
+                                    <h6 class="fw-semibold mb-0">Data Katalog</h6>
                                     <small class="text-muted">Total: {{ $katalog_count }}</small>
                                 </div>
                             </div>
@@ -355,7 +355,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-box"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Data Kostum</h6>
+                                    <h6 class="fw-semibold mb-0">Data Kostum</h6>
                                     <small class="text-muted">Total: {{ $kostum_count }}</small>
                                 </div>
                             </div>
@@ -365,7 +365,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-file-earmark-text"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Data Aturan</h6>
+                                    <h6 class="fw-semibold mb-0">Data Aturan</h6>
                                     <small class="text-muted">Total: {{ $aturan_count }}</small>
                                 </div>
                             </div>
@@ -375,7 +375,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-bag-check"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Pesanan & Pembayaran</h6>
+                                    <h6 class="fw-semibold mb-0">Data Pesanan & Pembayaran</h6>
                                     <small class="text-muted">Total: {{ $pesanan_count }}</small>
                                 </div>
                             </div>
@@ -395,7 +395,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-chat-square-text"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Data Ulasan</h6>
+                                    <h6 class="fw-semibold mb-0">Data Ulasan</h6>
                                     <small class="text-muted">Total: {{ $ulasan_count }}</small>
                                 </div>
                             </div>
@@ -405,7 +405,7 @@
                             <div class="card-body p-3 d-flex align-items-center">
                                 <div class="menu-icon me-3 mb-0"><i class="bi bi-calendar3"></i></div>
                                 <div class="flex-grow-1">
-                                    <h6 class="fw-semibold mb-0">Kelola Tanggal Pesanan</h6>
+                                    <h6 class="fw-semibold mb-0">Data Tanggal Pesanan</h6>
                                     <small class="text-muted">Google Sheets</small>
                                 </div>
                             </div>
