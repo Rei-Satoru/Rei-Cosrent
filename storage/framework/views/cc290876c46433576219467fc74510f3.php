@@ -46,6 +46,29 @@
     body[data-bs-theme="dark"] footer {
         background-color: #8a2be2 !important;
     }
+
+    .bukti-thumb {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0;
+        cursor: zoom-in;
+        transition: transform .12s ease;
+    }
+
+    .bukti-thumb:hover {
+        transform: scale(1.02);
+    }
+
+    .identitas-thumb {
+        cursor: zoom-in;
+        transition: transform .12s ease;
+    }
+
+    .identitas-thumb:hover {
+        transform: scale(1.01);
+    }
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -109,7 +132,7 @@
                             <tbody>
                                 <?php $__currentLoopData = $pesanan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td><?php echo e((isset($pesanan) && method_exists($pesanan, 'firstItem') && $pesanan->firstItem() !== null) ? $pesanan->firstItem() + $loop->index : $loop->iteration); ?></td>
+                                    <td><?php echo e($loop->iteration); ?></td>
                                     <td><?php echo e($item->nama_kostum); ?></td>
                                     <td>
                                         <?php if($item->created_at): ?>
@@ -176,9 +199,15 @@
                                         ?>
 
                                         <?php if($displayBuktiPath): ?>
-                                            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#adminBuktiModal-<?php echo e($item->id); ?>">
-                                                <i class="bi bi-eye"></i> Lihat Bukti
-                                            </button>
+                                            <?php if($displayExt === 'pdf'): ?>
+                                                <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#adminBuktiModal-<?php echo e($item->id); ?>" title="Lihat Bukti (PDF)">
+                                                    <i class="bi bi-file-earmark-pdf"></i>
+                                                </button>
+                                            <?php else: ?>
+                                                <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#adminBuktiModal-<?php echo e($item->id); ?>" aria-label="Lihat bukti pembayaran">
+                                                    <img src="<?php echo e($displayBuktiPath); ?>" alt="Bukti Pembayaran" class="bukti-thumb">
+                                                </button>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             -
                                         <?php endif; ?>
@@ -220,8 +249,7 @@
                                     <div class="modal-content">
                                                 <div class="modal-header modal-header-surface">
                                             <h5 class="modal-title" id="pesananDetailLabel<?php echo e($item->id); ?>">
-                                                <i class="bi bi-card-list"></i> Detail Pesanan #<?php echo e($item->id); ?>
-
+                                                <i class="bi bi-card-list"></i> Detail Pesanan
                                             </h5>
                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
@@ -249,7 +277,9 @@
                                                 <div class="col-md-6">
                                                     <div class="mb-2"><strong>Foto Kartu Identitas:</strong><br>
                                                         <?php if($item->foto_kartu_identitas): ?>
-                                                            <img src="<?php echo e(asset('storage/' . $item->foto_kartu_identitas)); ?>" alt="Foto Kartu Identitas" class="img-fluid rounded mb-2" style="max-width: 100%; height: auto;">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 text-start js-admin-identitas-preview" data-src="<?php echo e(asset('storage/' . $item->foto_kartu_identitas)); ?>" data-title="Foto Kartu Identitas" aria-label="Lihat foto kartu identitas">
+                                                                <img src="<?php echo e(asset('storage/' . $item->foto_kartu_identitas)); ?>" alt="Foto Kartu Identitas" class="img-fluid rounded mb-2 identitas-thumb" style="max-width: 100%; height: auto;">
+                                                            </button>
                                                         <?php else: ?>
                                                             <span class="text-muted">Tidak tersedia</span>
                                                         <?php endif; ?>
@@ -258,7 +288,9 @@
                                                 <div class="col-md-6">
                                                     <div class="mb-2"><strong>Selfie Kartu Identitas:</strong><br>
                                                         <?php if($item->selfie_kartu_identitas): ?>
-                                                            <img src="<?php echo e(asset('storage/' . $item->selfie_kartu_identitas)); ?>" alt="Selfie Kartu Identitas" class="img-fluid rounded mb-2" style="max-width: 100%; height: auto;">
+                                                            <button type="button" class="btn p-0 border-0 bg-transparent w-100 text-start js-admin-identitas-preview" data-src="<?php echo e(asset('storage/' . $item->selfie_kartu_identitas)); ?>" data-title="Selfie Kartu Identitas" aria-label="Lihat selfie kartu identitas">
+                                                                <img src="<?php echo e(asset('storage/' . $item->selfie_kartu_identitas)); ?>" alt="Selfie Kartu Identitas" class="img-fluid rounded mb-2 identitas-thumb" style="max-width: 100%; height: auto;">
+                                                            </button>
                                                         <?php else: ?>
                                                             <span class="text-muted">Tidak tersedia</span>
                                                         <?php endif; ?>
@@ -277,7 +309,7 @@
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
                                             <div class="modal-header modal-header-surface">
-                                                <h5 class="modal-title" id="adminBuktiLabel-<?php echo e($item->id); ?>">Bukti Pembayaran - Pesanan #<?php echo e($item->id); ?></h5>
+                                                <h5 class="modal-title" id="adminBuktiLabel-<?php echo e($item->id); ?>">Bukti Pembayaran</h5>
                                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
@@ -335,6 +367,22 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Preview Identitas (reusable) -->
+<div class="modal fade" id="adminIdentitasPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header modal-header-surface">
+                <h5 class="modal-title" id="adminIdentitasPreviewTitle">Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <embed id="adminIdentitasPreviewEmbed" src="" type="application/pdf" width="100%" height="600px" class="d-none" />
+                <img id="adminIdentitasPreviewImg" src="" alt="Preview" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('scripts'); ?>
@@ -376,6 +424,60 @@
             syncValue();
             input.addEventListener('input', syncValue);
         });
+
+        function showAdminIdentitasPreview(src, title) {
+            const titleEl = document.getElementById('adminIdentitasPreviewTitle');
+            const imgEl = document.getElementById('adminIdentitasPreviewImg');
+            const embedEl = document.getElementById('adminIdentitasPreviewEmbed');
+            const modalEl = document.getElementById('adminIdentitasPreviewModal');
+            if (!modalEl || !window.bootstrap) return;
+
+            if (titleEl) titleEl.textContent = title || 'Preview';
+
+            const lower = (src || '').toLowerCase();
+            const isPdf = lower.includes('.pdf');
+
+            if (isPdf) {
+                if (embedEl) {
+                    embedEl.src = src || '';
+                    embedEl.classList.remove('d-none');
+                }
+                if (imgEl) {
+                    imgEl.src = '';
+                    imgEl.classList.add('d-none');
+                }
+            } else {
+                if (imgEl) {
+                    imgEl.src = src || '';
+                    imgEl.classList.remove('d-none');
+                }
+                if (embedEl) {
+                    embedEl.src = '';
+                    embedEl.classList.add('d-none');
+                }
+            }
+
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        document.querySelectorAll('.js-admin-identitas-preview').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const src = btn.getAttribute('data-src');
+                const title = btn.getAttribute('data-title');
+                showAdminIdentitasPreview(src, title);
+            });
+        });
+
+        const identitasModalEl = document.getElementById('adminIdentitasPreviewModal');
+        if (identitasModalEl) {
+            identitasModalEl.addEventListener('hidden.bs.modal', function () {
+                const imgEl = document.getElementById('adminIdentitasPreviewImg');
+                const embedEl = document.getElementById('adminIdentitasPreviewEmbed');
+                if (imgEl) imgEl.src = '';
+                if (embedEl) embedEl.src = '';
+            });
+        }
     });
 </script>
 <?php $__env->stopSection(); ?>

@@ -9,6 +9,18 @@
     .thumb { max-width:100px; max-height:80px; object-fit:cover; }
     .page-title { color: #0056b3; transition: color 0s ease; }
 
+    .bukti-thumb {
+        width: 72px;
+        height: 72px;
+        object-fit: cover;
+        border: 1px solid var(--bs-border-color);
+        border-radius: 0;
+        cursor: zoom-in;
+        transition: transform .12s ease;
+    }
+
+    .bukti-thumb:hover { transform: scale(1.02); }
+
     [data-bs-theme="dark"] .page-title { color: #a855f7; }
     [data-bs-theme="light"] .page-title { color: #0056b3; }
 </style>
@@ -69,7 +81,7 @@
                     <tbody>
                         @foreach($dendas as $item)
                         <tr id="denda-row-{{ $item->id }}" data-nama="{{ e($item->nama) }}" data-nama_kostum="{{ e($item->nama_kostum) }}" data-jenis_denda="{{ e($item->jenis_denda) }}" data-keterangan="{{ e($item->keterangan) }}" data-jumlah_denda="{{ $item->jumlah_denda }}">
-                            <td class="text-center">{{ (isset($dendas) && method_exists($dendas, 'firstItem') && $dendas->firstItem() !== null) ? $dendas->firstItem() + $loop->index : $loop->iteration }}</td>
+                            <td class="text-center">{{ $loop->iteration }}</td>
                             <td class="field-nama">{{ $item->nama }}</td>
                             <td class="field-nama_kostum">{{ $item->nama_kostum }}</td>
                             <td class="field-jenis_denda">{{ $item->jenis_denda }}</td>
@@ -127,9 +139,15 @@
                                 @endphp
 
                                 @if($displayBuktiPath)
-                                    <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#adminDendaBuktiModal-{{ $item->id }}">
-                                        <i class="bi bi-eye"></i> Lihat Bukti
-                                    </button>
+                                    @if($displayExt === 'pdf')
+                                        <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#adminDendaBuktiModal-{{ $item->id }}" title="Lihat Bukti (PDF)">
+                                            <i class="bi bi-file-earmark-pdf"></i>
+                                        </button>
+                                    @else
+                                        <button type="button" class="btn p-0 border-0 bg-transparent" data-bs-toggle="modal" data-bs-target="#adminDendaBuktiModal-{{ $item->id }}" aria-label="Lihat bukti pembayaran denda">
+                                            <img src="{{ $displayBuktiPath }}" alt="Bukti Pembayaran Denda" class="bukti-thumb">
+                                        </button>
+                                    @endif
                                 @else
                                     -
                                 @endif
@@ -152,7 +170,7 @@
                                 <div class="modal-content">
                                     <div class="modal-header modal-header-surface">
                                         <h5 class="modal-title" id="dendaDetailLabel-{{ $item->id }}">
-                                            <i class="bi bi-card-list"></i> Detail Denda #{{ $item->id }}
+                                            <i class="bi bi-card-list"></i> Detail Denda
                                         </h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
@@ -209,7 +227,7 @@
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header modal-header-surface">
-                                        <h5 class="modal-title" id="adminDendaBuktiLabel-{{ $item->id }}">Bukti Pembayaran - Denda #{{ $item->id }}</h5>
+                                        <h5 class="modal-title" id="adminDendaBuktiLabel-{{ $item->id }}">Bukti Pembayaran</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">

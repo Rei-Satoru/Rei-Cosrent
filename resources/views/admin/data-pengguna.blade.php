@@ -37,6 +37,15 @@
     }
 
     .table-responsive { overflow-x: auto; }
+
+    .avatar-thumb {
+        cursor: zoom-in;
+        transition: transform .12s ease;
+    }
+
+    .avatar-thumb:hover {
+        transform: scale(1.02);
+    }
 </style>
 @endsection
 
@@ -91,7 +100,7 @@
                             <tbody>
                                 @foreach($users as $user)
                                     <tr>
-                                        <td>{{ $user->id }}</td>
+                                        <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->username }}</td>
                                         <td>{{ $user->nick_name }}</td>
                                         <td>{{ $user->email }}</td>
@@ -103,7 +112,9 @@
                                                 $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
                                             @endphp
                                             @if($avatarPath)
-                                                <img src="{{ $avatarPath }}" alt="Avatar" style="width:72px; height:72px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
+                                                <button type="button" class="btn p-0 border-0 bg-transparent js-user-avatar-preview" data-avatar-src="{{ $avatarPath }}" data-avatar-title="Gambar Profil: {{ $user->username }}" aria-label="Lihat gambar profil {{ $user->username }}">
+                                                    <img src="{{ $avatarPath }}" alt="Avatar" class="avatar-thumb" style="width:72px; height:72px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
+                                                </button>
                                             @else
                                                 <i class="bi bi-person-square" style="font-size: 2rem; color: var(--bs-body-color);"></i>
                                             @endif
@@ -210,6 +221,21 @@
         </div>
     </div>
 </section>
+
+<!-- Modal Preview Foto Profil (reusable) -->
+<div class="modal fade" id="adminUserAvatarPreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminUserAvatarPreviewTitle">Gambar Profil</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="adminUserAvatarPreviewImg" src="" alt="Preview Gambar Profil" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
 @endsection
 
 @section('scripts')
@@ -260,6 +286,36 @@
                 });
             }
         });
+
+        function showAdminUserAvatarPreview(src, title) {
+            const img = document.getElementById('adminUserAvatarPreviewImg');
+            const titleEl = document.getElementById('adminUserAvatarPreviewTitle');
+            if (!img) return;
+
+            img.src = src || '';
+            if (titleEl) titleEl.textContent = title || 'Gambar Profil';
+
+            const modalEl = document.getElementById('adminUserAvatarPreviewModal');
+            if (!modalEl || !window.bootstrap) return;
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        document.querySelectorAll('.js-user-avatar-preview').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const src = btn.getAttribute('data-avatar-src');
+                const title = btn.getAttribute('data-avatar-title');
+                showAdminUserAvatarPreview(src, title);
+            });
+        });
+
+        const modalEl = document.getElementById('adminUserAvatarPreviewModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                const img = document.getElementById('adminUserAvatarPreviewImg');
+                if (img) img.src = '';
+            });
+        }
     });
 </script>
 @endsection

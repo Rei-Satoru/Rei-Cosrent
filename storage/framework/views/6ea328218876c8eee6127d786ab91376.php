@@ -40,6 +40,15 @@ table td {
     height: auto;
 }
 
+.kostum-thumb {
+    cursor: zoom-in;
+    transition: transform .12s ease;
+}
+
+.kostum-thumb:hover {
+    transform: scale(1.02);
+}
+
 footer {
     transition: background-color 1000ms;
 }
@@ -200,7 +209,9 @@ body[data-bs-theme="dark"] footer {
                                 <td><?php echo e(ucfirst($item->kategori)); ?></td>
                                 <td>
                                     <?php if(!empty($item->gambar)): ?>
-                                        <img src="/storage/<?php echo e(basename($item->gambar)); ?>" alt="<?php echo e($item->nama_kostum); ?>" style="max-width:80px;">
+                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="/storage/<?php echo e(basename($item->gambar)); ?>" data-image-title="Gambar Kostum: <?php echo e($item->nama_kostum); ?>" aria-label="Lihat gambar kostum <?php echo e($item->nama_kostum); ?>">
+                                            <img src="/storage/<?php echo e(basename($item->gambar)); ?>" alt="<?php echo e($item->nama_kostum); ?>" class="kostum-thumb" style="max-width:80px;">
+                                        </button>
                                     <?php else: ?>
                                         <span class="text-muted">-</span>
                                     <?php endif; ?>
@@ -252,7 +263,9 @@ body[data-bs-theme="dark"] footer {
                                             <div class="row g-3">
                                                 <div class="col-md-5 text-center">
                                                     <?php if(!empty($item->gambar)): ?>
-                                                        <img src="/storage/<?php echo e(basename($item->gambar)); ?>" alt="Gambar Kostum" class="img-fluid rounded" style="aspect-ratio:1/1;object-fit:cover;">
+                                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="/storage/<?php echo e(basename($item->gambar)); ?>" data-image-title="Gambar Kostum: <?php echo e($item->nama_kostum); ?>" aria-label="Lihat gambar kostum <?php echo e($item->nama_kostum); ?>">
+                                                            <img src="/storage/<?php echo e(basename($item->gambar)); ?>" alt="Gambar Kostum" class="img-fluid rounded kostum-thumb" style="aspect-ratio:1/1;object-fit:cover;">
+                                                        </button>
                                                     <?php else: ?>
                                                         <img src="<?php echo e(asset('assets/img/no-image.png')); ?>" alt="Tidak ada gambar" class="img-fluid rounded" style="aspect-ratio:1/1;object-fit:cover;">
                                                     <?php endif; ?>
@@ -400,6 +413,21 @@ body[data-bs-theme="dark"] footer {
     </div>
 </section>
 
+<!-- Modal Preview Gambar Kostum (reusable) -->
+<div class="modal fade" id="adminKostumImagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminKostumImagePreviewTitle">Gambar Kostum</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="adminKostumImagePreviewImg" src="" alt="Preview Gambar Kostum" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Tambah -->
 <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog modal-xl">
@@ -508,6 +536,36 @@ body[data-bs-theme="dark"] footer {
                 bsAlert.close();
             }, 3000);
         });
+
+        function showAdminKostumImagePreview(src, title) {
+            const img = document.getElementById('adminKostumImagePreviewImg');
+            const titleEl = document.getElementById('adminKostumImagePreviewTitle');
+            if (!img) return;
+
+            img.src = src || '';
+            if (titleEl) titleEl.textContent = title || 'Gambar Kostum';
+
+            const modalEl = document.getElementById('adminKostumImagePreviewModal');
+            if (!modalEl || !window.bootstrap) return;
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        document.querySelectorAll('.js-kostum-image-preview').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const src = btn.getAttribute('data-image-src');
+                const title = btn.getAttribute('data-image-title');
+                showAdminKostumImagePreview(src, title);
+            });
+        });
+
+        const modalEl = document.getElementById('adminKostumImagePreviewModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                const img = document.getElementById('adminKostumImagePreviewImg');
+                if (img) img.src = '';
+            });
+        }
     });
 
     // Single-image mode: no per-image deletion logic

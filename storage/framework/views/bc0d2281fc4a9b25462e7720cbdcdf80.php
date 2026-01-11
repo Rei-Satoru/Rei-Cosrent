@@ -40,6 +40,15 @@
             height: auto;
         }
 
+        .katalog-thumb {
+            cursor: zoom-in;
+            transition: transform .12s ease;
+        }
+
+        .katalog-thumb:hover {
+            transform: scale(1.02);
+        }
+
         footer {
             transition: background-color 1000ms;
         }
@@ -154,7 +163,9 @@
                                 <td><?php echo e(Str::limit($item->description, 50)); ?></td>
                                 <td>
                                     <?php if(!empty($item->image)): ?>
-                                        <img src="/storage/<?php echo e(basename($item->image)); ?>" alt="<?php echo e($item->name); ?>" style="max-width:80px;">
+                                        <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="/storage/<?php echo e(basename($item->image)); ?>" data-image-title="Gambar Katalog: <?php echo e($item->name); ?>" aria-label="Lihat gambar katalog <?php echo e($item->name); ?>">
+                                            <img src="/storage/<?php echo e(basename($item->image)); ?>" alt="<?php echo e($item->name); ?>" class="katalog-thumb" style="max-width:80px;">
+                                        </button>
                                     <?php else: ?>
                                         <span class="text-muted">Tidak ada gambar</span>
                                     <?php endif; ?>
@@ -240,6 +251,21 @@
     </div>
 </section>
 
+<!-- Modal Preview Gambar Katalog (reusable) -->
+<div class="modal fade" id="adminKatalogImagePreviewModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="adminKatalogImagePreviewTitle">Gambar Katalog</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="adminKatalogImagePreviewImg" src="" alt="Preview Gambar Katalog" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Modal Tambah -->
 <div class="modal fade" id="addModal" tabindex="-1">
     <div class="modal-dialog">
@@ -290,6 +316,36 @@
                 bsAlert.close();
             }, 3000);
         });
+
+        function showAdminKatalogImagePreview(src, title) {
+            const img = document.getElementById('adminKatalogImagePreviewImg');
+            const titleEl = document.getElementById('adminKatalogImagePreviewTitle');
+            if (!img) return;
+
+            img.src = src || '';
+            if (titleEl) titleEl.textContent = title || 'Gambar Katalog';
+
+            const modalEl = document.getElementById('adminKatalogImagePreviewModal');
+            if (!modalEl || !window.bootstrap) return;
+            const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            modal.show();
+        }
+
+        document.querySelectorAll('.js-katalog-image-preview').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const src = btn.getAttribute('data-image-src');
+                const title = btn.getAttribute('data-image-title');
+                showAdminKatalogImagePreview(src, title);
+            });
+        });
+
+        const modalEl = document.getElementById('adminKatalogImagePreviewModal');
+        if (modalEl) {
+            modalEl.addEventListener('hidden.bs.modal', function () {
+                const img = document.getElementById('adminKatalogImagePreviewImg');
+                if (img) img.src = '';
+            });
+        }
     });
 </script>
 <?php $__env->stopSection(); ?>

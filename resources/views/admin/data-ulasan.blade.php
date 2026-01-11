@@ -82,7 +82,7 @@
                     <table class="table table-bordered table-striped align-middle text-center">
                         <thead>
                             <tr>
-                                <th style="width: 90px;">ID Pesanan</th>
+                                <th style="width: 90px;">ID</th>
                                 <th>User</th>
                                 <th>Kostum</th>
                                 <th style="width: 120px;">Rating</th>
@@ -103,7 +103,7 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td class="fw-semibold">{{ $u->id }}</td>
+                                    <td class="fw-semibold">{{ $loop->iteration }}</td>
                                     <td class="text-start">
                                         <div class="fw-semibold">{{ $u->nama_user ?? 'User' }}</div>
                                         <div class="text-muted" style="font-size:0.85rem;">{{ $u->email_user ?? '-' }}</div>
@@ -133,7 +133,7 @@
                                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content">
                                                         <div class="modal-header modal-header-surface">
-                                                            <h5 class="modal-title">Gambar Ulasan (Pesanan #{{ $u->id }})</h5>
+                                                            <h5 class="modal-title">Gambar Ulasan</h5>
                                                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
@@ -144,7 +144,7 @@
                                                                             type="button"
                                                                             class="btn p-0 border-0 bg-transparent"
                                                                             data-preview-src="{{ asset('storage/' . $img) }}"
-                                                                            data-preview-title="Gambar {{ $num }} (Pesanan #{{ $u->id }})"
+                                                                            data-preview-title="Gambar {{ $num }}"
                                                                             onclick="return openUlasanAdminImagePreview(this.dataset.previewSrc, this.dataset.previewTitle)"
                                                                             aria-label="Lihat Gambar {{ $num }}"
                                                                         >
