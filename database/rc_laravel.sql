@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Waktu pembuatan: 06 Jan 2026 pada 15.14
+-- Waktu pembuatan: 12 Jan 2026 pada 04.47
 -- Versi server: 8.4.3
 -- Versi PHP: 8.2.28
 
@@ -86,7 +86,8 @@ CREATE TABLE `data_katalog` (
 
 INSERT INTO `data_katalog` (`id`, `name`, `kategori`, `description`, `image`) VALUES
 (1, 'Anime', 'Anime', 'Katalog Kostum Anime', 'storage/1766760401_c267fce8-dfc1-412d-be8b-d796728e0079.webp'),
-(2, 'Manga', 'Manga', 'Katalog Kostum Manga', 'storage/1766760432_Fxi3w-FaQAAMcvH.jpg');
+(2, 'Manga', 'Manga', 'Katalog Kostum Manga', 'storage/1766760432_Fxi3w-FaQAAMcvH.jpg'),
+(3, 'Movie', 'Movie', 'Movie', 'storage/1768156167_d10c1164d76942de95c8bba5995f976c~tplv-jj85edgx6n-image-medium.jpeg');
 
 -- --------------------------------------------------------
 
@@ -121,7 +122,8 @@ INSERT INTO `data_kostum` (`id_kostum`, `kategori`, `nama_kostum`, `judul`, `har
 (4, 'Anime', 'Guren Ichinose', 'Owari No Seraph', 85000.00, '3 hari', 'L', 'Pria', 'Baju (L), Celana, Sarung tangan, Acc baju, dan Acc celana.', 'Katana (belum tersedia)', 'Kota Sukabumi, Jawa Barat', 'Xinlaisen', 'storage/1766758440_SnapInsta.to_500629973_17901424425191641_7525233393312456475_n.jpg'),
 (5, 'Anime', 'Shinya Hiiragi', 'Owari No Seraph', 95000.00, '3 hari', 'L', 'Pria', 'Wig (Manmei), Baju (L), Celana, Sarung tangan, dan Acc baju.', 'Senapan = Rp20.000', 'Kota Sukabumi, Jawa Barat', 'Xinlaisen', 'storage/1766758563_SnapInsta.to_501275211_17901424572191641_847831286802635238_n.jpg'),
 (6, 'Anime', 'Denji', 'Chainsaw Man', 50000.00, '3 hari', 'M & L', 'Pria', 'Wig (Manmei), Baju (M & L), Dasi hitam, & Celana', 'Boneka Pochita & Kapak', 'Kota Sukabumi, Jawa Barat', '-', 'storage/1766760282_7_20251124_172451_0000.png'),
-(7, 'Manga', 'Kishibe (young version)', 'Chainsaw Man', 55000.00, '3 hari', 'M & L', 'Pria', 'Anting jepit (3 buah), Baju (M & L), Dasi hitam, Body harness, & Celana.', 'Katana', 'Kota Sukabumi, Jawa Barat', '-', 'storage/1766761007_8_20251124_172451_0001.png');
+(7, 'Manga', 'Kishibe (young version)', 'Chainsaw Man', 55000.00, '3 hari', 'M & L', 'Pria', 'Anting jepit (3 buah), Baju (M & L), Dasi hitam, Body harness, & Celana.', 'Katana', 'Kota Sukabumi, Jawa Barat', '-', 'storage/1766761007_8_20251124_172451_0001.png'),
+(8, 'Movie', 'bahlil', 'etanol', 123.00, '3 hari', 'M', 'Pria', 'x', 'x', 'x', 'x', 'storage/1768156271_G1Ba-8dbgAAjC5B.jfif');
 
 -- --------------------------------------------------------
 
@@ -204,7 +206,8 @@ CREATE TABLE `formulir` (
 --
 
 INSERT INTO `formulir` (`id`, `nama`, `email`, `alamat`, `nomor_telepon`, `nomor_telepon_2`, `nama_kostum`, `tanggal_pemakaian`, `tanggal_pengembalian`, `total_harga`, `metode_pembayaran`, `kartu_identitas`, `foto_kartu_identitas`, `selfie_kartu_identitas`, `pernyataan`, `status`, `keterangan`, `bukti_pembayaran`, `created_at`, `updated_at`) VALUES
-(10, 'rehan wangsaf', 'reisatoru.cosu@gmail.com', 'jl. bumisuki', '08123456789', '080808 - uia', 'Gojo Satoru', '2026-01-03', '2026-01-04', 89098.00, 'Transfer Bank', 'KTP', 'formulir_identitas/ZdORwfYjtHvDBIkuYfT1bvHHAhHfvTYLMpmThhpu.jpg', 'formulir_selfie/V4JiDEDSRrjgZl1oyY95kfm8hY9XIVn9kEMNsl3Z.jpg', 'Dengan ini Saya menyatakan bahwa:\r\n1. Wajib Membayar Lunas\r\n2. Menggunakan/Menjaga/Merawat Secara Baik\r\n3. Mengembalikan Secara Tepat Waktu\r\n\r\nApabila Saya Melanggar maka:\r\n1. Siap Bertanggung Jawab\r\n2. Siap Ganti Rugi\r\n3. Menerima Konsekuensi', 'selesai', 'yes king', '', '2026-01-01 02:35:14', '2026-01-01 06:21:56');
+(10, 'rehan wangsaf', 'reisatoru.cosu@gmail.com', 'jl. bumisuki', '08123456789', '080808 - uia', 'Gojo Satoru', '2026-01-03', '2026-01-04', 89098.00, 'Transfer Bank', 'KTP', 'formulir_identitas/ZdORwfYjtHvDBIkuYfT1bvHHAhHfvTYLMpmThhpu.jpg', 'formulir_selfie/V4JiDEDSRrjgZl1oyY95kfm8hY9XIVn9kEMNsl3Z.jpg', 'Dengan ini Saya menyatakan bahwa:\r\n1. Wajib Membayar Lunas\r\n2. Menggunakan/Menjaga/Merawat Secara Baik\r\n3. Mengembalikan Secara Tepat Waktu\r\n\r\nApabila Saya Melanggar maka:\r\n1. Siap Bertanggung Jawab\r\n2. Siap Ganti Rugi\r\n3. Menerima Konsekuensi', 'selesai', 'yes king', '', '2026-01-01 02:35:14', '2026-01-01 06:21:56'),
+(11, 'rehan wangsaf', 'reisatoru.cosu@gmail.com', 'jl. bumisuki', '08123456789', '08123123123 - p', 'Yuta Okkotsu', '2026-01-10', '2026-01-17', 99999.00, 'Dana', 'Kartu Pelajar', 'formulir_identitas/o9Yb9WndEJ1L2Qnx9QVTPtzneP0w0LgqufGxsDEg.jpg', 'formulir_selfie/2syAXQPqJB81XbAdc1KkYGIMTfC1cbkRHBBphgCL.jpg', 'Dengan ini Saya menyatakan bahwa:\r\n1. Wajib Membayar Lunas\r\n2. Menggunakan/Menjaga/Merawat Secara Baik\r\n3. Mengembalikan Secara Tepat Waktu\r\n\r\nApabila Saya Melanggar maka:\r\n1. Siap Bertanggung Jawab\r\n2. Siap Ganti Rugi\r\n3. Menerima Konsekuensi', 'proses', NULL, '', '2026-01-11 21:19:09', '2026-01-11 21:34:04');
 
 -- --------------------------------------------------------
 
@@ -281,6 +284,13 @@ CREATE TABLE `password_reset_tokens` (
   `created_at` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data untuk tabel `password_reset_tokens`
+--
+
+INSERT INTO `password_reset_tokens` (`email`, `token`, `created_at`) VALUES
+('reisatoru.cosu@gmail.com', '$2y$12$5sFmjx2YN9Hp8xe6orvp1evLmhH9/w3nPjJv0iFr.IM1Puizqbhs2', '2026-01-11 21:09:14');
+
 -- --------------------------------------------------------
 
 --
@@ -307,7 +317,7 @@ CREATE TABLE `profile_contacts` (
 --
 
 INSERT INTO `profile_contacts` (`id`, `name`, `password`, `title`, `photo`, `vision`, `address`, `phone`, `email`, `nomor_ewallet`, `nomor_bank`, `qris`) VALUES
-(1, 'Reithesley', '$2y$12$0RTAQ2qIXmzn1EHvKtceF.VLbn2YnCLJeTi9wcQhxSHF1aN91Nfi2', 'Pemilik', 'profile_photos/remWB4mrRws3X85hybYyPXwdV0fOLbVInzqJOWgG.webp', 'Pemilik Rei Cosrent', 'Jl. Rumah', '08123456789', 'admin@gmail.com', '08123456789', '08123456789 - Bank', 'payment_qris/VBhl06DmT0SzWEYR5puOxPPlv34XU5BOmnrdGDd2.jpg');
+(1, 'Rei', '$2y$12$ACf9kiK7Eta6AZPI5fTa0.1vvO0SGzMNBju36TRuP9ATRCXCzuBju', 'Pemilik', 'profile_photos/remWB4mrRws3X85hybYyPXwdV0fOLbVInzqJOWgG.webp', 'Pemilik', 'Jl. Rumah', '08123456789', 'admin@gmail.com', '08123456789', '08123456789 - Bank', 'payment_qris/VBhl06DmT0SzWEYR5puOxPPlv34XU5BOmnrdGDd2.jpg');
 
 -- --------------------------------------------------------
 
@@ -329,8 +339,8 @@ CREATE TABLE `sessions` (
 --
 
 INSERT INTO `sessions` (`id`, `user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES
-('X3De8tHFATm2A7GKuqkE6jDnYXRyaae6n4Y4u5lW', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo4OntzOjY6Il90b2tlbiI7czo0MDoiM3FZRzRFR1E3VGpMTVdRbHd0OTU1UTgyTkpYekU3eFdCVVN2Q0Q1aSI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MzQ6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9wZXNhbmFuLXNheWEiO3M6NToicm91dGUiO3M6MTI6InVzZXIucGVzYW5hbiI7fXM6NjoiX2ZsYXNoIjthOjI6e3M6Mzoib2xkIjthOjA6e31zOjM6Im5ldyI7YTowOnt9fXM6MTQ6InVzZXJfbG9nZ2VkX2luIjtiOjE7czo3OiJ1c2VyX2lkIjtpOjU7czo5OiJ1c2VyX25hbWUiO3M6MzoicmVpIjtzOjEwOiJ1c2VyX2VtYWlsIjtzOjI0OiJyZWlzYXRvcnUuY29zdUBnbWFpbC5jb20iO3M6MTg6InVzZXJfZ2FtYmFyX3Byb2ZpbCI7czo1OToicHJvZmlsZV9pbWFnZXMvNTQ4OGtERUFWY3JFSkM0RDg5ZTJZUkY1UnhKTlRRSTBtYzZPejc3Qy5qcGciO30=', 1767712327),
-('ZD724zPfjvK7KPEe3CmB6tihVDGXdgaXec49veZn', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoiSHpFT3JwTkZXRTRkVDljQ0w5aVZGZ2V3aW9vQU8zcVV6WXJrY0dhQyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6NDE6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9hZG1pbi9kYXRhLXBlbmdndW5hIjtzOjU6InJvdXRlIjtzOjE5OiJhZG1pbi5kYXRhLXBlbmdndW5hIjt9czo2OiJfZmxhc2giO2E6Mjp7czozOiJvbGQiO2E6MDp7fXM6MzoibmV3IjthOjA6e319czoxNToiYWRtaW5fbG9nZ2VkX2luIjtiOjE7czoxMDoiYWRtaW5fbmFtZSI7czo1OiJhZG1pbiI7fQ==', 1767712354);
+('eSaOo0pImJFfqHvP7hGgROzDa4PZXrDesEcVQe9x', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo1OntzOjY6Il90b2tlbiI7czo0MDoib2hPWmxRa2VTVWhpNHdGTGJZSkZPV1ZyOERCME5VYUVuNkkwTjhVTiI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjtzOjU6InJvdXRlIjtzOjQ6ImhvbWUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjE1OiJhZG1pbl9sb2dnZWRfaW4iO2I6MTtzOjEwOiJhZG1pbl9uYW1lIjtzOjU6ImFkbWluIjt9', 1768192513),
+('ydVghszOvRMdzuFYXEq1tn6AqO3dCRarrOwxNkcB', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/143.0.0.0 Safari/537.36', 'YTo5OntzOjY6Il90b2tlbiI7czo0MDoiZU9uTVFNdVRHeDBGN0czWDg1T2FldzlKV0owYmxOaUJkRWpQM2VYTyI7czo5OiJfcHJldmlvdXMiO2E6Mjp7czozOiJ1cmwiO3M6MjY6Imh0dHA6Ly8xMjcuMC4wLjE6ODAwMC9ob21lIjtzOjU6InJvdXRlIjtzOjQ6ImhvbWUiO31zOjY6Il9mbGFzaCI7YToyOntzOjM6Im9sZCI7YTowOnt9czozOiJuZXciO2E6MDp7fX1zOjU6InN0YXRlIjtzOjQwOiJ3Q2RGRHhnSEhoMllxV3FEYUo5ZUpZRzV0eTEyS3BUaHMwRnpqZDh6IjtzOjE0OiJ1c2VyX2xvZ2dlZF9pbiI7YjoxO3M6NzoidXNlcl9pZCI7aTo1O3M6OToidXNlcl9uYW1lIjtzOjM6InJlaSI7czoxMDoidXNlcl9lbWFpbCI7czoyNDoicmVpc2F0b3J1LmNvc3VAZ21haWwuY29tIjtzOjE4OiJ1c2VyX2dhbWJhcl9wcm9maWwiO3M6NTk6InByb2ZpbGVfaW1hZ2VzL2R0bUNqN1ZjRW10WTVkQko4UFdhaDRySTZCV09JcVFnZzZhTDZmS3cucG5nIjt9', 1768192357);
 
 -- --------------------------------------------------------
 
@@ -388,7 +398,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `google_id`, `username`, `nick_name`, `email`, `alamat`, `nomor_telepon`, `jenis_kelamin`, `email_verified_at`, `password`, `gambar_profil`, `avatar`, `remember_token`, `created_at`, `updated_at`) VALUES
-(5, NULL, 'rei', 'rehan wangsaf', 'reisatoru.cosu@gmail.com', 'jl. bumisuki', '08123456789', 'Pria', NULL, '$2y$12$Px5TX7kT1ylqINLJ6iyTWeauooRFoYTF6.Pc./RZ6Zpqrp7EQ7SJi', 'profile_images/5488kDEAVcrEJC4D89e2YRF5RxJNTQI0mc6Oz77C.jpg', NULL, NULL, '2026-01-01 02:29:49', '2026-01-01 05:18:55');
+(5, NULL, 'rei', 'rehan wangsaf', 'rayhan.ms2004@gmail.com', 'jl. bumisuki', '08123456789', 'Pria', NULL, '$2y$12$Px5TX7kT1ylqINLJ6iyTWeauooRFoYTF6.Pc./RZ6Zpqrp7EQ7SJi', 'profile_images/dtmCj7VcEmtY5dBJ8PWah4rI6BWOIqQgg6aL6fKw.png', NULL, NULL, '2026-01-01 02:29:49', '2026-01-11 21:14:59');
 
 --
 -- Indeks untuk tabel yang dibuang
@@ -510,13 +520,13 @@ ALTER TABLE `aturan`
 -- AUTO_INCREMENT untuk tabel `data_katalog`
 --
 ALTER TABLE `data_katalog`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `data_kostum`
 --
 ALTER TABLE `data_kostum`
-  MODIFY `id_kostum` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_kostum` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT untuk tabel `denda`
@@ -534,7 +544,7 @@ ALTER TABLE `failed_jobs`
 -- AUTO_INCREMENT untuk tabel `formulir`
 --
 ALTER TABLE `formulir`
-  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` bigint UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT untuk tabel `jobs`
