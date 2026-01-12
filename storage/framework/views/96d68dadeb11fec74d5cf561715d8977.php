@@ -182,12 +182,12 @@ unset($__errorArgs, $__bag); ?>
                                 </button>
                             </div>
 
-                            <div class="text-center mb-3">
+                            <!-- <div class="text-center mb-3">
                                 <p class="text-muted mb-2">atau</p>
                                 <a href="<?php echo e(route('auth.google')); ?>" class="btn btn-outline-danger w-100">
                                     <i class="bi bi-google"></i> Daftar dengan Google
                                 </a>
-                            </div>
+                            </div> -->
 
                             <hr>
 

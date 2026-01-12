@@ -45,6 +45,16 @@
                 <ul>
                     <li>Untuk transfer ke rekening berikut: <strong>{{ $profile->nomor_bank ?? '' }}</strong></li>
                     <li>Untuk pembayaran e-wallet, gunakan nomor: <strong>{{ $profile->nomor_ewallet ?? '' }}</strong></li>
+                    <li>
+                        Untuk pembayaran QRIS, scan kode berikut:
+                        <div class="mt-2">
+                            @if(!empty($profile) && !empty($profile->qris))
+                                <img src="{{ asset('storage/' . $profile->qris) }}" alt="QRIS" class="img-fluid rounded border" style="max-width: 260px;">
+                            @else
+                                <div class="text-muted small"><i class="bi bi-info-circle"></i> QRIS belum tersedia.</div>
+                            @endif
+                        </div>
+                    </li>
                     <li>Nomor rekening & e-wallet Atas Nama: <strong>{{ $profile->name ?? 'Rei Cosrent' }}</strong></li>
                     <li>Setelah transfer, upload bukti pembayaran di halaman ini.</li>
                 </ul>

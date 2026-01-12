@@ -184,7 +184,7 @@
                     <div class="col-md-12">
                         <label class="form-label required-label">Metode Pembayaran</label>
                         <div class="row g-3">
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="metode_pembayaran" id="pembayaran_dana" value="Dana" {{ old('metode_pembayaran') === 'Dana' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="pembayaran_dana">
@@ -192,7 +192,15 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-12 col-md-4">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="radio" name="metode_pembayaran" id="pembayaran_qris" value="QRIS" {{ old('metode_pembayaran') === 'QRIS' ? 'checked' : '' }} required>
+                                    <label class="form-check-label" for="pembayaran_qris">
+                                        QRIS
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-12 col-md-4">
                                 <div class="form-check">
                                     <input class="form-check-input" type="radio" name="metode_pembayaran" id="pembayaran_transfer" value="Transfer Bank" {{ old('metode_pembayaran') === 'Transfer Bank' ? 'checked' : '' }} required>
                                     <label class="form-check-label" for="pembayaran_transfer">

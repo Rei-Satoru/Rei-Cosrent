@@ -117,18 +117,22 @@
                                 </div>
                             </div>
 
+                            <div class="d-flex justify-content-end mb-3">
+                                <a href="{{ route('password.request') }}" class="text-decoration-none small fw-semibold">Lupa password?</a>
+                            </div>
+
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="bi bi-box-arrow-in-right"></i> Login
                                 </button>
                             </div>
 
-                            <div class="text-center mb-3">
+                            <!-- <div class="text-center mb-3">
                                 <p class="text-muted mb-2">atau</p>
                                 <a href="{{ route('auth.google') }}" class="btn btn-outline-danger w-100">
                                     <i class="bi bi-google"></i> Login dengan Google
                                 </a>
-                            </div>
+                            </div> -->
 
                             <hr>
 

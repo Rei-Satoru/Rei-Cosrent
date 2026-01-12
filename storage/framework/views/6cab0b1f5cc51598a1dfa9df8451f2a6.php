@@ -100,7 +100,7 @@
                             src="<?php echo e($profile && $profile->photo ? asset('storage/' . $profile->photo) : ''); ?>"
                             alt=""
                             class="img-fluid rounded-circle mb-3 <?php echo e($profile && $profile->photo ? '' : 'd-none'); ?>"
-                            style="width: 150px; height: 150px; object-fit: cover; border: 3px solid var(--bs-primary);">
+                            style="width: 150px; height: 150px; object-fit: cover; border: 1px solid var(--bs-border-color);">
                         <div id="profile_image_fallback" class="mb-3 <?php echo e($profile && $profile->photo ? 'd-none' : ''); ?>">
                             <i class="bi bi-person-circle text-primary" style="font-size: 150px;"></i>
                         </div>

@@ -88,6 +88,25 @@
                     <div class="card h-100 rounded-xl border-0 shadow-sm p-3">
                         <div class="card-body">
                             <h5 class="card-title fw-bold blue-title mb-3">Hubungi Kami</h5>
+
+                            <?php
+                                $rawPhone = (string) (optional($profile)->phone ?? '');
+                                $waPhone = preg_replace('/\D+/', '', $rawPhone);
+
+                                if ($waPhone !== '') {
+                                    if (str_starts_with($waPhone, '0')) {
+                                        $waPhone = '62' . substr($waPhone, 1);
+                                    } elseif (str_starts_with($waPhone, '8')) {
+                                        $waPhone = '62' . $waPhone;
+                                    }
+                                }
+
+                                $waMessage = 'Halo, saya ingin bertanya tentang sewa kostum.';
+                                $waUrl = $waPhone !== ''
+                                    ? 'https://wa.me/' . $waPhone . '?text=' . urlencode($waMessage)
+                                    : null;
+                            ?>
+
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
                                     <i class="bi bi-geo-alt-fill text-secondary me-3 h5 mb-0"></i>
@@ -101,6 +120,13 @@
                                     <div>
                                         <small class="text-muted d-block">Nomor Telepon (WhatsApp):</small>
                                         <p class="mb-0 fw-bold text-success"><?php echo e(optional($profile)->phone); ?></p>
+
+                                        <?php if($waUrl): ?>
+                                            <a href="<?php echo e($waUrl); ?>" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-success btn-sm rounded-pill mt-2">
+                                                <i class="bi bi-whatsapp me-1"></i> Chat WhatsApp
+                                            </a>
+                                        <?php endif; ?>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">

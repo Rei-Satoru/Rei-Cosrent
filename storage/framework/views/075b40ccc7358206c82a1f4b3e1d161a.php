@@ -6,7 +6,67 @@
 <section class="py-4">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h2 class="fw-bold mb-0">Edit Pesanan #<?php echo e($order->id); ?></h2>
+            <?php
+                $orderId = null;
+                $orderNama = '';
+                $orderNomorTelepon = '';
+                $orderNomorTelepon2 = '';
+                $orderAlamat = '';
+                $orderNamaKostum = '';
+                $orderTanggalPemakaian = null;
+                $orderTanggalPengembalian = null;
+                $orderTotalHarga = 0;
+                $orderMetodePembayaran = '';
+                $orderKartuIdentitas = '';
+
+                if (is_object($order)) {
+                    $orderId = $order->id ?? null;
+                    $orderNama = $order->nama ?? '';
+                    $orderNomorTelepon = $order->nomor_telepon ?? '';
+                    $orderNomorTelepon2 = $order->nomor_telepon_2 ?? '';
+                    $orderAlamat = $order->alamat ?? '';
+                    $orderNamaKostum = $order->nama_kostum ?? '';
+                    $orderTanggalPemakaian = $order->tanggal_pemakaian ?? null;
+                    $orderTanggalPengembalian = $order->tanggal_pengembalian ?? null;
+                    $orderTotalHarga = $order->total_harga ?? 0;
+                    $orderMetodePembayaran = $order->metode_pembayaran ?? '';
+                    $orderKartuIdentitas = $order->kartu_identitas ?? '';
+                } elseif (is_array($order)) {
+                    $orderId = $order['id'] ?? null;
+                    $orderNama = $order['nama'] ?? '';
+                    $orderNomorTelepon = $order['nomor_telepon'] ?? '';
+                    $orderNomorTelepon2 = $order['nomor_telepon_2'] ?? '';
+                    $orderAlamat = $order['alamat'] ?? '';
+                    $orderNamaKostum = $order['nama_kostum'] ?? '';
+                    $orderTanggalPemakaian = $order['tanggal_pemakaian'] ?? null;
+                    $orderTanggalPengembalian = $order['tanggal_pengembalian'] ?? null;
+                    $orderTotalHarga = $order['total_harga'] ?? 0;
+                    $orderMetodePembayaran = $order['metode_pembayaran'] ?? '';
+                    $orderKartuIdentitas = $order['kartu_identitas'] ?? '';
+                }
+
+                // normalize dates to Y-m-d for date inputs
+                $tanggalPemakaianValue = '';
+                $tanggalPengembalianValue = '';
+                if ($orderTanggalPemakaian) {
+                    if (is_object($orderTanggalPemakaian) && method_exists($orderTanggalPemakaian, 'format')) {
+                        $tanggalPemakaianValue = $orderTanggalPemakaian->format('Y-m-d');
+                    } else {
+                        $ts = strtotime($orderTanggalPemakaian);
+                        if ($ts !== false) $tanggalPemakaianValue = date('Y-m-d', $ts);
+                    }
+                }
+                if ($orderTanggalPengembalian) {
+                    if (is_object($orderTanggalPengembalian) && method_exists($orderTanggalPengembalian, 'format')) {
+                        $tanggalPengembalianValue = $orderTanggalPengembalian->format('Y-m-d');
+                    } else {
+                        $ts = strtotime($orderTanggalPengembalian);
+                        if ($ts !== false) $tanggalPengembalianValue = date('Y-m-d', $ts);
+                    }
+                }
+            ?>
+
+            <h2 class="fw-bold mb-0">Edit Pesanan #<?php echo e($orderId ?? '-'); ?></h2>
             <a href="<?php echo e(route('user.pesanan')); ?>" class="btn btn-outline-primary">
                 <i class="bi bi-arrow-left"></i> Kembali ke Pesanan Saya
             </a>
@@ -25,7 +85,7 @@
                 <h5 class="mb-0 fw-bold">Edit Pesanan Lengkap</h5>
             </div>
             <div class="card-body">
-                <form method="POST" action="<?php echo e(route('user.pesanan.update', ['id' => $order->id])); ?>" enctype="multipart/form-data">
+                <form method="POST" action="<?php echo e(route('user.pesanan.update', ['id' => $orderId])); ?>" enctype="multipart/form-data">
                     <?php echo csrf_field(); ?>
 
                     <!-- Data Penyewa -->
@@ -34,19 +94,19 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label class="form-label">Nama Lengkap</label>
-                                <input type="text" name="nama" class="form-control" value="<?php echo e(old('nama', $order->nama)); ?>" required>
+                                <input type="text" name="nama" class="form-control" value="<?php echo e(old('nama', $orderNama)); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Nomor Telepon</label>
-                                <input type="text" name="nomor_telepon" class="form-control" value="<?php echo e(old('nomor_telepon', $order->nomor_telepon)); ?>" required>
+                                <input type="text" name="nomor_telepon" class="form-control" value="<?php echo e(old('nomor_telepon', $orderNomorTelepon)); ?>" required>
                             </div>
                             <div class="col-md-6">
                                 <label class="form-label">Nomor Telepon Pihak Kedua</label>
-                                <input type="text" name="nomor_telepon_2" class="form-control" value="<?php echo e(old('nomor_telepon_2', $order->nomor_telepon_2)); ?>" required>
+                                <input type="text" name="nomor_telepon_2" class="form-control" value="<?php echo e(old('nomor_telepon_2', $orderNomorTelepon2)); ?>" required>
                             </div>
                             <div class="col-12">
                                 <label class="form-label">Alamat Lengkap</label>
-                                <textarea name="alamat" class="form-control" rows="3" required><?php echo e(old('alamat', $order->alamat)); ?></textarea>
+                                <textarea name="alamat" class="form-control" rows="3" required><?php echo e(old('alamat', $orderAlamat)); ?></textarea>
                             </div>
                         </div>
                     </div>
@@ -57,24 +117,24 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label">Nama Kostum</label>
-                                <input type="text" class="form-control" value="<?php echo e($order->nama_kostum); ?>" readonly>
+                                <input type="text" class="form-control" value="<?php echo e($orderNamaKostum); ?>" readonly>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Tanggal Pemakaian</label>
-                                <input type="date" name="tanggal_pemakaian" class="form-control" value="<?php echo e(old('tanggal_pemakaian', $order->tanggal_pemakaian->format('Y-m-d'))); ?>" required>
+                                <input type="date" name="tanggal_pemakaian" class="form-control" value="<?php echo e(old('tanggal_pemakaian', $tanggalPemakaianValue)); ?>" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Tanggal Pengembalian</label>
-                                <input type="date" name="tanggal_pengembalian" class="form-control" value="<?php echo e(old('tanggal_pengembalian', $order->tanggal_pengembalian->format('Y-m-d'))); ?>" required>
+                                <input type="date" name="tanggal_pengembalian" class="form-control" value="<?php echo e(old('tanggal_pengembalian', $tanggalPengembalianValue)); ?>" required>
                             </div>
                             <div class="col-md-4">
                                 <label class="form-label">Total Harga (Termasuk Ongkir)</label>
-                                <input type="number" name="total_harga" class="form-control" value="<?php echo e(old('total_harga', $order->total_harga)); ?>" required min="0" step="0.01">
+                                <input type="number" name="total_harga" class="form-control" value="<?php echo e(old('total_harga', $orderTotalHarga)); ?>" required min="0" step="0.01">
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label">Metode Pembayaran</label>
                                 <div class="row g-3">
-                                    <?php $mp = old('metode_pembayaran', $order->metode_pembayaran); ?>
+                                    <?php $mp = old('metode_pembayaran', $orderMetodePembayaran); ?>
                                     <div class="col-md-6">
                                         <div class="form-check">
                                             <input class="form-check-input" type="radio" name="metode_pembayaran" id="pembayaran_cod" value="COD" <?php echo e($mp === 'COD' ? 'checked' : ''); ?> required>
@@ -122,7 +182,7 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <label class="form-label">Jenis Kartu Identitas</label>
-                                <?php $kid = old('kartu_identitas', $order->kartu_identitas); ?>
+                                <?php $kid = old('kartu_identitas', $orderKartuIdentitas); ?>
                                 <div class="row g-3">
                                     <div class="col-md-6">
                                         <div class="form-check">
