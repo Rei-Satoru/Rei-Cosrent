@@ -22,24 +22,41 @@ class AuthController extends Controller
         if (session('user_logged_in')) {
             return redirect()->route('home');
         }
-        
-        return view('auth.login');
+
+        $defaultLoginType = request()->query('login_type');
+        if (!in_array($defaultLoginType, ['admin', 'user'], true)) {
+            $defaultLoginType = request()->routeIs('admin.login') ? 'admin' : 'user';
+        }
+
+        return view('auth.login', [
+            'defaultLoginType' => $defaultLoginType,
+        ]);
     }
 
     // Process login
     public function login(Request $request)
     {
         $request->validate([
-            'login_type' => 'required|in:admin,user',
-            'email' => 'required|string',
+            // unified login supports either email (current form) or username (legacy admin form)
+            'email' => 'required_without:username|string',
+            'username' => 'required_without:email|string',
             'password' => 'required|string',
+            'context' => 'nullable|in:admin,user',
         ]);
 
-        $loginType = $request->input('login_type');
-        $email = trim($request->input('email'));
-        $password = $request->input('password');
+        $identifier = trim((string) $request->input('email', $request->input('username')));
+        $password = (string) $request->input('password');
 
-        if ($loginType === 'admin') {
+        $backRoute = ($request->routeIs('admin.authenticate') || $request->input('context') === 'admin')
+            ? 'admin.login'
+            : 'login';
+
+        // Determine whether this request should be handled as an admin login.
+        // - Legacy endpoint /admin/authenticate forces admin flow
+        // - Unified form auto-detects admin if identifier equals 'admin'
+        $isAdminAttempt = $request->routeIs('admin.authenticate') || ($identifier === 'admin');
+
+        if ($isAdminAttempt) {
             $admin_username = "admin";
 
             $profile = null;
@@ -49,11 +66,11 @@ class AuthController extends Controller
                 if ($profile && isset($profile->password) && trim($profile->password) !== '') {
                     $admin_password = trim($profile->password);
                 } else {
-                    return redirect()->route('login')->with('error', 'Password admin belum disetel. Hubungi pengelola.');
+                    return redirect()->route($backRoute)->with('error', 'Password admin belum disetel. Hubungi pengelola.');
                 }
             } catch (\Exception $e) {
                 \Log::warning('Could not read admin password from profile_contacts: ' . $e->getMessage());
-                return redirect()->route('login')->with('error', 'Gagal memeriksa password admin.');
+                return redirect()->route($backRoute)->with('error', 'Gagal memeriksa password admin.');
             }
 
             $adminLoginOk = false;
@@ -74,7 +91,7 @@ class AuthController extends Controller
                 $shouldUpgradePasswordHash = true;
             }
 
-            if ($email === $admin_username && $adminLoginOk) {
+            if ($identifier === $admin_username && $adminLoginOk) {
                 if ($profile && $shouldUpgradePasswordHash) {
                     try {
                         $profile->password = Hash::make($password);
@@ -89,21 +106,25 @@ class AuthController extends Controller
                 ]);
                 return redirect()->route('admin.profile')->with('success', 'Selamat datang, Admin!');
             } else {
-                return redirect()->route('login')->with('error', 'Username atau password admin salah!');
+                // Jika user sebenarnya mencoba login sebagai user dengan username/email "admin",
+                // tetap tampilkan pesan error yang jelas.
+                return redirect()->route($backRoute)->with('error', 'Username atau password admin salah!');
             }
-        } else {
+        }
+
+        // User login (database) - support login dengan email, username, atau nick_name
             // User login (database) - support login dengan email, username, atau nick_name
-            $user = User::where('email', $email)
-                ->orWhere('username', $email)
-                ->orWhere('nick_name', $email)
+            $user = User::where('email', $identifier)
+                ->orWhere('username', $identifier)
+                ->orWhere('nick_name', $identifier)
                 ->first();
 
             if (!$user) {
-                return redirect()->route('login')->with('error', 'User tidak ditemukan!');
+                return redirect()->route($backRoute)->with('error', 'User tidak ditemukan!');
             }
 
             if (!Hash::check($password, $user->password)) {
-                return redirect()->route('login')->with('error', 'Password salah!');
+                return redirect()->route($backRoute)->with('error', 'Password salah!');
             }
 
             // Login successful
@@ -116,7 +137,6 @@ class AuthController extends Controller
             ]);
 
             return redirect()->route('home')->with('success', 'Selamat datang, ' . ($user->nick_name ?: $user->username) . '!');
-        }
     }
 
     // Show register form

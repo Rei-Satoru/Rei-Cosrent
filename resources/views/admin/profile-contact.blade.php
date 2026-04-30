@@ -48,13 +48,13 @@
 @section('content')
 <section class="py-5">
     <div class="container">
-        <div class="row justify-content-between mb-5">
-            <div class="col">
+        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-5">
+            <div>
                 <h2 class="fw-bold mb-0">Kelola Profil & Kontak</h2>
                 <p class="text-muted mb-0">Update informasi pengurus dan kontak</p>
             </div>
-            <div class="col-auto">
-                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
+            <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
+                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary w-100">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>

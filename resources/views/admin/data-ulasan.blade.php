@@ -87,8 +87,8 @@
                                 <th>Kostum</th>
                                 <th style="width: 120px;">Rating</th>
                                 <th>Ulasan</th>
-                                <th style="width: 160px;">Gambar</th>
-                                <th style="width: 360px;">Balasan Admin</th>
+                                <th class="d-none d-md-table-cell" style="width: 160px;">Gambar</th>
+                                <th class="d-none d-md-table-cell" style="width: 360px;">Balasan Admin</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -123,7 +123,7 @@
                                             <span class="text-muted">(Tidak ada teks ulasan)</span>
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         @if(!empty($images))
                                             <button type="button" class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#ulasanImagesModal{{ $u->id }}">
                                                 <i class="bi bi-images"></i> Lihat Gambar
@@ -165,7 +165,7 @@
                                             <span class="text-muted">-</span>
                                         @endif
                                     </td>
-                                    <td class="text-start">
+                                    <td class="d-none d-md-table-cell text-start">
                                         <form method="POST" action="{{ route('admin.ulasan.balas') }}">
                                             @csrf
                                             <input type="hidden" name="formulir_id" value="{{ $u->id }}">

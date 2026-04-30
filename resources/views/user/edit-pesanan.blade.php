@@ -5,7 +5,7 @@
 @section('content')
 <section class="py-4">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             @php
                 $orderId = null;
                 $orderNama = '';
@@ -67,9 +67,11 @@
             @endphp
 
             <h2 class="fw-bold mb-0">Edit Pesanan #{{ $orderId ?? '-' }}</h2>
-            <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Kembali ke Pesanan Saya
-            </a>
+            <div class="d-grid d-sm-block">
+                <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Pesanan Saya
+                </a>
+            </div>
         </div>
 
         @if(session('error'))

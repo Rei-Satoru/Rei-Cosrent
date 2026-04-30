@@ -37,9 +37,11 @@
 <section class="container py-4">
     <div class="card shadow-sm">
         <div class="card-body">
-            <div class="d-flex justify-content-between mb-3">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 flex-wrap gap-2">
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Kembali</a>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus-circle"></i> Tambah Denda</button>
+                <div class="d-grid d-sm-block w-100" style="max-width: 260px;">
+                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus-circle"></i> Tambah Denda</button>
+                </div>
             </div>
 
             @if(session('success'))
@@ -70,11 +72,11 @@
                             <th>Nama</th>
                             <th>Nama Kostum</th>
                             <th>Jenis Denda</th>
-                            <th>Keterangan</th>
+                            <th class="d-none d-md-table-cell">Keterangan</th>
                             <th>Jumlah</th>
                             <th>Status</th>
-                            <th>Dibuat</th>
-                            <th>Bukti Pembayaran</th>
+                            <th class="d-none d-md-table-cell">Dibuat</th>
+                            <th class="d-none d-md-table-cell">Bukti Pembayaran</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
@@ -85,7 +87,7 @@
                             <td class="field-nama">{{ $item->nama }}</td>
                             <td class="field-nama_kostum">{{ $item->nama_kostum }}</td>
                             <td class="field-jenis_denda">{{ $item->jenis_denda }}</td>
-                            <td class="field-keterangan"><div style="max-height:120px;overflow:auto">{!! nl2br(e($item->keterangan)) !!}</div></td>
+                            <td class="d-none d-md-table-cell field-keterangan"><div style="max-height:120px;overflow:auto">{!! nl2br(e($item->keterangan)) !!}</div></td>
                             <td class="field-jumlah_denda text-end">Rp{{ $item->jumlah_denda ? number_format($item->jumlah_denda,0,',','.') : '-' }}</td>
                             @php
                                 $st = strtolower($item->status ?? '');
@@ -111,8 +113,8 @@
                                 $badgeIcon = $statusIconMap[$st] ?? 'bi-info-circle';
                             @endphp
                             <td class="field-status text-center"><span class="badge {{ $badgeClass }}"><i class="bi {{ $badgeIcon }} me-1"></i> {{ ucfirst($item->status) }}</span></td>
-                            <td class="text-center">{{ $item->created_at ? $item->created_at->format('d/m/Y') : '-' }}</td>
-                            <td class="text-center">
+                            <td class="d-none d-md-table-cell text-center">{{ $item->created_at ? $item->created_at->format('d/m/Y') : '-' }}</td>
+                            <td class="d-none d-md-table-cell text-center">
                                 @php
                                     $displayBuktiPath = null;
                                     $displayExt = null;

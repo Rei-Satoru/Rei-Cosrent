@@ -156,7 +156,7 @@
             <div class="card-body p-4">
                 <div class="d-flex align-items-center">
                     <div>
-                        <h4 class="mb-0 fw-bold">Selamat datang, <?php echo e($profile_contact ? $profile_contact->name : (auth()->user()->name ?? 'Admin')); ?>!</h4>
+                        <h4 class="mb-0 fw-bold">Selamat Datang Admin!</h4>
                         <p class="text-muted mb-0">Anda login sebagai Administrator</p>
                         <?php if($profile_contact): ?>
                             <small class="text-primary"><?php echo e($profile_contact->title); ?></small>
@@ -171,7 +171,7 @@
             <div>
                 <h3 class="fw-bold mb-0">Profil & Kontak</h3>
             </div>
-            <div class="d-flex align-items-center gap-2">
+            <div class="d-grid d-sm-flex align-items-center gap-2 w-100" style="max-width: 420px;">
                 <a href="<?php echo e(route('admin.profile-contact')); ?>" class="btn btn-outline-primary"><i class="bi bi-pencil-square"></i> Kelola Profil</a>
                 <a href="<?php echo e(route('admin.logout')); ?>" class="btn btn-danger"><i class="bi bi-box-arrow-right"></i> Logout</a>
             </div>
@@ -259,6 +259,97 @@
         <div class="d-flex align-items-center justify-content-between mb-3">
             <div>
                 <h3 class="fw-bold mb-0">Konten Dashboard</h3>
+            </div>
+        </div>
+
+        <!-- Data Ringkas (Katalog, Kostum, Denda, Ulasan) -->
+        <div class="row g-3 mb-4">
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-xl h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-collection text-primary" style="font-size:1.3rem"></i>
+                                <h5 class="fw-bold mb-0">Data Katalog</h5>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded stat-card bg-body-tertiary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small">Total Katalog</div>
+                                    <div class="stat-number"><?php echo e($katalog_count); ?></div>
+                                </div>
+                                <div class="text-muted"><i class="bi bi-collection" style="font-size:1.8rem"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-xl h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-box text-primary" style="font-size:1.3rem"></i>
+                                <h5 class="fw-bold mb-0">Data Kostum</h5>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded stat-card bg-body-tertiary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small">Total Kostum</div>
+                                    <div class="stat-number"><?php echo e($kostum_count); ?></div>
+                                </div>
+                                <div class="text-muted"><i class="bi bi-box" style="font-size:1.8rem"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-xl h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-exclamation-triangle text-primary" style="font-size:1.3rem"></i>
+                                <h5 class="fw-bold mb-0">Data Denda</h5>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded stat-card bg-body-tertiary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small">Total Denda</div>
+                                    <div class="stat-number"><?php echo e($denda_count); ?></div>
+                                </div>
+                                <div class="text-muted"><i class="bi bi-exclamation-triangle" style="font-size:1.8rem"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-md-6 col-lg-3">
+                <div class="card shadow-sm border-0 rounded-xl h-100">
+                    <div class="card-body p-4">
+                        <div class="d-flex align-items-center justify-content-between mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <i class="bi bi-chat-square-text text-primary" style="font-size:1.3rem"></i>
+                                <h5 class="fw-bold mb-0">Data Ulasan</h5>
+                            </div>
+                        </div>
+                        <div class="p-3 rounded stat-card bg-body-tertiary">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="text-muted small">Total Ulasan</div>
+                                    <div class="stat-number"><?php echo e($ulasan_count); ?></div>
+                                </div>
+                                <div class="text-muted"><i class="bi bi-chat-square-text" style="font-size:1.8rem"></i></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 

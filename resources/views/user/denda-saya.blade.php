@@ -5,11 +5,11 @@
 @section('content')
 <section class="py-4">
     <div class="container">
-        <div class="d-flex justify-content-between mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
-                <h2 class="fw-bold">Denda Saya</h2>
+                <h2 class="fw-bold mb-0">Denda Saya</h2>
             </div>
-            <div>
+            <div class="d-grid d-sm-block">
                 <a href="{{ route('user.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali ke Profil
                 </a>
@@ -31,10 +31,10 @@
                             <th>ID</th>
                             <th>Nama Kostum</th>
                             <th>Jenis Denda</th>
-                            <th>Deskripsi</th>
+                            <th class="d-none d-md-table-cell">Deskripsi</th>
                             <th>Jumlah</th>
                             <th>Status</th>
-                            <th>Dibuat</th>
+                            <th class="d-none d-md-table-cell">Dibuat</th>
                             <th class="text-end">Aksi</th>
                         </tr>
                     </thead>
@@ -44,9 +44,8 @@
                             <td>{{ $d->id }}</td>
                             <td>{{ $d->nama_kostum ?? '-' }}</td>
                             <td>{{ $d->jenis_denda ?? '-' }}</td>
-                            <td><div style="max-height:120px;overflow:auto">{!! nl2br(e($d->keterangan)) !!}</div></td>
+                            <td class="d-none d-md-table-cell"><div style="max-height:120px;overflow:auto">{!! nl2br(e($d->keterangan)) !!}</div></td>
                             <td class="text-end">Rp{{ $d->jumlah_denda ? number_format($d->jumlah_denda,0,',','.') : '-' }}</td>
-                            <td class="text-center">{{ $d->created_at ? $d->created_at->format('d M Y') : '-' }}</td>
                             <td>
                                 @php
                                     $statusClass = [
@@ -56,6 +55,7 @@
                                 @endphp
                                 <span class="badge {{ $statusClass }}">{{ $d->status ? ucfirst($d->status) : '-' }}</span>
                             </td>
+                            <td class="d-none d-md-table-cell text-center">{{ $d->created_at ? $d->created_at->format('d M Y') : '-' }}</td>
                             <td class="text-end">
                                 <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#dendaDetailModal-{{ $d->id }}">
                                     <i class="bi bi-card-list"></i> Detail

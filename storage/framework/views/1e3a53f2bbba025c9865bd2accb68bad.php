@@ -89,24 +89,22 @@
                             </div>
                         <?php endif; ?>
 
+                        <?php
+                            $selectedLoginType = $defaultLoginType ?? request()->query('login_type', 'user');
+                            if (!in_array($selectedLoginType, ['admin', 'user'], true)) {
+                                $selectedLoginType = 'user';
+                            }
+                            $isAdminEntry = $selectedLoginType === 'admin';
+                        ?>
+
                         <form method="POST" action="<?php echo e(route('login.post')); ?>">
                             <?php echo csrf_field(); ?>
-                            
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold d-block">Login Sebagai</label>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="login_type" id="login_user" value="user" checked>
-                                    <label class="form-check-label" for="login_user">User</label>
-                                </div>
-                                <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="login_type" id="login_admin" value="admin">
-                                    <label class="form-check-label" for="login_admin">Admin</label>
-                                </div>
-                            </div>
+
+                            <input type="hidden" name="context" value="<?php echo e($isAdminEntry ? 'admin' : 'user'); ?>">
 
                             <div class="mb-3">
-                                <label for="email" class="form-label fw-semibold">Email / Username / Nama</label>
-                                <input type="text" class="form-control" id="email" name="email" value="<?php echo e(old('email')); ?>" placeholder="Masukkan email, username, atau nama" required>
+                                <label for="email" class="form-label fw-semibold"><?php echo e($isAdminEntry ? 'Username' : 'Email / Username / Nama'); ?></label>
+                                <input type="text" class="form-control" id="email" name="email" value="<?php echo e(old('email')); ?>" placeholder="<?php echo e($isAdminEntry ? 'Masukkan username admin' : 'Masukkan email, username, atau nama'); ?>" required>
                             </div>
 
                             <div class="mb-3">
@@ -129,12 +127,12 @@
                                 </button>
                             </div>
 
-                            <!-- <div class="text-center mb-3">
+                            <div class="text-center mb-3">
                                 <p class="text-muted mb-2">atau</p>
                                 <a href="<?php echo e(route('auth.google')); ?>" class="btn btn-outline-danger w-100">
                                     <i class="bi bi-google"></i> Login dengan Google
                                 </a>
-                            </div> -->
+                            </div>
 
                             <hr>
 
@@ -153,26 +151,6 @@
 <?php $__env->startSection('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const loginTypeRadios = document.querySelectorAll('input[name="login_type"]');
-        const emailLabel = document.querySelector('label[for="email"]');
-        const emailInput = document.getElementById('email');
-
-        function syncLoginType() {
-            const selected = document.querySelector('input[name="login_type"]:checked')?.value || 'user';
-            if (selected === 'admin') {
-                emailLabel.textContent = 'Username';
-                emailInput.placeholder = 'Masukkan username admin';
-                emailInput.type = 'text';
-            } else {
-                emailLabel.textContent = 'Email / Username / Nama';
-                emailInput.placeholder = 'Masukkan email, username, atau nama';
-                emailInput.type = 'text';
-            }
-        }
-
-        loginTypeRadios.forEach(r => r.addEventListener('change', syncLoginType));
-        syncLoginType();
-
         // Auto-hide alerts after 3 seconds
         const alerts = document.querySelectorAll('.alert');
         alerts.forEach(alert => {

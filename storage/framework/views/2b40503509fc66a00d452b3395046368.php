@@ -50,9 +50,11 @@
 <?php $__env->startSection('content'); ?>
     <section class="py-4">
         <div class="container">
-            <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-3">
                 <h2 class="fw-bold mb-0"><?php echo e($catalog ? 'Kostum: ' . $catalog->name : 'Katalog tidak ditemukan'); ?></h2>
-                <a href="<?php echo e(route('home')); ?>#kategori" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Kembali</a>
+                <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
+                    <a href="<?php echo e(route('home')); ?>#kategori" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-left"></i> Kembali</a>
+                </div>
             </div>
             <?php if(!$catalog): ?>
                 <div class="alert alert-warning rounded-3">Katalog tidak ditemukan. <a href="<?php echo e(route('home')); ?>#kategori" class="alert-link">Kembali ke beranda</a>.</div>

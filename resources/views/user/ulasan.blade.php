@@ -5,11 +5,13 @@
 @section('content')
 <section class="py-4">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-4">
             <h2 class="fw-bold mb-0">{{ $ulasan ? 'Edit' : 'Beri' }} Ulasan</h2>
-            <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Kembali ke Pesanan
-            </a>
+            <div class="d-grid d-sm-block w-100" style="max-width: 320px;">
+                <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Pesanan
+                </a>
+            </div>
         </div>
 
         @if(session('error'))

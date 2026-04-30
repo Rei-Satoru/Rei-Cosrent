@@ -72,6 +72,121 @@
 
         .rounded-xl { border-radius: 1.5rem !important; }
 
+        /* -------- Global responsive polish (applies to all pages) -------- */
+        html, body {
+            overflow-x: hidden;
+        }
+
+        section[id], [id].scroll-offset {
+            scroll-margin-top: calc(var(--nav-height, 72px) + 16px);
+        }
+
+        img, svg, video, canvas {
+            max-width: 100%;
+            height: auto;
+        }
+
+        /* Keep content comfortably padded on small screens */
+        .container {
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+        /* Avoid iOS zoom on inputs */
+        @media (max-width: 575.98px) {
+            input, select, textarea {
+                font-size: 16px !important;
+            }
+        }
+
+        /* Reduce excessive vertical padding on mobile */
+        @media (max-width: 575.98px) {
+            .py-5 {
+                padding-top: 2.5rem !important;
+                padding-bottom: 2.5rem !important;
+            }
+        }
+
+        /* Responsive hero typography & spacing */
+        .hero-section {
+            padding: clamp(2rem, 6vw, 3.5rem) 0;
+        }
+        .hero-section .display-3 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+        }
+        .hero-section .subheading {
+            font-size: clamp(1rem, 2.2vw, 1.5rem);
+        }
+
+        /* Cards/buttons scale nicely on mobile */
+        @media (max-width: 575.98px) {
+            .btn-lg {
+                padding: 0.65rem 1.1rem;
+                font-size: 1rem;
+            }
+            .rounded-xl {
+                border-radius: 1.1rem !important;
+            }
+        }
+
+        /* Tables should never overflow the viewport */
+        .table-responsive {
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        @media (max-width: 575.98px) {
+            .table {
+                font-size: 0.875rem;
+            }
+            .table > :not(caption) > * > * {
+                padding: 0.5rem;
+            }
+        }
+
+        /* Helpers: full-width on mobile, auto on md+ */
+        @media (min-width: 768px) {
+            .w-md-auto {
+                width: auto !important;
+            }
+        }
+
+        /* Modals: avoid edge-to-edge on small screens */
+        @media (max-width: 575.98px) {
+            .modal-dialog {
+                margin: 0.75rem;
+            }
+            .modal-footer {
+                flex-wrap: wrap;
+                gap: 0.5rem;
+            }
+            .modal-footer .btn {
+                flex: 1 1 auto;
+            }
+        }
+
+        /* Button groups inside table cells */
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        @media (max-width: 575.98px) {
+            .action-buttons {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        /* Admin sidebar layout: never shift content on small screens */
+        @media (max-width: 991.98px) {
+            #pageWrapper.shifted {
+                margin-left: 0 !important;
+            }
+        }
+
         body, .hero-section, .category-card, .profile-card, .card, .navbar, section, footer {
             transition: all 0s ease;
         }

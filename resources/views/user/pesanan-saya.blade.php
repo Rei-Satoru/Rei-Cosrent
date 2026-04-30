@@ -5,11 +5,13 @@
 @section('content')
 <section class="py-4">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <h2 class="fw-bold mb-0">Pesanan Saya</h2>
-            <a href="{{ route('user.profile') }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Kembali ke Profil
-            </a>
+            <div class="d-grid d-sm-block">
+                <a href="{{ route('user.profile') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Profil
+                </a>
+            </div>
         </div>
 
         @if(session('success'))
@@ -37,13 +39,13 @@
                         <tr>
                             <th>ID</th>
                             <th>Nama Kostum</th>
-                            <th>Pesanan Dibuat</th>
-                            <th>Pesanan Diupdate</th>
+                            <th class="d-none d-md-table-cell">Pesanan Dibuat</th>
+                            <th class="d-none d-md-table-cell">Pesanan Diupdate</th>
                             <th>Tgl Pakai</th>
                             <th>Tgl Kembali</th>
                             <th>Total</th>
                             <th>Status</th>
-                            <th>Catatan</th>
+                            <th class="d-none d-md-table-cell">Catatan</th>
                             <th class="text-end">Aksi</th>
                         </tr>
                     </thead>
@@ -52,13 +54,13 @@
                         <tr>
                             <td>{{ $index + 1 }}</td>
                             <td>{{ $order->nama_kostum ?? '-' }}</td>
-                            <td class="text-center">
+                            <td class="d-none d-md-table-cell text-center">
                                 @if($order->created_at)
                                     {{ \Carbon\Carbon::parse($order->created_at)->format('d-m-Y') }}<br>
                                     {{ \Carbon\Carbon::parse($order->created_at)->format('H:i:s') }}
                                 @endif
                             </td>
-                            <td class="text-center">
+                            <td class="d-none d-md-table-cell text-center">
                                 @if($order->updated_at)
                                     {{ \Carbon\Carbon::parse($order->updated_at)->format('d-m-Y') }}<br>
                                     {{ \Carbon\Carbon::parse($order->updated_at)->format('H:i:s') }}
@@ -79,9 +81,9 @@
                                 @endphp
                                 <span class="badge {{ $statusClass }}">{{ ucfirst($order->status) }}</span>
                             </td>
-                            <td>{{ $order->keterangan ?? '-' }}</td>
+                            <td class="d-none d-md-table-cell">{{ $order->keterangan ?? '-' }}</td>
                             <td class="text-end">
-                                <div class="d-grid gap-2" style="min-width: 190px;">
+                                <div class="d-grid gap-2">
                                     <button type="button" class="btn btn-sm btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#orderDetailModal-{{ $order->id }}">
                                         <i class="bi bi-card-list"></i> Detail
                                     </button>

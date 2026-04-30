@@ -19,7 +19,7 @@
             <?php if(isset($katalog) && $katalog->count() > 0): ?>
                 <div class="row justify-content-center row-cols-2 row-cols-md-3 g-3">
                     <?php $__currentLoopData = $katalog; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kategori): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col">
                         <a href="<?php echo e(url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name)))); ?>" class="text-decoration-none text-dark">
                             <div class="card category-card h-100 rounded-xl border-0 shadow-sm">
                                 <img src="<?php echo e(str_starts_with($kategori->image, 'http') ? $kategori->image : (str_starts_with($kategori->image, 'storage/') ? '/storage/' . basename($kategori->image) : asset($kategori->image))); ?>" class="card-img-top" alt="<?php echo e($kategori->name); ?>" style="aspect-ratio:1/1;width:100%;object-fit:cover;border-radius:1.5rem 1.5rem 0 0;">

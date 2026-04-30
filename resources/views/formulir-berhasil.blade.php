@@ -37,13 +37,15 @@
             </div>
         </div>
 
-        <div class="text-center mt-4">
-            <a href="{{ route('user.pesanan') }}" class="btn btn-success me-2">
-                <i class="bi bi-receipt"></i> Lihat Pesanan Saya
-            </a>
-            <a href="{{ route('katalog.kostum') }}" class="btn btn-outline-primary">
-                <i class="bi bi-shop"></i> Kembali ke Katalog Kostum
-            </a>
+        <div class="mt-4">
+            <div class="d-grid d-sm-flex justify-content-center gap-2">
+                <a href="{{ route('user.pesanan') }}" class="btn btn-success">
+                    <i class="bi bi-receipt"></i> Lihat Pesanan Saya
+                </a>
+                <a href="{{ route('katalog.kostum') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-shop"></i> Kembali ke Katalog Kostum
+                </a>
+            </div>
         </div>
     </div>
 </section>

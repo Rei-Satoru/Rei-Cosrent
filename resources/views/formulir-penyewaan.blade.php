@@ -41,11 +41,13 @@
 @section('content')
 <section class="py-4">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center mb-4">
+        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-4">
             <h2 class="fw-bold mb-0">Formulir Penyewaan Kostum</h2>
-            <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary">
-                <i class="bi bi-arrow-left"></i> Kembali
-            </a>
+            <div class="d-grid d-sm-block w-100" style="max-width: 320px;">
+                <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
         </div>
 
         <!-- Informasi Kostum -->

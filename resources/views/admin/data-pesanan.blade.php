@@ -116,13 +116,13 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Nama Kostum</th>
-                                    <th>Pesanan Dibuat</th>
-                                    <th>Pesanan Diupdate</th>
+                                    <th class="d-none d-md-table-cell">Pesanan Dibuat</th>
+                                    <th class="d-none d-md-table-cell">Pesanan Diupdate</th>
                                     <th>Tgl Pakai</th>
                                     <th>Tgl Kembali</th>
                                     <th>Total Harga</th>
                                     <th>Status</th>
-                                    <th>Catatan</th>
+                                    <th class="d-none d-md-table-cell">Catatan</th>
                                     <th>Pembayaran</th>
                                     <th>Aksi</th>
                                 </tr>
@@ -132,13 +132,13 @@
                                 <tr>
                                     <td>{{ $loop->iteration }}</td>
                                     <td>{{ $item->nama_kostum }}</td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         @if($item->created_at)
                                             {{ \Carbon\Carbon::parse($item->created_at)->format('d-m-Y') }}<br>
                                             {{ \Carbon\Carbon::parse($item->created_at)->format('H:i:s') }}
                                         @endif
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         @if($item->updated_at)
                                             {{ \Carbon\Carbon::parse($item->updated_at)->format('d-m-Y') }}<br>
                                             {{ \Carbon\Carbon::parse($item->updated_at)->format('H:i:s') }}
@@ -159,7 +159,7 @@
                                         @endphp
                                         <span class="badge {{ $statusClass }}">{{ ucfirst($item->status) }}</span>
                                     </td>
-                                    <td>
+                                    <td class="d-none d-md-table-cell">
                                         <input type="text"
                                                id="keterangan-{{ $item->id }}"
                                                class="form-control form-control-sm keterangan-input"
@@ -216,7 +216,7 @@
                                             <form id="updateForm-{{ $item->id }}" action="{{ route('admin.pesanan.update-status', $item->id) }}" method="POST" class="d-flex gap-2 align-items-center">
                                                 @csrf
                                                 <input type="hidden" name="keterangan" id="hidden-keterangan-{{ $item->id }}" value="{{ $item->keterangan }}">
-                                                <select name="status" class="form-select form-select-sm" style="width: 120px;">
+                                                <select name="status" class="form-select form-select-sm w-100 w-md-auto">
                                                     @foreach($statusOptions as $status)
                                                         <option value="{{ $status }}" {{ $item->status === $status ? 'selected' : '' }}>
                                                             {{ ucfirst($status) }}

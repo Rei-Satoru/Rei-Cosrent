@@ -53,9 +53,9 @@ Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name(
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
 Route::get('/auth/google/callback', [AuthController::class, 'handleGoogleCallback'])->name('auth.google.callback');
 
-// Admin Routes (Keep old routes for backward compatibility)
-Route::get('/admin/login', [AdminController::class, 'login'])->name('admin.login');
-Route::post('/admin/authenticate', [AdminController::class, 'authenticate'])->name('admin.authenticate');
+// Admin Auth Routes (Unified: reuse AuthController)
+Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/authenticate', [AuthController::class, 'login'])->name('admin.authenticate');
 // Dashboard entry (named route expected by controllers)
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
 Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');

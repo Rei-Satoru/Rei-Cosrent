@@ -19,7 +19,7 @@
             @if(isset($katalog) && $katalog->count() > 0)
                 <div class="row justify-content-center row-cols-2 row-cols-md-3 g-3">
                     @foreach($katalog as $kategori)
-                    <div class="col-md-3 col-sm-6">
+                    <div class="col">
                         <a href="{{ url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name))) }}" class="text-decoration-none text-dark">
                             <div class="card category-card h-100 rounded-xl border-0 shadow-sm">
                                 <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : (str_starts_with($kategori->image, 'storage/') ? '/storage/' . basename($kategori->image) : asset($kategori->image)) }}" class="card-img-top" alt="{{ $kategori->name }}" style="aspect-ratio:1/1;width:100%;object-fit:cover;border-radius:1.5rem 1.5rem 0 0;">

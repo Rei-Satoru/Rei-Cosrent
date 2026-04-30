@@ -147,8 +147,8 @@
                                 <th>ID</th>
                                 <th>Nama Katalog</th>
                                 <th>Kategori</th>
-                                <th>Deskripsi</th>
-                                <th>Gambar</th>
+                                <th class="d-none d-md-table-cell">Deskripsi</th>
+                                <th class="d-none d-md-table-cell">Gambar</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -158,8 +158,8 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->name }}</td>
                                 <td>{{ $item->kategori }}</td>
-                                <td>{{ Str::limit($item->description, 50) }}</td>
-                                <td>
+                                <td class="d-none d-md-table-cell">{{ Str::limit($item->description, 50) }}</td>
+                                <td class="d-none d-md-table-cell">
                                     @if(!empty($item->image))
                                         <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="/storage/{{ basename($item->image) }}" data-image-title="Gambar Katalog: {{ $item->name }}" aria-label="Lihat gambar katalog {{ $item->name }}">
                                             <img src="/storage/{{ basename($item->image) }}" alt="{{ $item->name }}" class="katalog-thumb" style="max-width:80px;">

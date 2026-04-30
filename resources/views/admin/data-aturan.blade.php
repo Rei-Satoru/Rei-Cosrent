@@ -95,8 +95,8 @@
                             <tr>
                                 <th style="width: 35%;">Syarat & Ketentuan</th>
                                 <th style="width: 35%;">Larangan & Denda</th>
-                                <th style="width: 10%;">Dibuat</th>
-                                <th style="width: 10%;">Diubah</th>
+                                <th class="d-none d-md-table-cell" style="width: 10%;">Dibuat</th>
+                                <th class="d-none d-md-table-cell" style="width: 10%;">Diubah</th>
                                 <th style="width: 10%;">Aksi</th>
                             </tr>
                         </thead>
@@ -113,8 +113,8 @@
                                         {!! nl2br(e($item->larangan_dan_denda)) !!}
                                     </div>
                                 </td>
-                                <td class="text-center">{{ $item->created_at->format('d/m/Y') }}</td>
-                                <td class="text-center">{{ $item->updated_at ? $item->updated_at->format('d/m/Y') : '-' }}</td>
+                                <td class="d-none d-md-table-cell text-center">{{ $item->created_at->format('d/m/Y') }}</td>
+                                <td class="d-none d-md-table-cell text-center">{{ $item->updated_at ? $item->updated_at->format('d/m/Y') : '-' }}</td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">

@@ -88,12 +88,12 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Username</th>
-                                    <th>Nick Name</th>
+                                    <th class="d-none d-md-table-cell">Nick Name</th>
                                     <th>Email</th>
-                                    <th>Alamat</th>
-                                    <th>Nomor Telepon</th>
-                                    <th>Jenis Kelamin</th>
-                                    <th>Gambar Profil</th>
+                                    <th class="d-none d-md-table-cell">Alamat</th>
+                                    <th class="d-none d-md-table-cell">Nomor Telepon</th>
+                                    <th class="d-none d-md-table-cell">Jenis Kelamin</th>
+                                    <th class="d-none d-md-table-cell">Gambar Profil</th>
                                     <th style="width: 220px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -102,12 +102,12 @@
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
                                         <td>{{ $user->username }}</td>
-                                        <td>{{ $user->nick_name }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $user->nick_name }}</td>
                                         <td>{{ $user->email }}</td>
-                                        <td>{{ $user->alamat }}</td>
-                                        <td>{{ $user->nomor_telepon }}</td>
-                                        <td>{{ $user->jenis_kelamin }}</td>
-                                        <td>
+                                        <td class="d-none d-md-table-cell">{{ $user->alamat }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $user->nomor_telepon }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $user->jenis_kelamin }}</td>
+                                        <td class="d-none d-md-table-cell">
                                             @php
                                                 $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
                                             @endphp

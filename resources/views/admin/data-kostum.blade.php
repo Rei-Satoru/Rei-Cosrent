@@ -187,15 +187,15 @@ body[data-bs-theme="dark"] footer {
                                 <th>ID</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
-                                <th>Gambar</th>
-                                <th>Jenis Kelamin</th>
-                                <th>Brand</th>
+                                <th class="d-none d-md-table-cell">Gambar</th>
+                                <th class="d-none d-md-table-cell">Jenis Kelamin</th>
+                                <th class="d-none d-md-table-cell">Brand</th>
                                 <th>Harga</th>
-                                <th>Durasi</th>
-                                <th>Ukuran</th>
-                                <th>Include</th>
-                                <th>Exclude</th>
-                                <th>Domisili</th>
+                                <th class="d-none d-md-table-cell">Durasi</th>
+                                <th class="d-none d-md-table-cell">Ukuran</th>
+                                <th class="d-none d-lg-table-cell">Include</th>
+                                <th class="d-none d-lg-table-cell">Exclude</th>
+                                <th class="d-none d-md-table-cell">Domisili</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -205,7 +205,7 @@ body[data-bs-theme="dark"] footer {
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $item->nama_kostum }}</td>
                                 <td>{{ ucfirst($item->kategori) }}</td>
-                                <td>
+                                <td class="d-none d-md-table-cell">
                                     @if(!empty($item->gambar))
                                         <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="/storage/{{ basename($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
                                             <img src="/storage/{{ basename($item->gambar) }}" alt="{{ $item->nama_kostum }}" class="kostum-thumb" style="max-width:80px;">
@@ -214,10 +214,10 @@ body[data-bs-theme="dark"] footer {
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
-                                <td>{{ ucfirst($item->jenis_kelamin ?? '-') }}</td>
-                                <td>{{ $item->brand ?? '-' }}</td>
+                                <td class="d-none d-md-table-cell">{{ ucfirst($item->jenis_kelamin ?? '-') }}</td>
+                                <td class="d-none d-md-table-cell">{{ $item->brand ?? '-' }}</td>
                                 <td>Rp{{ number_format($item->harga_sewa, 0, ',', '.') }}</td>
-                                <td>{{ $item->durasi_penyewaan }}</td>
+                                <td class="d-none d-md-table-cell">{{ $item->durasi_penyewaan }}</td>
                                 @php
                                     $sizes = array_filter(array_map('trim', preg_split('/[,&]/', $item->ukuran_kostum ?? '')));
                                     $order = ['XS'=>1,'S'=>2,'M'=>3,'L'=>4,'XL'=>5,'XXL'=>6,'XXXL'=>7];
@@ -227,10 +227,10 @@ body[data-bs-theme="dark"] footer {
                                         return $aR === $bR ? strcasecmp($aKey,$bKey) : ($aR <=> $bR);
                                     });
                                 @endphp
-                                <td>{{ $sizes ? implode(' ', $sizes) : '-' }}</td>
-                                <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ $item->include }}">{{ $item->include }}</td>
-                                <td style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ $item->exclude }}">{{ $item->exclude ?? '-' }}</td>
-                                <td>{{ !empty($item->domisili) ? $item->domisili : '-' }}</td>
+                                <td class="d-none d-md-table-cell">{{ $sizes ? implode(' ', $sizes) : '-' }}</td>
+                                <td class="d-none d-lg-table-cell" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ $item->include }}">{{ $item->include }}</td>
+                                <td class="d-none d-lg-table-cell" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="{{ $item->exclude }}">{{ $item->exclude ?? '-' }}</td>
+                                <td class="d-none d-md-table-cell">{{ !empty($item->domisili) ? $item->domisili : '-' }}</td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal{{ $item->id_kostum }}" title="Detail">

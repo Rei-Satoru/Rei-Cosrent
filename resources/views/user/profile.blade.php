@@ -70,6 +70,12 @@
         word-break: break-word;
         transition: color 0s ease;
     }
+
+    @media (max-width: 575.98px) {
+        .preview-info-table td { padding: 0.25rem 0.25rem; }
+        .preview-info-table .label-col { width: auto; white-space: normal; }
+        .preview-info-table .colon-col { width: 10px; }
+    }
 </style>
 @endsection
 
