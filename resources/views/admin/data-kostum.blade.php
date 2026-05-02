@@ -207,8 +207,8 @@ body[data-bs-theme="dark"] footer {
                                 <td>{{ ucfirst($item->kategori) }}</td>
                                 <td class="d-none d-md-table-cell">
                                     @if(!empty($item->gambar))
-                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="/storage/{{ basename($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
-                                            <img src="/storage/{{ basename($item->gambar) }}" alt="{{ $item->nama_kostum }}" class="kostum-thumb" style="max-width:80px;">
+                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ asset($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
+                                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama_kostum }}" class="kostum-thumb" style="max-width:80px;">
                                         </button>
                                     @else
                                         <span class="text-muted">-</span>
@@ -261,8 +261,8 @@ body[data-bs-theme="dark"] footer {
                                             <div class="row g-3">
                                                 <div class="col-md-5 text-center">
                                                     @if(!empty($item->gambar))
-                                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="/storage/{{ basename($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
-                                                            <img src="/storage/{{ basename($item->gambar) }}" alt="Gambar Kostum" class="img-fluid rounded kostum-thumb" style="aspect-ratio:1/1;object-fit:cover;">
+                                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ asset($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
+                                                            <img src="{{ asset($item->gambar) }}" alt="Gambar Kostum" class="img-fluid rounded kostum-thumb" style="aspect-ratio:1/1;object-fit:cover;">
                                                         </button>
                                                     @else
                                                         <img src="{{ asset('assets/img/no-image.png') }}" alt="Tidak ada gambar" class="img-fluid rounded" style="aspect-ratio:1/1;object-fit:cover;">

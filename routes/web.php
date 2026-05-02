@@ -22,8 +22,9 @@ Route::get('/formulir-penyewaan/{id_kostum}', [HomeController::class, 'formulirP
 Route::post('/formulir-penyewaan/submit', [HomeController::class, 'submitFormulirPenyewaan'])->name('formulir.penyewaan.submit');
 Route::get('/formulir-berhasil', [HomeController::class, 'formulirBerhasil'])->name('formulir.berhasil');
 
-// User Profile Routes (Protected)
-Route::get('/user/profile', [HomeController::class, 'userProfile'])->name('user.profile');
+// User Dashboard Routes (Protected)
+Route::get('/user/dashboard', [HomeController::class, 'userProfile'])->name('user.profile');
+Route::redirect('/user/profile', '/user/dashboard');
 Route::post('/user/profile/update', [HomeController::class, 'updateUserProfile'])->name('user.profile.update');
 Route::post('/user/profile/delete-photo', [HomeController::class, 'deleteProfilePhoto'])->name('user.profile.delete-photo');
 Route::delete('/user/account/delete', [HomeController::class, 'deleteAccount'])->name('user.account.delete');
@@ -58,8 +59,8 @@ Route::get('/admin/login', [AuthController::class, 'showLogin'])->name('admin.lo
 Route::post('/admin/authenticate', [AuthController::class, 'login'])->name('admin.authenticate');
 // Dashboard entry (named route expected by controllers)
 Route::get('/admin', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
-Route::get('/admin/profile', [AdminController::class, 'profile'])->name('admin.profile');
+Route::get('/admin/dashboard', [AdminController::class, 'profile'])->name('admin.profile');
+Route::redirect('/admin/profile', '/admin/dashboard');
 Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.logout');
 
 // Admin stats endpoint (AJAX) for dashboard charts

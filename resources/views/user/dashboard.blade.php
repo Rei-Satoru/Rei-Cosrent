@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Profil User - Rei Cosrent')
+@section('title', 'Dashboard - Rei Cosrent')
 
 @section('styles')
 <style>
@@ -84,7 +84,7 @@
     <div class="container">
         <div class="row justify-content-between mb-5">
             <div class="col">
-                <h2 class="fw-bold mb-0">Profil Pengguna</h2>
+                <h2 class="fw-bold mb-0">Dashboard Pengguna</h2>
                 <p class="text-muted mb-0">Kelola informasi akun Anda</p>
             </div>
         </div>
@@ -119,7 +119,7 @@
             <div class="col-lg-4">
                 <div class="card shadow-sm border-0 rounded-xl h-100">
                     <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0 fw-bold"><i class="bi bi-eye"></i> Preview Profil</h5>
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-eye"></i> Ringkasan Dashboard</h5>
                     </div>
                     <div class="card-body text-center py-4 d-flex flex-column align-items-center">
                         <img

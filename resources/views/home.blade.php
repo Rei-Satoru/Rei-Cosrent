@@ -22,7 +22,7 @@
                     <div class="col">
                         <a href="{{ url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name))) }}" class="text-decoration-none text-dark">
                             <div class="card category-card h-100 rounded-xl border-0 shadow-sm">
-                                <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : (str_starts_with($kategori->image, 'storage/') ? '/storage/' . basename($kategori->image) : asset($kategori->image)) }}" class="card-img-top" alt="{{ $kategori->name }}" style="aspect-ratio:1/1;width:100%;object-fit:cover;border-radius:1.5rem 1.5rem 0 0;">
+                                <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : asset($kategori->image) }}" class="card-img-top" alt="{{ $kategori->name }}" style="aspect-ratio:1/1;width:100%;object-fit:cover;border-radius:1.5rem 1.5rem 0 0;">
                                 <div class="card-body py-2 px-3">
                                     <h5 class="fw-bold text-primary">{{ $kategori->name }}</h5>
                                     <p class="text-muted small mb-0">{{ $kategori->description }}</p>

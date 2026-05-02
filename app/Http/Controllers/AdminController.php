@@ -114,8 +114,36 @@ class AdminController extends Controller
         $denda_count = Denda::count();
         $ulasan_count = Ulasan::count();
         $profile_contact = ProfileContact::find(1);
+        
+        // Get latest 5 orders
+        $latest_orders = Formulir::orderByDesc('created_at')->take(5)->get();
+        
+        // Get total revenue
+        $total_revenue = Formulir::sum('total_harga');
+        
+        // Get top 5 kostum
+        $top_kostum = Formulir::selectRaw('nama_kostum, COUNT(*) as count')
+            ->groupBy('nama_kostum')
+            ->orderByDesc('count')
+            ->take(5)
+            ->get();
+        
+        // Get kostum breakdown for pie chart
+        $top_3_kostum = $top_kostum->take(3);
+        $top_3_total = $top_3_kostum->sum('count');
+        $other_count = Formulir::count() - $top_3_total;
+        
+        // Get order statuses
+        $order_statuses = Formulir::selectRaw('status, COUNT(*) as count')
+            ->groupBy('status')
+            ->get();
+        
+        // Get payment methods
+        $payment_methods = Formulir::selectRaw('metode_pembayaran, COUNT(*) as count')
+            ->groupBy('metode_pembayaran')
+            ->get();
 
-        return view('admin.profile', [
+        return view('admin.dashboard', [
             'admin_name' => $admin_name,
             'katalog_count' => $katalog_count,
             'kostum_count' => $kostum_count,
@@ -125,6 +153,13 @@ class AdminController extends Controller
             'users_count' => $users_count,
             'ulasan_count' => $ulasan_count,
             'profile_contact' => $profile_contact,
+            'latest_orders' => $latest_orders,
+            'total_revenue' => $total_revenue,
+            'top_kostum' => $top_kostum,
+            'top_3_kostum' => $top_3_kostum,
+            'other_count' => $other_count,
+            'order_statuses' => $order_statuses,
+            'payment_methods' => $payment_methods,
         ]);
     }
 

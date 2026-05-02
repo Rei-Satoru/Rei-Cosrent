@@ -161,8 +161,8 @@
                                 <td class="d-none d-md-table-cell">{{ Str::limit($item->description, 50) }}</td>
                                 <td class="d-none d-md-table-cell">
                                     @if(!empty($item->image))
-                                        <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="/storage/{{ basename($item->image) }}" data-image-title="Gambar Katalog: {{ $item->name }}" aria-label="Lihat gambar katalog {{ $item->name }}">
-                                            <img src="/storage/{{ basename($item->image) }}" alt="{{ $item->name }}" class="katalog-thumb" style="max-width:80px;">
+                                        <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="{{ asset($item->image) }}" data-image-title="Gambar Katalog: {{ $item->name }}" aria-label="Lihat gambar katalog {{ $item->name }}">
+                                            <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" class="katalog-thumb" style="max-width:80px;">
                                         </button>
                                     @else
                                         <span class="text-muted">Tidak ada gambar</span>
