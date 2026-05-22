@@ -3,15 +3,155 @@
 @section('title', ($catalog ? ($catalog->name . ' - Katalog Kostum') : 'Katalog Tidak Ditemukan'))
 
 @section('styles')
-<style>
+
+    :root {
+        --catalog-title-color: #0f172a;
+        --catalog-card-bg: #f8fbff;
+        --catalog-card-border: rgba(37, 99, 235, 0.12);
+        --catalog-text: #0b0b0b;
+        --catalog-muted: rgba(11, 11, 11, 0.6);
+        --catalog-modal-bg: #f8fbff;
+        --catalog-modal-text: #0b0b0b;
+        --catalog-modal-muted: rgba(11, 11, 11, 0.7);
+        --catalog-modal-border: rgba(37, 99, 235, 0.12);
+        --catalog-modal-header-bg: #f8fbff;
+    }
+
+    [data-bs-theme="dark"] {
+        --catalog-title-color: #ffffff;
+        --catalog-card-bg: #0f172a;
+        --catalog-card-border: rgba(96, 165, 250, 0.16);
+        --catalog-text: #ffffff;
+        --catalog-muted: rgba(255, 255, 255, 0.7);
+        --catalog-modal-bg: #0f172a;
+        --catalog-modal-text: #ffffff;
+        --catalog-modal-muted: rgba(255, 255, 255, 0.7);
+        --catalog-modal-border: rgba(96, 165, 250, 0.16);
+        --catalog-modal-header-bg: #0b1220;
+    }
+
+    /* Light theme: force neutral modal surface + readable text inside the costume detail modal */
+    [data-bs-theme="light"] .costume-modal .modal-content {
+        background: var(--catalog-modal-bg) !important;
+        color: var(--catalog-modal-text) !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-header {
+        background: var(--catalog-modal-header-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        border-bottom: 1px solid var(--catalog-modal-border) !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-title {
+        color: var(--brand-blue) !important;
+        font-weight: 700;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-body * {
+        color: var(--catalog-modal-text) !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-body .text-muted,
+    [data-bs-theme="light"] .costume-modal .modal-body .text-secondary,
+    [data-bs-theme="light"] .costume-modal .modal-body .text-body-secondary {
+        color: var(--catalog-modal-muted) !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-footer {
+        background: var(--catalog-modal-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        border-top: 1px solid var(--catalog-modal-border) !important;
+    }
+
+    .costume-modal .modal-title {
+        color: var(--brand-blue) !important;
+        -webkit-text-fill-color: var(--brand-blue) !important;
+    }
+
+    .costume-modal .modal-footer .btn {
+        background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%) !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        -webkit-text-fill-color: #ffffff !important;
+        border: none !important;
+        background-size: 200% auto;
+        background-position: 0% center;
+        transition: background-position 0.6s ease-in-out, transform 0.3s ease !important;
+        will-change: background-position, transform;
+    }
+
+    .costume-modal .modal-footer .btn:hover {
+        background-image: linear-gradient(97deg, #93c5fd 0%, #2563eb 140.21%) !important;
+        background-position: 100% center !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+    }
+
+    .costume-modal .modal-footer .btn:focus {
+        background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%) !important;
+        background-color: transparent !important;
+        color: #ffffff !important;
+        box-shadow: 0 0 0 0.25rem rgba(37, 99, 235, 0.25) !important;
+    }
+
+    .catalog-title-main {
+        color: var(--brand-blue) !important;
+    }
+
+
+    .search-card,
+    .search-card .card-body {
+        background: var(--catalog-card-bg);
+        color: var(--catalog-text) !important;
+        border-color: var(--catalog-card-border);
+    }
+
+    .search-card .form-label,
+    .search-card .form-control,
+    .search-card .form-select {
+        color: var(--catalog-text) !important;
+    }
+
+    .search-card p,
+    .search-card small,
+    .search-card label,
+    .search-card .text-muted,
+    .search-card .form-text {
+        color: var(--catalog-text) !important;
+    }
+
+    .search-card .form-control,
+    .search-card .form-select {
+        background: var(--catalog-card-bg) !important;
+        border-color: var(--catalog-card-border) !important;
+    }
+
+    .search-card .form-control::placeholder {
+        color: var(--catalog-muted) !important;
+    }
+
+    [data-bs-theme="light"] .search-card,
+    [data-bs-theme="light"] .search-card .card-body,
+    [data-bs-theme="light"] .search-card .form-label,
+    [data-bs-theme="light"] .search-card .form-control,
+    [data-bs-theme="light"] .search-card .form-select,
+    [data-bs-theme="light"] .search-card p,
+    [data-bs-theme="light"] .search-card small,
+    [data-bs-theme="light"] .search-card label,
+    [data-bs-theme="light"] .search-card .text-muted,
+    [data-bs-theme="light"] .search-card .form-text {
+        color: #0b0b0b !important;
+    }
+
     .costume-card {
         overflow: hidden;
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
+        background-color: var(--catalog-card-bg);
+        color: var(--brand-blue) !important;
         transition: all 0s ease;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
         cursor: pointer;
         position: relative;
+        border: 1px solid var(--catalog-card-border);
     }
 
     .costume-card:hover {
@@ -35,23 +175,93 @@
     }
 
     .costume-card-body {
-        background-color: var(--bs-body-bg);
-        color: var(--bs-body-color);
+        background-color: transparent;
+        color: var(--brand-blue) !important;
         transition: background-color 0s ease, color 0s ease;
     }
 
     .costume-card-body .text-secondary {
-        color: var(--bs-secondary-color, #6c757d) !important;
-        transition: color 0ss ease;
+        color: var(--brand-blue) !important;
+        transition: color 0s ease;
     }
-</style>
+
+    /* Dark-theme costume modal rules (avoid overriding light mode) */
+    [data-bs-theme="dark"] .costume-modal .modal-content {
+        --bs-body-color: var(--catalog-modal-text);
+        --bs-emphasis-color: var(--catalog-modal-text);
+        --bs-secondary-color: var(--catalog-modal-muted);
+        --bs-body-bg: var(--catalog-modal-bg);
+        --bs-border-color: var(--catalog-modal-border);
+        background: var(--catalog-modal-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        border: 1px solid var(--catalog-modal-border);
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-header {
+        background: var(--catalog-modal-header-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        border-bottom: 1px solid var(--catalog-modal-border);
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-title {
+        color: var(--brand-blue) !important;
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-body {
+        color: var(--catalog-modal-text) !important;
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-body * {
+        color: var(--catalog-modal-text) !important;
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-body .text-muted,
+    [data-bs-theme="dark"] .costume-modal .modal-body .text-secondary,
+    [data-bs-theme="dark"] .costume-modal .modal-body .text-body-secondary {
+        color: var(--catalog-modal-muted) !important;
+    }
+
+    [data-bs-theme="dark"] .costume-modal .modal-footer {
+        background: var(--catalog-modal-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        border-top: 1px solid var(--catalog-modal-border);
+    }
+    
+    /* Extra overrides: force opaque modal surface & correct text in light mode */
+    [data-bs-theme="light"] .costume-modal.show .modal-content,
+    [data-bs-theme="light"] .costume-modal .modal-content {
+        background-color: var(--catalog-modal-bg) !important;
+        background-image: none !important;
+        background: var(--catalog-modal-bg) !important;
+        color: var(--catalog-modal-text) !important;
+        opacity: 1 !important;
+        background-clip: padding-box !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .modal-content::before,
+    [data-bs-theme="light"] .costume-modal .modal-content::after {
+        background: none !important;
+    }
+
+    [data-bs-theme="light"] .costume-modal .text-secondary,
+    [data-bs-theme="light"] .costume-modal .text-muted,
+    [data-bs-theme="light"] .costume-modal .text-body-secondary {
+        color: var(--catalog-modal-muted) !important;
+    }
 @endsection
 
 @section('content')
     <section class="py-4">
         <div class="container">
+            @php
+                $catalogTitle = $catalog ? 'Katalog Kostum ' . $catalog->name : 'Katalog tidak ditemukan';
+                $catalogDescription = $catalog && $catalog->description ? trim($catalog->description) : '';
+                $showDescription = $catalog && $catalogDescription !== '' && strcasecmp($catalogDescription, $catalogTitle) !== 0;
+            @endphp
             <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-3">
-                <h2 class="fw-bold mb-0">{{ $catalog ? 'Kostum: ' . $catalog->name : 'Katalog tidak ditemukan' }}</h2>
+                <div>
+                    <h2 class="fw-bold mb-0 catalog-title-main">{{ $catalogTitle }}</h2>
+                </div>
                 <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
                     <a href="{{ route('home') }}#kategori" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-left"></i> Kembali</a>
                 </div>
@@ -59,12 +269,12 @@
             @if(!$catalog)
                 <div class="alert alert-warning rounded-3">Katalog tidak ditemukan. <a href="{{ route('home') }}#kategori" class="alert-link">Kembali ke beranda</a>.</div>
             @else
-                @if($catalog->description)
+                @if($showDescription)
                     <p class="text-muted mb-4">{{ $catalog->description }}</p>
                 @endif
 
                 <!-- Pencarian & Filter (tanpa pencarian kategori) -->
-                <div class="card shadow-sm mb-4">
+                <div class="card shadow-sm mb-4 search-card">
                     <div class="card-body">
                         <form method="GET" action="{{ route('katalog.kostum') }}" class="row g-3 align-items-end">
                             <input type="hidden" name="cat" value="{{ request('cat') }}">
@@ -192,14 +402,14 @@
                             </a>
                         </div>
 
-                        <div class="modal fade" id="detailModal{{ $k->id_kostum }}" tabindex="-1" aria-hidden="true">
+                        <div class="modal fade costume-modal" id="detailModal{{ $k->id_kostum }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
-                                <div class="modal-content">
-                                    <div class="modal-header bg-success text-white">
-                                        <h5 class="modal-title">Detail Kostum</h5>
-                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <div class="modal-content" style="background-color: var(--catalog-modal-bg) !important; background-image: none !important; background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; opacity: 1 !important; border: 1px solid var(--catalog-modal-border) !important;">
+                                    <div class="modal-header" style="background: var(--catalog-modal-header-bg) !important; color: var(--catalog-modal-text) !important; border-bottom: 1px solid var(--catalog-modal-border) !important;">
+                                        <h5 class="modal-title" style="color: var(--brand-blue) !important;">Detail Kostum</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="color: var(--catalog-modal-text) !important;">
                                         <div class="row g-3">
                                             <div class="col-md-5 text-center">
                                                 @if($src)
@@ -209,25 +419,25 @@
                                                 @endif
                                             </div>
                                             <div class="col-md-7">
-                                                <div class="row mb-2"><div class="col-5 text-muted">Nama Kostum</div><div class="col-7">: {{ $k->nama_kostum }}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Judul</div><div class="col-7">: {{ $k->judul ?: '-' }}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Kategori</div><div class="col-7">: {{ $k->kategori }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Nama Kostum</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->nama_kostum }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Judul</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->judul ?: '-' }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Kategori</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->kategori }}</div></div>
                                                 @if(!empty($k->jenis_kelamin))
-                                                    <div class="row mb-2"><div class="col-5 text-muted">Jenis Kelamin</div><div class="col-7">: {{ $k->jenis_kelamin }}</div></div>
+                                                    <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Jenis Kelamin</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->jenis_kelamin }}</div></div>
                                                 @endif
                                                 @if(!empty($k->brand))
-                                                    <div class="row mb-2"><div class="col-5 text-muted">Brand</div><div class="col-7">: {{ $k->brand }}</div></div>
+                                                    <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Brand</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->brand }}</div></div>
                                                 @endif
-                                                <div class="row mb-2"><div class="col-5 text-muted">Harga Sewa</div><div class="col-7">: Rp {{ number_format((float)$k->harga_sewa, 0, ',', '.') }}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Durasi Penyewaan</div><div class="col-7">: {{ $k->durasi_penyewaan }}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Ukuran</div><div class="col-7">: {{ $k->ukuran_kostum }}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Include</div><div class="col-7">: {!! nl2br(e($k->include)) !!}</div></div>
-                                                <div class="row mb-2"><div class="col-5 text-muted">Exclude</div><div class="col-7">: {!! nl2br(e($k->exclude)) !!}</div></div>
-                                                <div class="row"><div class="col-5 text-muted">Domisili</div><div class="col-7">: {{ $k->domisili ?: '-' }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Harga Sewa</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: Rp {{ number_format((float)$k->harga_sewa, 0, ',', '.') }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Durasi Penyewaan</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->durasi_penyewaan }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Ukuran</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->ukuran_kostum }}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Include</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {!! nl2br(e($k->include)) !!}</div></div>
+                                                <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Exclude</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {!! nl2br(e($k->exclude)) !!}</div></div>
+                                                <div class="row"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Domisili</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: {{ $k->domisili ?: '-' }}</div></div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
+                                    <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                         <a href="{{ route('lihat-ulasan', ['id_kostum' => $k->id_kostum]) }}" class="btn btn-outline-warning">
                                             <i class="bi bi-star"></i> Lihat Ulasan
@@ -257,15 +467,15 @@
     <!-- Modal: Guest must login -->
     <div class="modal fade" id="guestLoginModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Perlu Login</h5>
+            <div class="modal-content" style="background-color: var(--catalog-modal-bg) !important; background-image: none !important; background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; opacity: 1 !important; border: 1px solid var(--catalog-modal-border) !important;">
+                <div class="modal-header" style="background: var(--catalog-modal-header-bg) !important; color: var(--catalog-modal-text) !important; border-bottom: 1px solid var(--catalog-modal-border) !important;">
+                    <h5 class="modal-title" style="color: var(--catalog-modal-text) !important;">Perlu Login</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" style="color: var(--catalog-modal-text) !important;">
                     Anda harus login untuk mengisi formulir penyewaan. Masuk sekarang atau daftar jika belum punya akun.
                 </div>
-                <div class="modal-footer">
+                <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
                     <a href="{{ route('login') }}" id="guestLoginModalLoginBtn" class="btn btn-primary">Masuk</a>
                     <a href="{{ route('register') }}" class="btn btn-primary">Daftar</a>
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>

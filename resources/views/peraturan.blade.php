@@ -3,7 +3,6 @@
 @section('title', 'Peraturan - Rei Cosrent')
 
 @section('styles')
-<style>
     /* Nonaktifkan SEMUA transisi saat halaman loading */
     html.no-transition *,
     html.no-transition *::before,
@@ -38,16 +37,45 @@
         transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease !important;
     }
 
+    :root {
+        --rules-card-bg: #f8fbff;
+        --rules-card-border: rgba(37, 99, 235, 0.12);
+        --rules-card-text: #0f172a;
+    }
+
+    [data-bs-theme="dark"] {
+        --rules-card-bg: #0f172a;
+        --rules-card-border: rgba(96, 165, 250, 0.16);
+        --rules-card-text: #ffffff;
+    }
+
     .page-title {
-        color: #0056b3;
+        color: var(--brand-blue) !important;
     }
 
-    [data-bs-theme="dark"] .page-title {
-        color: #a855f7;
+    .page-subtitle {
+        color: #0b0b0b !important;
     }
 
-    [data-bs-theme="light"] .page-title {
-        color: #0056b3;
+    [data-bs-theme="dark"] .page-subtitle {
+        color: #ffffff !important;
+    }
+
+    .aturan-card {
+        background: var(--rules-card-bg) !important;
+        border: 1px solid var(--rules-card-border) !important;
+        color: var(--rules-card-text) !important;
+    }
+
+    .aturan-card .card-body {
+        background: transparent !important;
+        color: var(--rules-card-text) !important;
+    }
+
+    .aturan-card .text-muted,
+    .aturan-card .text-body-secondary,
+    .aturan-card .text-secondary {
+        color: var(--rules-card-text) !important;
     }
 
     .aturan-section {
@@ -66,7 +94,6 @@
         line-height: 1.8;
         white-space: pre-line;
     }
-</style>
 @endsection
 
 @section('content')
@@ -74,7 +101,7 @@
 <header class="py-4 text-center">
     <div class="container">
         <h1 class="fw-bolder page-title mb-3">Peraturan Sewa Kostum</h1>
-        <p class="text-muted">Syarat, ketentuan, larangan, dan denda sewa kostum Rei Cosrent</p>
+        <p class="page-subtitle">Syarat, ketentuan, larangan, dan denda sewa kostum Rei Cosrent</p>
     </div>
 </header>
 
@@ -82,7 +109,7 @@
 <section class="container py-4">
     @if($aturan->count() > 0)
         @foreach($aturan as $item)
-        <div class="card shadow-sm mb-4">
+        <div class="card shadow-sm mb-4 aturan-card">
             <div class="card-body p-4">
                 <!-- Syarat & Ketentuan -->
                 <div class="aturan-section">
@@ -111,7 +138,7 @@
         </div>
         @endforeach
     @else
-        <div class="card shadow-sm">
+        <div class="card shadow-sm aturan-card">
             <div class="card-body p-5 text-center">
                 <i class="bi bi-info-circle" style="font-size: 3rem; color: var(--bs-primary);"></i>
                 <h3 class="mt-3"><i class="bi bi-info-circle"></i> Belum Ada Peraturan</h3>

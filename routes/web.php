@@ -22,9 +22,10 @@ Route::get('/formulir-penyewaan/{id_kostum}', [HomeController::class, 'formulirP
 Route::post('/formulir-penyewaan/submit', [HomeController::class, 'submitFormulirPenyewaan'])->name('formulir.penyewaan.submit');
 Route::get('/formulir-berhasil', [HomeController::class, 'formulirBerhasil'])->name('formulir.berhasil');
 
-// User Dashboard Routes (Protected)
-Route::get('/user/dashboard', [HomeController::class, 'userProfile'])->name('user.profile');
-Route::redirect('/user/profile', '/user/dashboard');
+// User Profile Routes (Protected)
+Route::get('/user/profil', [HomeController::class, 'userProfile'])->name('user.profile');
+Route::redirect('/user/dashboard', '/user/profil');
+Route::redirect('/user/profile', '/user/profil');
 Route::post('/user/profile/update', [HomeController::class, 'updateUserProfile'])->name('user.profile.update');
 Route::post('/user/profile/delete-photo', [HomeController::class, 'deleteProfilePhoto'])->name('user.profile.delete-photo');
 Route::delete('/user/account/delete', [HomeController::class, 'deleteAccount'])->name('user.account.delete');

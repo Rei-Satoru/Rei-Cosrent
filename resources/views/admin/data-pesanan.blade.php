@@ -383,6 +383,8 @@
 @section('scripts')
 <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const openDetailId = @json(request()->query('open_detail'));
+
         const alerts = document.querySelectorAll('.alert-dismissible');
         alerts.forEach(alert => {
             setTimeout(() => {
@@ -472,6 +474,14 @@
                 if (imgEl) imgEl.src = '';
                 if (embedEl) embedEl.src = '';
             });
+        }
+
+        if (openDetailId) {
+            const detailModalEl = document.getElementById(`pesananDetail${openDetailId}`);
+            if (detailModalEl && window.bootstrap) {
+                const detailModal = bootstrap.Modal.getOrCreateInstance(detailModalEl);
+                detailModal.show();
+            }
         }
     });
 </script>

@@ -363,10 +363,15 @@ body[data-bs-theme="dark"] footer {
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Ukuran Kostum</label>
+                                                    @php
+                                                        $rawUkuran = (string) ($item->ukuran_kostum ?? '');
+                                                        $ukuranParts = array_filter(array_map('trim', preg_split('/[,;&]/', $rawUkuran)));
+                                                        $selectedUkuran = $ukuranParts[0] ?? '';
+                                                    @endphp
                                                     <select name="ukuran_kostum" class="form-select" required>
                                                         <option value="" disabled>Pilih ukuran</option>
                                                         @foreach($ukuran as $uk)
-                                                            <option value="{{ $uk }}" @if(trim($uk) === trim($item->ukuran_kostum)) selected @endif>{{ $uk }}</option>
+                                                            <option value="{{ $uk }}" @selected(strcasecmp(trim($uk), trim($selectedUkuran ?? '')) === 0)>{{ $uk }}</option>
                                                         @endforeach
                                                     </select>
                                                 </div>

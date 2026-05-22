@@ -5,17 +5,92 @@
 <?php $__env->startSection('styles'); ?>
 <style>
     :root {
-        --bs-primary: #7c3aed;
-        --bs-success: #10b981;
-        --bs-danger: #ef4444;
+        --admin-card-bg: #f8fbff;
+        --admin-card-border: rgba(37, 99, 235, 0.12);
+        --admin-card-text: #0f172a;
+        --admin-card-shadow: 0 12px 30px -12px rgba(16, 24, 40, 0.12);
+    }
+
+    [data-bs-theme="dark"] {
+        --admin-card-bg: #0f172a;
+        --admin-card-border: rgba(96, 165, 250, 0.16);
+        --admin-card-text: #ffffff;
+        --admin-card-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55);
+    }
+
+    .admin-surface-card {
+        background: var(--admin-card-bg) !important;
+        border: 1px solid var(--admin-card-border) !important;
+        box-shadow: var(--admin-card-shadow) !important;
+        color: var(--admin-card-text) !important;
+        border-radius: 1.25rem !important;
+    }
+
+    .admin-surface-card .card-header {
+        background: transparent !important;
+        color: var(--brand-blue) !important;
+        border-bottom: 1px solid var(--admin-card-border) !important;
+    }
+
+    .admin-surface-card .card-body,
+    .admin-surface-card p,
+    .admin-surface-card small,
+    .admin-surface-card h1,
+    .admin-surface-card h2,
+    .admin-surface-card h3,
+    .admin-surface-card h4,
+    .admin-surface-card h5,
+    .admin-surface-card h6,
+    .admin-surface-card td,
+    .admin-surface-card th,
+    .admin-surface-card label {
+        color: var(--admin-card-text) !important;
+    }
+
+    .admin-surface-card .text-muted {
+        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent) !important;
+    }
+
+    .admin-surface-card .table {
+        color: var(--admin-card-text) !important;
+    }
+
+    .admin-surface-card .table > :not(caption) > * > * {
+        background: var(--admin-card-bg) !important;
+        border-color: var(--admin-card-border) !important;
+    }
+
+    .admin-surface-card .btn-outline-secondary,
+    .admin-surface-card .btn-outline-primary,
+    .admin-surface-card .btn-outline-warning,
+    .admin-surface-card .btn-outline-danger,
+    .admin-surface-card .btn-primary,
+    .admin-surface-card .btn-danger {
+        border-radius: 999px;
     }
 
     .dashboard-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(96, 165, 250, 0.88));
+        border-radius: 1.5rem;
         padding: 2rem;
-        color: white;
+        color: #fff;
         margin-bottom: 2rem;
+        box-shadow: 0 18px 40px -18px rgba(37, 99, 235, 0.45);
+    }
+
+    .dashboard-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 15% 20%, rgba(255,255,255,0.18), transparent 32%), radial-gradient(circle at 85% 80%, rgba(255,255,255,0.12), transparent 28%);
+        pointer-events: none;
+    }
+
+    .dashboard-hero > * {
+        position: relative;
+        z-index: 1;
     }
 
     .dashboard-hero h1 {
@@ -27,6 +102,38 @@
     .dashboard-hero p {
         opacity: 0.9;
         margin-bottom: 1rem;
+    }
+
+    .hero-profile-summary {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+        backdrop-filter: blur(6px);
+    }
+
+    .hero-profile-photo {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid rgba(255, 255, 255, 0.5);
+        flex-shrink: 0;
+    }
+
+    .hero-profile-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+    }
+
+    .hero-profile-title,
+    .hero-profile-vision {
+        margin-bottom: 0.25rem;
+        opacity: 0.92;
     }
 
     .hero-btn {
@@ -46,11 +153,13 @@
     }
 
     .metric-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border);
+        border-radius: 1.25rem;
         padding: 1.5rem;
         transition: all 0.3s ease;
+        box-shadow: var(--admin-card-shadow);
+        color: var(--admin-card-text);
     }
 
     .metric-card:hover {
@@ -58,15 +167,52 @@
         transform: translateY(-2px);
     }
 
+    .metric-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    .metric-row > .col-md-6,
+    .metric-row > .col-lg-3 {
+        flex: 1 1 0;
+        max-width: none;
+        padding-left: 0;
+        padding-right: 0;
+    }
+
+    .metric-row .metric-card {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    @media (max-width: 992px) {
+        .metric-row > .col-md-6,
+        .metric-row > .col-lg-3 {
+            flex: 1 1 calc(50% - 0.5rem);
+        }
+    }
+
+    @media (max-width: 576px) {
+        .metric-row > .col-md-6,
+        .metric-row > .col-lg-3 {
+            flex: 1 1 100%;
+        }
+    }
+
     .metric-value {
         font-size: 1.875rem;
         font-weight: 700;
-        color: #1f2937;
+        color: var(--admin-card-text);
     }
 
     .metric-label {
         font-size: 0.875rem;
-        color: #6b7280;
+        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
         margin-top: 0.5rem;
     }
 
@@ -85,8 +231,8 @@
     }
 
     .ideas-carousel {
-        border-radius: 12px;
-        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        border-radius: 1.25rem;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.9), rgba(96, 165, 250, 0.92));
         color: white;
         padding: 2rem;
         margin-bottom: 2rem;
@@ -101,57 +247,55 @@
     }
 
     .chart-container {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border);
+        border-radius: 1.25rem;
         padding: 1.5rem;
         margin-bottom: 1.5rem;
+        box-shadow: var(--admin-card-shadow);
+        color: var(--admin-card-text);
     }
 
-    .tab-buttons {
-        display: flex;
-        gap: 0.5rem;
-        margin-bottom: 1rem;
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: 1rem;
+    .chart-subtitle {
+        font-size: 0.875rem;
+        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
+        margin-top: 0.25rem;
     }
 
-    .tab-btn {
-        padding: 0.5rem 1rem;
-        border: none;
-        background: transparent;
-        color: #6b7280;
-        cursor: pointer;
-        font-weight: 600;
-        transition: all 0.3s ease;
-        border-bottom: 3px solid transparent;
-        margin-bottom: -1.5rem;
+    #periodDropdown {
+        min-width: 170px;
+        border-radius: 14px;
+        border: 1px solid var(--admin-card-border);
+        background: var(--admin-card-bg);
+        color: var(--admin-card-text);
+        box-shadow: none;
     }
 
-    .tab-btn.active {
-        color: #7c3aed;
-        border-bottom-color: #7c3aed;
+    #periodDropdown:focus {
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+        border-color: rgba(37, 99, 235, 0.35);
     }
 
     .stats-table {
-        background: white;
-        border: 1px solid #e5e7eb;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border);
         border-radius: 12px;
         overflow: hidden;
+        color: var(--admin-card-text);
     }
 
     .stats-table th {
-        background: #f9fafb;
-        border-bottom: 1px solid #e5e7eb;
+        background: color-mix(in srgb, var(--admin-card-bg) 92%, var(--brand-blue));
+        border-bottom: 1px solid var(--admin-card-border);
         padding: 1rem;
         font-weight: 600;
-        color: #374151;
+        color: var(--admin-card-text);
         font-size: 0.875rem;
     }
 
     .stats-table td {
         padding: 1rem;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--admin-card-border);
     }
 
     .stats-table tbody tr:last-child td {
@@ -159,7 +303,7 @@
     }
 
     .stats-table tbody tr:hover {
-        background-color: #f9fafb;
+        background-color: color-mix(in srgb, var(--admin-card-bg) 94%, var(--brand-blue));
     }
 
     .badge-success {
@@ -191,12 +335,14 @@
     }
 
     .data-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border);
+        border-radius: 1.25rem;
         padding: 1.5rem;
         text-align: center;
         transition: all 0.3s ease;
+        box-shadow: var(--admin-card-shadow);
+        color: var(--admin-card-text);
     }
 
     .data-card:hover {
@@ -204,26 +350,64 @@
         transform: translateY(-2px);
     }
 
+    .quick-action-btn {
+        min-height: 48px;
+        padding: 0.85rem 1rem;
+        border-radius: 14px;
+        border: 1px solid rgba(37, 99, 235, 0.16);
+        background: var(--admin-card-bg);
+        color: var(--admin-card-text) !important;
+        font-weight: 600;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 0.75rem;
+    }
+
+    .quick-action-btn:hover,
+    .quick-action-btn:focus {
+        background: color-mix(in srgb, var(--admin-card-bg) 92%, #ffffff);
+        color: var(--admin-card-text) !important;
+        box-shadow: 0 10px 20px rgba(16, 24, 40, 0.08);
+    }
+
     .data-card-icon {
         font-size: 2.5rem;
         margin-bottom: 1rem;
-        color: #7c3aed;
+        color: var(--brand-blue);
     }
 
     .data-card-value {
         font-size: 1.875rem;
         font-weight: 700;
-        color: #1f2937;
+        color: var(--admin-card-text);
     }
 
     .data-card-label {
         font-size: 0.875rem;
-        color: #6b7280;
+        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
         margin-top: 0.5rem;
     }
 
+    .chart-plot-wrapper {
+        width: 100%;
+        min-height: 320px;
+    }
+
+    #ordersSortSelect {
+        background: var(--admin-card-bg);
+        border-color: var(--admin-card-border);
+        color: var(--admin-card-text);
+    }
+
+    #ordersSortSelect:focus {
+        box-shadow: none;
+        border-color: var(--brand-blue);
+    }
+
     .btn-manage {
-        background: #7c3aed;
+        background: var(--brand-blue);
         color: white;
         border: none;
         padding: 0.5rem 1rem;
@@ -236,25 +420,27 @@
     }
 
     .btn-manage:hover {
-        background: #6d28d9;
+        background: var(--brand-blue-hover);
         color: white;
         text-decoration: none;
     }
 
     .profile-hero {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border-radius: 12px;
+        background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(96, 165, 250, 0.88));
+        border-radius: 1.25rem;
         padding: 2rem;
         color: white;
         margin-bottom: 2rem;
     }
 
     .profile-card {
-        background: white;
-        border: 1px solid #e5e7eb;
-        border-radius: 12px;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border);
+        border-radius: 1.25rem;
         padding: 2rem;
         margin-bottom: 2rem;
+        color: var(--admin-card-text);
+        box-shadow: var(--admin-card-shadow);
     }
 
     .profile-photo {
@@ -269,12 +455,12 @@
     .profile-name {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #1f2937;
+        color: var(--admin-card-text);
         margin-bottom: 0.5rem;
     }
 
     .profile-title {
-        color: #7c3aed;
+        color: var(--brand-blue);
         font-weight: 600;
         margin-bottom: 1rem;
     }
@@ -284,7 +470,7 @@
         align-items: flex-start;
         margin-bottom: 1.5rem;
         padding-bottom: 1.5rem;
-        border-bottom: 1px solid #f3f4f6;
+        border-bottom: 1px solid var(--admin-card-border);
     }
 
     .profile-info-row:last-child {
@@ -294,7 +480,7 @@
     }
 
     .profile-info-icon {
-        color: #7c3aed;
+        color: var(--brand-blue);
         font-size: 1.25rem;
         margin-right: 1rem;
         min-width: 30px;
@@ -302,13 +488,13 @@
 
     .profile-info-label {
         font-size: 0.875rem;
-        color: #6b7280;
+        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
         margin-bottom: 0.25rem;
     }
 
     .profile-info-value {
         font-weight: 600;
-        color: #1f2937;
+        color: var(--admin-card-text);
     }
 
     .location-progress {
@@ -331,7 +517,7 @@
 
     .progress-bar {
         border-radius: 4px;
-        background: #7c3aed;
+        background: var(--brand-blue);
     }
 
     @media (max-width: 768px) {
@@ -343,10 +529,6 @@
             font-size: 1.5rem;
         }
 
-        .tab-buttons {
-            flex-direction: column;
-        }
-
         .stats-table th,
         .stats-table td {
             padding: 0.75rem 0.5rem;
@@ -354,37 +536,13 @@
         }
     }
 
-    [data-bs-theme="dark"] .metric-card,
-    [data-bs-theme="dark"] .chart-container,
-    [data-bs-theme="dark"] .stats-table,
-    [data-bs-theme="dark"] .data-card,
-    [data-bs-theme="dark"] .profile-card {
-        background: #1f2937;
-        border-color: #374151;
+    [data-bs-theme="dark"] .dashboard-hero,
+    [data-bs-theme="dark"] .profile-hero {
+        box-shadow: 0 18px 40px -18px rgba(0, 0, 0, 0.55);
     }
 
-    [data-bs-theme="dark"] .metric-value,
-    [data-bs-theme="dark"] .data-card-value,
-    [data-bs-theme="dark"] .profile-name {
-        color: #f3f4f6;
-    }
-
-    [data-bs-theme="dark"] .metric-label,
-    [data-bs-theme="dark"] .profile-info-label {
-        color: #9ca3af;
-    }
-
-    [data-bs-theme="dark"] .stats-table th {
-        background: #111827;
-        color: #f3f4f6;
-    }
-
-    [data-bs-theme="dark"] .stats-table tbody tr:hover {
-        background-color: #111827;
-    }
-
-    [data-bs-theme="dark"] .profile-info-value {
-        color: #f3f4f6;
+    [data-bs-theme="dark"] .hero-profile-summary {
+        background: rgba(255, 255, 255, 0.08);
     }
 </style>
 <?php $__env->stopSection(); ?>
@@ -394,237 +552,145 @@
     <section class="py-4">
         <div class="container-fluid">
             <!-- Hero Section -->
-        <div class="dashboard-hero">
-            <div class="row align-items-center">
-                <div class="col">
-                    <h1>👋 Selamat Datang <?php echo e(auth()->user()->name ?? 'Admin'); ?></h1>
-                    <p class="mb-2">Kelola sistem dan data aplikasi Rei Cosrent</p>
-                    <?php if($profile_contact): ?>
-                        <small style="opacity: 0.9;">Berposisi sebagai: <strong><?php echo e($profile_contact->title); ?></strong></small>
-                    <?php endif; ?>
+        <?php
+            $adminPhoto = $profile_contact && $profile_contact->photo
+                ? asset('storage/' . $profile_contact->photo)
+                : null;
+            $profileName = $profile_contact ? $profile_contact->name : 'Belum diisi';
+            $profileTitle = $profile_contact ? $profile_contact->title : 'Jabatan belum diisi';
+        ?>
+
+        <div class="row g-3 mb-4 align-items-stretch">
+            <div class="col-lg-8">
+                <div class="dashboard-hero admin-surface-card h-100 mb-0">
+                    <div class="d-flex flex-column h-100">
+                        <div class="mb-3">
+                            <h1>👋 Selamat Datang <?php echo e(auth()->user()->name ?? 'Admin'); ?></h1>
+                            <p class="mb-0">Kelola sistem dan data aplikasi Rei Cosrent</p>
+                        </div>
+                        <div class="hero-profile-summary mt-auto">
+                            <?php if($adminPhoto): ?>
+                                <img src="<?php echo e($adminPhoto); ?>" alt="Foto Admin" class="hero-profile-photo">
+                            <?php else: ?>
+                                <div class="hero-profile-photo d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.18);">
+                                    <i class="bi bi-person" style="font-size: 2rem; color: rgba(255,255,255,0.9);"></i>
+                                </div>
+                            <?php endif; ?>
+                            <div>
+                                <div class="hero-profile-name"><?php echo e($profileName); ?></div>
+                                <div class="hero-profile-title"><?php echo e($profileTitle); ?></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="col-auto">
-                    <a href="<?php echo e(route('admin.profile-contact')); ?>" class="hero-btn me-2">
-                        <i class="bi bi-pencil-square"></i> Edit Profil
-                    </a>
-                    <a href="<?php echo e(route('admin.logout')); ?>" class="hero-btn">
-                        <i class="bi bi-box-arrow-right"></i> Logout
-                    </a>
+            </div>
+            <div class="col-lg-4">
+                <div class="admin-surface-card h-100 p-4 d-flex flex-column justify-content-between">
+                    <div>
+                        <h5 class="fw-bold mb-2">Aksi Cepat</h5>
+                        <p class="mb-4">Kelola profil admin atau akhiri sesi masuk dari panel ini.</p>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="#" onclick="history.back(); return false;" class="btn btn-sm btn-secondary quick-action-btn w-100 text-start">
+                            <i class="bi bi-arrow-left me-2"></i> Kembali
+                        </a>
+                        <a href="<?php echo e(route('admin.profile-contact')); ?>" class="btn btn-sm btn-secondary quick-action-btn w-100 text-start">
+                            <i class="bi bi-pencil-square me-2"></i> Edit Profil
+                        </a>
+                        <a href="<?php echo e(route('admin.logout')); ?>" class="btn btn-sm btn-secondary quick-action-btn w-100 text-start">
+                            <i class="bi bi-box-arrow-right me-2"></i> Logout
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- Metric Cards -->
-        <div class="row mb-4">
-            <div class="col-md-6 col-lg-3 mb-3">
-                <div class="metric-card">
-                    <div class="metric-label">Total Pesanan</div>
-                    <div class="metric-value" id="totalOrders"><?php echo e($pesanan_count ?? 0); ?></div>
-                    <div class="metric-change positive">
-                    </div>
+        <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+            <div class="col">
+                <div class="data-card admin-surface-card h-100 p-3 text-start">
+                    <div class="data-card-label">Total Seluruh Pendapatan</div>
+                    <div class="data-card-value" id="totalOverallRevenue">Rp <?php echo e(number_format($total_revenue ?? 0, 0, ',', '.')); ?></div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3 mb-3">
-                <div class="metric-card">
-                    <div class="metric-label">Total Pendapatan</div>
-                    <div class="metric-value" id="totalRevenue">Rp <?php echo e(number_format($total_revenue ?? 0, 0, ',', '.')); ?></div>
-                    <div class="metric-change positive">
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-6 col-lg-3 mb-3">
-                <div class="metric-card">
-                    <div class="metric-label">Total Pengguna</div>
-                    <div class="metric-value"><?php echo e($users_count ?? 0); ?></div>
-                    <div class="metric-change positive">
-                    </div>
+            <div class="col">
+                <div class="data-card admin-surface-card h-100 p-3 text-start">
+                    <div class="data-card-label">Total Seluruh Pesanan</div>
+                    <div class="data-card-value" id="totalOverallOrders"><?php echo e($pesanan_count ?? 0); ?></div>
                 </div>
             </div>
         </div>
 
         <!-- Revenue Section -->
         <div class="row mb-4">
-            <div class="col-lg-8">
-                <div class="chart-container">
-                    <div class="d-flex align-items-center justify-content-between mb-3">
-                        <h5 class="fw-bold mb-0">Grafik Pendapatan</h5>
-                        <div class="tab-buttons">
-                            <button class="tab-btn active" onclick="switchChart('income')">Total Pendapatan</button>
-                            <button class="tab-btn" onclick="switchChart('expense')">Total Pengeluaran</button>
-                        </div>
-                    </div>
-                    <canvas id="revenueChart" height="100"></canvas>
-                </div>
-            </div>
-
-            <!-- Product Sales -->
-            <div class="col-lg-4">
-                <div class="chart-container">
-                    <h5 class="fw-bold mb-3">Kostum Paling Sering Dipesankan</h5>
-                    <canvas id="productChart" height="100"></canvas>
-                    <div class="mt-3">
-                        <?php
-                            $total_top = $top_3_kostum->sum('count');
-                        ?>
-                        <?php $__currentLoopData = $top_3_kostum; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                            <?php
-                                $percentage = $total_top > 0 ? ($item->count / $total_top) * 100 : 0;
-                            ?>
-                            <div class="mb-2 d-flex justify-content-between">
-                                <span class="text-muted small"><?php echo e($item->nama_kostum); ?></span>
-                                <strong><?php echo e(number_format($percentage, 1)); ?>%</strong>
+            <div class="col-12">
+                <div class="chart-container admin-surface-card p-0 overflow-hidden">
+                    <div class="d-flex flex-column gap-3 px-4 py-3 border-bottom" style="border-color: var(--admin-card-border) !important;">
+                        <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
+                            <div>
+                                <h5 id="revenueChartTitle" class="fw-bold mb-0">Grafik Pendapatan Minggu Ini</h5>
+                                <div class="chart-subtitle">Tampilkan grafik harga sewa dan jumlah pesanan berdasarkan periode terpilih.</div>
                             </div>
-                            <div class="progress mb-3">
-                                <div class="progress-bar" style="width: <?php echo e($percentage); ?>%"></div>
-                            </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        <?php if($other_count > 0): ?>
-                            <?php
-                                $other_percentage = $total_top > 0 ? ($other_count / ($total_top + $other_count)) * 100 : 0;
-                            ?>
-                            <div class="mb-2 d-flex justify-content-between">
-                                <span class="text-muted small">Lainnya (<?php echo e($other_count); ?>)</span>
-                                <strong><?php echo e(number_format($other_percentage, 1)); ?>%</strong>
-                            </div>
-                            <div class="progress">
-                                <div class="progress-bar" style="width: <?php echo e($other_percentage); ?>%"></div>
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-        <!-- Data Kostum Overview -->
-        <?php
-            $overviewItems = [
-                ['label' => 'Data Katalog', 'count' => (int) ($katalog_count ?? 0), 'icon' => '📚'],
-                ['label' => 'Data Kostum', 'count' => (int) ($kostum_count ?? 0), 'icon' => '👗'],
-                ['label' => 'Data Ulasan', 'count' => (int) ($ulasan_count ?? 0), 'icon' => '⭐'],
-                ['label' => 'Data Aturan', 'count' => (int) ($aturan_count ?? 0), 'icon' => '📄'],
-            ];
-            $overviewLabels = collect($overviewItems)->pluck('label')->toArray();
-            $overviewCounts = collect($overviewItems)->pluck('count')->toArray();
-            $hasOverviewData = collect($overviewCounts)->sum() > 0;
-        ?>
-
-        <div class="chart-container mb-4">
-            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <div>
-                    <h5 class="fw-bold mb-0">Data Kostum</h5>
-                    <p class="text-muted mb-0">Ringkasan data dari database: katalog, kostum, ulasan, dan aturan</p>
-                </div>
-            </div>
-
-            <?php if($hasOverviewData): ?>
-                <div class="row g-4 mb-4">
-                    <div class="col-1">
-                        <canvas id="overviewChart" height="220"></canvas>
-                    </div>
-                </div>
-
-                <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-3 align-items-stretch">
-                    <?php $__currentLoopData = $overviewItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                        <div class="col">
-                            <div class="data-card h-100 d-flex flex-column justify-content-center align-items-center text-center">
-                                <div class="data-card-icon"><?php echo e($item['icon']); ?></div>
-                                <div class="data-card-value"><?php echo e($item['count']); ?></div>
-                                <div class="data-card-label"><?php echo e($item['label']); ?></div>
+                            <div class="d-flex align-items-center gap-2">
+                                <label for="periodDropdown" class="visually-hidden">Pilih periode</label>
+                                <select id="periodDropdown" class="form-select form-select-sm w-auto">
+                                    <option value="day">Hari Ini</option>
+                                    <option value="week" selected>Minggu Ini</option>
+                                    <option value="month">Bulan Ini</option>
+                                    <option value="year">Tahun Ini</option>
+                                </select>
                             </div>
                         </div>
-                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                </div>
-            <?php else: ?>
-                <div class="text-center py-5">
-                    <i class="bi bi-inbox display-4 text-muted"></i>
-                    <h6 class="mt-3 mb-1">Belum ada data</h6>
-                    <p class="text-muted mb-0">Data katalog, kostum, ulasan, dan aturan masih kosong.</p>
-                </div>
-            <?php endif; ?>
-        </div>
-
-        <!-- Profile Section -->
-        <div class="row mb-4">
-            <div class="col-lg-8">
-                <div class="profile-card">
-                    <h5 class="fw-bold mb-3">Profil Admin</h5>
-                    <?php
-                        $adminPhoto = $profile_contact && $profile_contact->photo
-                            ? asset('storage/' . $profile_contact->photo)
-                            : null;
-                        $profileName = $profile_contact ? $profile_contact->name : "Belum diisi";
-                        $profileTitle = $profile_contact ? $profile_contact->title : "Jabatan belum diisi";
-                        $profileVision = $profile_contact ? $profile_contact->vision : "Belum ada deskripsi singkat";
-                        $profileAddress = $profile_contact ? $profile_contact->address : "Belum diisi";
-                        $profilePhone = $profile_contact ? $profile_contact->phone : "Belum diisi";
-                        $profileEmail = $profile_contact ? $profile_contact->email : "Belum diisi";
-                    ?>
-                    <div class="text-center mb-3">
-                        <?php if($adminPhoto): ?>
-                            <img src="<?php echo e($adminPhoto); ?>" alt="Foto Admin" class="profile-photo">
-                        <?php else: ?>
-                            <div style="width: 120px; height: 120px; border-radius: 50%; background: #e5e7eb; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; border: 4px solid #7c3aed;">
-                                <i class="bi bi-person" style="font-size: 3rem; color: #9ca3af;"></i>
+                        <div class="row row-cols-1 row-cols-sm-2 g-3">
+                            <div class="col">
+                                <div class="data-card admin-surface-card h-100 p-3 text-start">
+                                    <div class="data-card-label">Pendapatan Harga</div>
+                                    <div class="data-card-value" id="periodRevenueTotal">Rp <?php echo e(number_format($total_revenue ?? 0, 0, ',', '.')); ?></div>
+                                </div>
                             </div>
-                        <?php endif; ?>
-                        <h4 class="profile-name"><?php echo e($profileName); ?></h4>
-                        <p class="profile-title"><?php echo e($profileTitle); ?></p>
-                        <span class="badge product-badge badge-success">Aktif</span>
-                    </div>
-                    <hr>
-                    <div class="profile-info-row">
-                        <i class="bi bi-quote profile-info-icon"></i>
-                        <div>
-                            <div class="profile-info-label">Tentang</div>
-                            <div class="profile-info-value"><?php echo e($profileVision); ?></div>
-                        </div>
-                    </div>
-                    <div class="profile-info-row">
-                        <i class="bi bi-geo-alt profile-info-icon"></i>
-                        <div>
-                            <div class="profile-info-label">Alamat</div>
-                            <div class="profile-info-value"><?php echo e($profileAddress); ?></div>
-                        </div>
-                    </div>
-                    <div class="profile-info-row">
-                        <i class="bi bi-telephone profile-info-icon"></i>
-                        <div>
-                            <div class="profile-info-label">Telepon</div>
-                            <div class="profile-info-value"><?php echo e($profilePhone); ?></div>
-                        </div>
-                    </div>
-                    <div class="profile-info-row">
-                        <i class="bi bi-envelope profile-info-icon"></i>
-                        <div>
-                            <div class="profile-info-label">Email</div>
-                            <div class="profile-info-value"><?php echo e($profileEmail); ?></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Gender Sales -->
-            <div class="col-lg-4">
-                <div class="chart-container">
-                    <h5 class="fw-bold mb-3">Metode Pembayaran</h5>
-                    <canvas id="genderChart" height="150"></canvas>
-                    <div class="mt-3 small">
-                        <?php $__empty_1 = true; $__currentLoopData = $payment_methods; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $method): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <div class="mb-2 d-flex justify-content-between">
-                                <span class="text-muted"><?php echo e($method->metode_pembayaran ?? 'Belum ditentukan'); ?></span>
-                                <strong><?php echo e($method->count); ?></strong>
+                            <div class="col">
+                                <div class="data-card admin-surface-card h-100 p-3 text-start">
+                                    <div class="data-card-label">Jumlah Pesanan</div>
+                                    <div class="data-card-value" id="periodOrdersTotal"><?php echo e($pesanan_count ?? 0); ?></div>
+                                </div>
                             </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                            <p class="text-muted">Belum ada data</p>
-                        <?php endif; ?>
+                        </div>
+                    </div>
+                    <div class="px-3 px-md-4 py-4">
+                        <div class="row g-4">
+                            <div class="col-12 col-lg-6">
+                                <div class="admin-surface-card p-3 h-100">
+                                    <h6 class="fw-semibold mb-3">Grafik Harga</h6>
+                                    <div class="chart-plot-wrapper" style="min-height: 320px;">
+                                        <canvas id="revenueChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-12 col-lg-6">
+                                <div class="admin-surface-card p-3 h-100">
+                                    <h6 class="fw-semibold mb-3">Grafik Pesanan</h6>
+                                    <div class="chart-plot-wrapper" style="min-height: 320px;">
+                                        <canvas id="ordersChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
         <!-- Orders Table -->
-        <div class="chart-container">
-            <h5 class="fw-bold mb-3">Pesanan Terbaru</h5>
-            <div class="table-responsive">
+        <div class="chart-container admin-surface-card mb-4">
+            <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <h5 class="fw-bold mb-0">Pesanan</h5>
+                <div class="d-flex align-items-center gap-2">
+                    <select id="ordersSortSelect" class="form-select form-select-sm" style="width: 220px;">
+                        <option value="created_desc">Terbaru (Dibuat)</option>
+                        <option value="created_asc">Terlama (Dibuat)</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-responsive mb-4">
                 <table class="stats-table w-100">
                     <thead>
                         <tr>
@@ -638,7 +704,7 @@
                     </thead>
                     <tbody>
                         <?php $__empty_1 = true; $__currentLoopData = $latest_orders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <tr>
+                            <tr data-created-at="<?php echo e($order->created_at ? $order->created_at->format('Y-m-d H:i:s') : ''); ?>" data-tanggal-pemakaian="<?php echo e($order->tanggal_pemakaian ? \Carbon\Carbon::parse($order->tanggal_pemakaian)->format('Y-m-d') : ''); ?>">
                                 <td><?php echo e($order->nama); ?></td>
                                 <td><?php echo e($order->nama_kostum); ?></td>
                                 <td>Rp <?php echo e(number_format($order->total_harga, 0, ',', '.')); ?></td>
@@ -655,7 +721,11 @@
                                     ?>
                                     <span class="product-badge <?php echo e($badge_class); ?>"><?php echo e(ucfirst($order->status ?? 'pending')); ?></span>
                                 </td>
-                                <td><a href="#" class="text-primary text-decoration-none small"><i class="bi bi-eye"></i> Lihat</a></td>
+                                <td>
+                                    <a href="<?php echo e(route('admin.data-pesanan', ['open_detail' => $order->id])); ?>" class="text-primary text-decoration-none small">
+                                        <i class="bi bi-eye"></i> Lihat
+                                    </a>
+                                </td>
                             </tr>
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                             <tr>
@@ -667,73 +737,6 @@
             </div>
         </div>
 
-        <div class="row mt-4">
-            <div class="col-lg-8">
-                <div class="chart-container">
-                    <h5 class="fw-bold mb-3">Status Pesanan</h5>
-                    <div class="row g-3">
-                        <?php
-                            $status_colors = [
-                                'pending' => 'warning',
-                                'confirmed' => 'info',
-                                'completed' => 'success',
-                                'cancelled' => 'danger',
-                            ];
-                        ?>
-                        <?php $__empty_1 = true; $__currentLoopData = $order_statuses; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status_item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                            <?php
-                                $color = $status_colors[$status_item->status] ?? 'secondary';
-                                $percentage = $pesanan_count > 0 ? ($status_item->count / $pesanan_count) * 100 : 0;
-                            ?>
-                            <div class="col-md-6">
-                                <div class="location-progress">
-                                    <div class="location-progress-label">
-                                        <span><?php echo e(ucfirst($status_item->status)); ?></span>
-                                        <span><?php echo e($status_item->count); ?> (<?php echo e(number_format($percentage, 1)); ?>%)</span>
-                                    </div>
-                                    <div class="progress">
-                                        <div class="progress-bar bg-<?php echo e($color); ?>" style="width: <?php echo e($percentage); ?>%"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                            <div class="col-12 text-center text-muted py-4">
-                                Belum ada data pesanan
-                            </div>
-                        <?php endif; ?>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Top Selling Products -->
-            <div class="col-lg-4">
-                <div class="chart-container">
-                    <h5 class="fw-bold mb-3">Top Kostum Dipesankan</h5>
-                    <div class="table-responsive">
-                        <table class="stats-table w-100" style="font-size: 0.875rem;">
-                            <thead>
-                                <tr>
-                                    <th>Kostum</th>
-                                    <th>Jumlah</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $__empty_1 = true; $__currentLoopData = $top_kostum->take(6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
-                                    <tr>
-                                        <td><?php echo e(Str::limit($item->nama_kostum, 20)); ?></td>
-                                        <td><strong><?php echo e($item->count); ?></strong></td>
-                                    </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
-                                    <tr>
-                                        <td colspan="2" class="text-center text-muted py-2">Tidak ada data</td>
-                                    </tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
     </section>
 </div> <!-- End pageWrapper -->
 
@@ -741,11 +744,10 @@
 <aside id="appSidebar" class="app-sidebar">
     <div class="d-flex align-items-center justify-content-between px-3 pt-3">
         <h5 class="mb-0">Kelola Data</h5>
-        <button id="sidebarClose" class="sidebar-close" aria-label="Tutup sidebar"><i class="bi bi-x-lg"></i></button>
     </div>
     <div class="p-3">
         <div class="d-grid gap-3">
-            <a href="<?php echo e(route('admin.data-pengguna')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-pengguna')); ?>" aria-label="Data Pengguna" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-people"></i></div>
                     <div class="flex-grow-1">
@@ -755,7 +757,7 @@
                 </div>
             </a>
             
-            <a href="<?php echo e(route('admin.data-katalog')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-katalog')); ?>" aria-label="Data Katalog" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-collection"></i></div>
                     <div class="flex-grow-1">
@@ -765,7 +767,7 @@
                 </div>
             </a>
 
-            <a href="<?php echo e(route('admin.data-kostum')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-kostum')); ?>" aria-label="Data Kostum" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-box"></i></div>
                     <div class="flex-grow-1">
@@ -775,7 +777,7 @@
                 </div>
             </a>
 
-            <a href="<?php echo e(route('admin.data-aturan')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-aturan')); ?>" aria-label="Data Aturan" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-file-earmark-text"></i></div>
                     <div class="flex-grow-1">
@@ -785,7 +787,7 @@
                 </div>
             </a>
 
-            <a href="<?php echo e(route('admin.data-pesanan')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-pesanan')); ?>" aria-label="Data Pesanan & Pembayaran" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-bag-check"></i></div>
                     <div class="flex-grow-1">
@@ -795,7 +797,7 @@
                 </div>
             </a>
 
-            <a href="<?php echo e(route('admin.data-denda')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-denda')); ?>" aria-label="Data Denda & Kerusakan" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-exclamation-triangle"></i></div>
                     <div class="flex-grow-1">
@@ -805,7 +807,7 @@
                 </div>
             </a>
 
-            <a href="<?php echo e(route('admin.data-ulasan')); ?>" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="<?php echo e(route('admin.data-ulasan')); ?>" aria-label="Data Ulasan" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-chat-square-text"></i></div>
                     <div class="flex-grow-1">
@@ -825,32 +827,57 @@
         left: 0;
         top: var(--nav-height, 56px);
         height: calc(100vh - var(--nav-height, 56px));
-        width: 320px;
+        width: 56px; /* collapsed by default */
         max-width: 85vw;
         background: var(--bs-body-bg);
-        transform: translateX(-110%);
-        transition: transform 0.3s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease;
+        transition: width 0.32s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease, transform 0.32s ease;
         z-index: 1040;
         overflow-y: auto;
+        overflow-x: hidden;
         padding-bottom: 3rem;
     }
     .app-sidebar.open {
-        transform: translateX(0);
+        width: 320px; /* expands when open */
         box-shadow: 0 12px 40px rgba(2,6,23,0.12);
     }
-    .sidebar-close {
-        border: none;
-        background: transparent;
-        font-size: 1.2rem;
-        cursor: pointer;
-        color: var(--bs-body-color);
+
+    .app-sidebar::before {
+        content: '';
+        position: absolute;
+        right: 0;
+        top: 1.5rem;
+        width: 56px;
+        height: 72px;
+        background: linear-gradient(135deg, #2563eb 0%, #93c5fd 100%);
+        border-radius: 0 1rem 1rem 0;
+        box-shadow: 2px 10px 24px rgba(37, 99, 235, 0.18);
+        pointer-events: none;
+        transform: translateX(100%);
     }
+    /* Reserve space for collapsed sidebar by default so page is not covered */
     #pageWrapper {
         transition: margin-left 0.3s cubic-bezier(.2,.8,.2,1);
+        margin-left: 56px;
     }
     #pageWrapper.shifted {
         margin-left: 320px;
         transition: margin-left 0.3s cubic-bezier(.2,.8,.2,1);
+    }
+
+    footer {
+        transition: margin-left 0.3s cubic-bezier(.2,.8,.2,1);
+        margin-left: 56px;
+    }
+
+    #pageWrapper.shifted + footer,
+    #pageWrapper.shifted ~ footer {
+        margin-left: 320px;
+    }
+
+    @media (max-width: 768px) {
+        footer {
+            margin-left: 0 !important;
+        }
     }
     .app-sidebar .menu-card { 
         display: block; 
@@ -906,165 +933,335 @@
     [data-bs-theme="dark"] .app-sidebar small {
         color: #9ca3af;
     }
+
+    /* Collapsed / icon-only sidebar: hide labels and totals, keep icons visible */
+    .app-sidebar:not(.open) {
+        width: 56px;
+        transform: translateX(0);
+        overflow-x: hidden;
+    }
+
+    .app-sidebar:not(.open) .menu-card .card-body {
+        padding-left: 0.5rem !important;
+        padding-right: 0.5rem !important;
+        justify-content: center;
+    }
+
+    .app-sidebar:not(.open) .menu-icon {
+        margin: 0 auto !important;
+        display: block;
+        font-size: 1.35rem;
+    }
+
+    .app-sidebar:not(.open) .menu-card .flex-grow-1,
+    .app-sidebar:not(.open) .menu-card h6,
+    .app-sidebar:not(.open) .menu-card small {
+        display: none !important;
+    }
+
+    .app-sidebar::before {
+        right: 0;
+        transform: translateX(100%);
+    }
+
+    /* More refined collapsed appearance: center icons vertically, remove card chrome */
+    .app-sidebar:not(.open) > .d-flex { /* hide the header/title when collapsed */
+        display: none !important;
+    }
+
+    .app-sidebar:not(.open) .p-3 {
+        padding: 0 !important;
+    }
+
+    .app-sidebar:not(.open) .d-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        align-items: center;
+        padding: 0.75rem 0;
+    }
+
+    .app-sidebar:not(.open) .menu-card {
+        background: transparent !important;
+        box-shadow: none !important;
+        border: none !important;
+        width: auto;
+    }
+
+    .app-sidebar:not(.open) .menu-card .card-body {
+        padding: 0.25rem !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        width: 48px;
+        height: 48px;
+    }
+
+    .app-sidebar:not(.open) .menu-card:hover {
+        transform: none !important;
+        box-shadow: none !important;
+        background: transparent !important;
+    }
+
+    /* make pseudo folder-edge slightly smaller when collapsed */
+    .app-sidebar:not(.open)::before {
+        right: 0;
+        width: 48px;
+        height: 64px;
+        transform: translateX(100%);
+    }
 </style>
 
 <?php $__env->startPush('scripts'); ?>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/apexcharts@3.45.0/dist/apexcharts.min.js"></script>
 <script>
+    const statsEndpoint = <?php echo json_encode(route('admin.stats'), 15, 512) ?>;
+
     // Initialize Charts
     document.addEventListener('DOMContentLoaded', function() {
         initializeCharts();
-        fetchDashboardStats();
+        initializePeriodFilters();
+        fetchDashboardStats('week');
     });
 
+    let latestDashboardData = null;
+    let revenueChartInstance = null;
+    let ordersChartInstance = null;
+
     function initializeCharts() {
-        // Revenue Chart
-        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
-        new Chart(revenueCtx, {
-            type: 'line',
-            data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                datasets: [{
-                    label: 'Pendapatan',
-                    data: [30000, 35000, 32000, 40000, 45000, 50000],
-                    borderColor: '#7c3aed',
-                    backgroundColor: 'rgba(124, 58, 237, 0.1)',
-                    tension: 0.4,
-                    fill: true,
-                    pointRadius: 5,
-                    pointBackgroundColor: '#7c3aed',
-                    pointBorderColor: '#fff',
-                    pointBorderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        ticks: {
-                            callback: function(value) {
-                                return 'Rp ' + value.toLocaleString('id-ID');
-                            }
-                        }
-                    }
-                }
-            }
-        });
+        if (revenueChartInstance && ordersChartInstance) return;
 
-        const overviewCanvas = document.getElementById('overviewChart');
-        if (overviewCanvas) {
-            const overviewLabels = <?php echo json_encode($overviewLabels); ?>;
-            const overviewCounts = <?php echo json_encode($overviewCounts); ?>;
+        const revCanvas = document.getElementById('revenueChart');
+        const ordersCanvas = document.getElementById('ordersChart');
+        if (!revCanvas || !ordersCanvas) {
+            console.warn('initializeCharts: missing revenueChart or ordersChart canvas');
+            return;
+        }
 
-            new Chart(overviewCanvas.getContext('2d'), {
-                type: 'doughnut',
+        const createCharts = () => {
+            const revenueCtx = revCanvas.getContext('2d');
+            const ordersCtx = ordersCanvas.getContext('2d');
+
+            revenueChartInstance = new Chart(revenueCtx, {
+                type: 'line',
                 data: {
-                    labels: overviewLabels,
-                    datasets: [{
-                        data: overviewCounts,
-                        backgroundColor: ['#7c3aed', '#667eea', '#f093fb', '#10b981'],
-                        borderColor: '#fff',
-                        borderWidth: 2
-                    }]
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Pendapatan (Harga Sewa)',
+                            data: [],
+                            borderColor: '#7c3aed',
+                            backgroundColor: 'rgba(124, 58, 237, 0.15)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#7c3aed',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            yAxisID: 'yRevenue'
+                        }
+                    ]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        yRevenue: {
+                            type: 'linear',
+                            position: 'left',
+                            beginAtZero: true,
+                            ticks: { callback: function(value) { try { return 'Rp ' + Number(value).toLocaleString('id-ID'); } catch (e) { return value; } } }
                         }
                     }
                 }
             });
+
+            ordersChartInstance = new Chart(ordersCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Jumlah Pesanan',
+                            data: [],
+                            borderColor: '#10b981',
+                            backgroundColor: 'rgba(16, 185, 129, 0.15)',
+                            tension: 0.35,
+                            fill: true,
+                            pointRadius: 4,
+                            pointBackgroundColor: '#10b981',
+                            pointBorderColor: '#fff',
+                            pointBorderWidth: 2,
+                            borderWidth: 1
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { mode: 'index', intersect: false },
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { precision: 0 }
+                        }
+                    }
+                }
+            });
+
+            console.log('initializeCharts: charts created');
+            if (latestDashboardData && latestDashboardData.labels && latestDashboardData.datasets) {
+                try {
+                    revenueChartInstance.data.labels = latestDashboardData.labels;
+                    revenueChartInstance.data.datasets[0].data = latestDashboardData.datasets.revenue || [];
+                    revenueChartInstance.update();
+
+                    ordersChartInstance.data.labels = latestDashboardData.labels;
+                    ordersChartInstance.data.datasets[0].data = latestDashboardData.datasets.orders || [];
+                    ordersChartInstance.update();
+                } catch (e) {
+                    console.error('initializeCharts: failed to apply latestDashboardData', e);
+                }
+            }
+        };
+
+        if (typeof Chart === 'undefined') {
+            console.warn('initializeCharts: Chart not found, loading dynamically');
+            const s = document.createElement('script');
+            s.src = 'https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.js';
+            s.onload = () => { console.log('Chart.js loaded dynamically'); createCharts(); };
+            s.onerror = () => console.error('Failed to load Chart.js');
+            document.head.appendChild(s);
+        } else {
+            createCharts();
         }
-
-        // Product Chart - Kostum breakdown
-        const productCtx = document.getElementById('productChart').getContext('2d');
-        const kostumData = <?php echo json_encode($top_3_kostum->pluck('nama_kostum')->toArray()); ?>;
-        const kostumCounts = <?php echo json_encode($top_3_kostum->pluck('count')->toArray()); ?>;
-        
-        const colors = ['#7c3aed', '#667eea', '#a78bfa'];
-        
-        new Chart(productCtx, {
-            type: 'doughnut',
-            data: {
-                labels: kostumData,
-                datasets: [{
-                    data: kostumCounts,
-                    backgroundColor: colors,
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: false
-                    }
-                }
-            }
-        });
-
-        // Payment Methods Chart
-        const genderCtx = document.getElementById('genderChart').getContext('2d');
-        const paymentMethods = <?php echo json_encode($payment_methods->pluck('metode_pembayaran')->toArray()); ?>;
-        const paymentCounts = <?php echo json_encode($payment_methods->pluck('count')->toArray()); ?>;
-        
-        const paymentColors = ['#667eea', '#f093fb', '#f5576c', '#ffa502'];
-        
-        new Chart(genderCtx, {
-            type: 'doughnut',
-            data: {
-                labels: paymentMethods,
-                datasets: [{
-                    data: paymentCounts,
-                    backgroundColor: paymentColors.slice(0, paymentMethods.length),
-                    borderColor: '#fff',
-                    borderWidth: 2
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        display: true,
-                        position: 'bottom'
-                    }
-                }
-            }
-        });
     }
 
-    function switchChart(type) {
-        // Switch between income and expense charts
-        console.log('Switching to:', type);
+    function updateRevenueTitle(period = 'week') {
+        const titleEl = document.getElementById('revenueChartTitle');
+        if (!titleEl) return;
+
+        const titles = {
+            day: 'Grafik Pendapatan Hari Ini',
+            week: 'Grafik Pendapatan Minggu Ini',
+            month: 'Grafik Pendapatan Bulan Ini',
+            year: 'Grafik Pendapatan Tahun Ini'
+        };
+
+        titleEl.textContent = titles[period] || titles.week;
     }
 
-    function fetchDashboardStats() {
-        // Fetch stats from API if needed
-        fetch('/admin/stats')
-            .then(response => response.json())
-            .then(data => {
-                if (data.totals && data.totals.orders) {
-                    document.getElementById('totalOrders').textContent = data.totals.orders;
-                }
-                if (data.totals && data.totals.revenue) {
-                    document.getElementById('totalRevenue').textContent = 'Rp ' + parseInt(data.totals.revenue).toLocaleString('id-ID');
+    function initializePeriodFilters() {
+        const periodDropdown = document.getElementById('periodDropdown');
+        if (periodDropdown) {
+            periodDropdown.addEventListener('change', function() {
+                updateRevenueTitle(this.value || 'week');
+                fetchDashboardStats(this.value || 'week');
+            });
+            updateRevenueTitle(periodDropdown.value || 'week');
+        }
+        // Orders sort select
+        const ordersSortSelect = document.getElementById('ordersSortSelect');
+        if (ordersSortSelect) {
+            ordersSortSelect.addEventListener('change', function() {
+                sortOrdersTable(this.value);
+            });
+            // apply default sort on load
+            sortOrdersTable(ordersSortSelect.value || 'created_desc');
+        }
+    }
+
+    function fetchDashboardStats(period = 'week') {
+        updateRevenueTitle(period);
+        const statsUrl = new URL(statsEndpoint, window.location.origin);
+        statsUrl.searchParams.set('period', period);
+
+        fetch(statsUrl.toString(), {
+            headers: {
+                'Accept': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            credentials: 'same-origin',
+            cache: 'no-store'
+        })
+            .then(async (response) => {
+                console.log('fetchDashboardStats: http', response.status, response.statusText);
+                try {
+                    return await response.json();
+                } catch (e) {
+                    const txt = await response.text();
+                    console.warn('fetchDashboardStats: invalid JSON response', txt);
+                    return {};
                 }
             })
-            .catch(error => console.log('Stats fetch error:', error));
+            .then(data => {
+                console.log('fetchDashboardStats: parsed data', data);
+                // keep latest response to apply once chart exists
+                latestDashboardData = data || null;
+                // update totals safely (elements may have been removed)
+                if (data.totals && data.totals.orders !== undefined) {
+                    const periodOrdersEl = document.getElementById('periodOrdersTotal');
+                    if (periodOrdersEl) periodOrdersEl.textContent = data.totals.orders;
+                }
+                if (data.totals && data.totals.revenue !== undefined) {
+                    const periodRevenueEl = document.getElementById('periodRevenueTotal');
+                    if (periodRevenueEl) periodRevenueEl.textContent = 'Rp ' + Number(data.totals.revenue).toLocaleString('id-ID');
+                }
+
+                if (revenueChartInstance && ordersChartInstance && data.labels && data.datasets) {
+                    revenueChartInstance.data.labels = data.labels;
+                    revenueChartInstance.data.datasets[0].data = data.datasets.revenue || [];
+                    revenueChartInstance.update();
+
+                    ordersChartInstance.data.labels = data.labels;
+                    ordersChartInstance.data.datasets[0].data = data.datasets.orders || [];
+                    ordersChartInstance.update();
+                }
+
+                // re-apply current table sort after data update (if any)
+                const ordersSortSelect = document.getElementById('ordersSortSelect');
+                if (ordersSortSelect) sortOrdersTable(ordersSortSelect.value || 'created_desc');
+            })
+            .catch(error => {
+                console.log('Stats fetch error:', error);
+            });
+    }
+
+    // Client-side sorter for orders table (uses data-* attributes on <tr>)
+    function sortOrdersTable(criteria) {
+        const tbody = document.querySelector('.stats-table tbody');
+        if (!tbody) return;
+
+        // collect rows that represent orders (have data-created-at)
+        const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => r.dataset && r.dataset.createdAt);
+        if (!rows.length) return;
+
+        rows.sort((a, b) => {
+            const aCreated = a.dataset.createdAt ? new Date(a.dataset.createdAt) : null;
+            const bCreated = b.dataset.createdAt ? new Date(b.dataset.createdAt) : null;
+            const aPemakaian = a.dataset.tanggalPemakaian ? new Date(a.dataset.tanggalPemakaian) : null;
+            const bPemakaian = b.dataset.tanggalPemakaian ? new Date(b.dataset.tanggalPemakaian) : null;
+
+            switch (criteria) {
+                case 'created_desc':
+                    return (bCreated || 0) - (aCreated || 0);
+                case 'created_asc':
+                    return (aCreated || 0) - (bCreated || 0);
+                case 'tanggal_pemakaian_desc':
+                    return (bPemakaian || 0) - (aPemakaian || 0);
+                case 'tanggal_pemakaian_asc':
+                    return (aPemakaian || 0) - (bPemakaian || 0);
+                default:
+                    return 0;
+            }
+        });
+
+        // reattach rows in new order
+        rows.forEach(r => tbody.appendChild(r));
     }
 </script>
 <?php $__env->stopPush(); ?>

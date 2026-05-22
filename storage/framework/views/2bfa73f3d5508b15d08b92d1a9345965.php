@@ -1,9 +1,87 @@
-@extends('layouts.main')
 
-@section('title', 'Dashboard - Rei Cosrent')
 
-@section('styles')
-<style>
+<?php $__env->startSection('title', 'Profil - Rei Cosrent'); ?>
+
+<?php $__env->startSection('styles'); ?>
+    :root {
+        --profile-card-bg: #f8fbff;
+        --profile-card-border: rgba(37, 99, 235, 0.12);
+        --profile-card-text: #0f172a;
+        --profile-card-shadow: 0 12px 30px -12px rgba(16, 24, 40, 0.12);
+    }
+
+    [data-bs-theme="dark"] {
+        --profile-card-bg: #0f172a;
+        --profile-card-border: rgba(96, 165, 250, 0.16);
+        --profile-card-text: #ffffff;
+        --profile-card-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55);
+    }
+
+    .user-profile-card {
+        background: var(--profile-card-bg) !important;
+        border: 1px solid var(--profile-card-border) !important;
+        box-shadow: var(--profile-card-shadow) !important;
+        color: var(--profile-card-text) !important;
+    }
+
+    .user-profile-card .card-header {
+        background: transparent !important;
+        color: var(--brand-blue) !important;
+        border-bottom: 1px solid var(--profile-card-border) !important;
+    }
+
+    .user-profile-card .card-header h5,
+    .user-profile-card .card-header i {
+        color: var(--brand-blue) !important;
+    }
+
+    .user-profile-card .card-body,
+    .user-profile-card .text-muted,
+    .user-profile-card .form-label,
+    .user-profile-card p,
+    .user-profile-card label,
+    .user-profile-card h5,
+    .user-profile-card h6,
+    .user-profile-card td,
+    .user-profile-card .table {
+        color: var(--profile-card-text) !important;
+    }
+
+    .user-profile-card .text-primary {
+        color: var(--brand-blue) !important;
+    }
+
+    .user-profile-card .form-control,
+    .user-profile-card .form-select,
+    .user-profile-card textarea {
+        background-color: var(--profile-card-bg) !important;
+        color: var(--profile-card-text) !important;
+        border: 1px solid var(--profile-card-border) !important;
+    }
+
+    .user-profile-card .form-control::placeholder,
+    .user-profile-card textarea::placeholder {
+        color: color-mix(in srgb, var(--profile-card-text) 70%, transparent) !important;
+    }
+
+    .user-profile-card .form-control:focus,
+    .user-profile-card .form-select:focus,
+    .user-profile-card textarea:focus {
+        background-color: var(--profile-card-bg) !important;
+        color: var(--profile-card-text) !important;
+        border-color: var(--profile-card-border) !important;
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.16) !important;
+    }
+
+    .user-profile-card .preview-info-table,
+    .user-profile-card .preview-info-table tbody,
+    .user-profile-card .preview-info-table tr,
+    .user-profile-card .preview-info-table td {
+        background-color: var(--profile-card-bg) !important;
+        color: var(--profile-card-text) !important;
+        border-color: var(--profile-card-border) !important;
+    }
+
     body, section, .container, .row, .col-md-4, .col-md-8,
     .card, .card-header, .card-body, 
     .alert, .alert-success, .alert-danger,
@@ -76,65 +154,70 @@
         .preview-info-table .label-col { width: auto; white-space: normal; }
         .preview-info-table .colon-col { width: 10px; }
     }
-</style>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <section class="py-5">
     <div class="container">
-        <div class="row justify-content-between mb-5">
-            <div class="col">
-                <h2 class="fw-bold mb-0">Dashboard Pengguna</h2>
+        <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-5">
+            <div>
+                <h2 class="fw-bold mb-0">Profil Pengguna</h2>
                 <p class="text-muted mb-0">Kelola informasi akun Anda</p>
+            </div>
+            <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
+                <a href="<?php echo e(route('home')); ?>#kategori" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-left"></i> Kembali</a>
             </div>
         </div>
 
         <!-- Alert Messages -->
-        @if(session('success'))
+        <?php if(session('success')): ?>
             <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle"></i> {{ session('success') }}
+                <i class="bi bi-check-circle"></i> <?php echo e(session('success')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @if(session('error'))
+        <?php if(session('error')): ?>
             <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
+                <i class="bi bi-exclamation-circle"></i> <?php echo e(session('error')); ?>
+
                 <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
             </div>
-        @endif
+        <?php endif; ?>
 
-        @if ($errors->any())
+        <?php if($errors->any()): ?>
             <div class="alert alert-danger">
                 <ul class="mb-0">
-                    @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                    @endforeach
+                    <?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <li><?php echo e($error); ?></li>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                 </ul>
             </div>
-        @endif
+        <?php endif; ?>
 
         <div class="row g-4">
             <!-- Profile Info Card -->
             <div class="col-lg-4">
-                <div class="card shadow-sm border-0 rounded-xl h-100">
-                    <div class="card-header bg-primary text-white py-3">
-                        <h5 class="mb-0 fw-bold"><i class="bi bi-eye"></i> Ringkasan Dashboard</h5>
+                <div class="card user-profile-card border-0 rounded-xl h-100">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-eye"></i> Ringkasan Profil</h5>
                     </div>
                     <div class="card-body text-center py-4 d-flex flex-column align-items-center">
                         <img
                             id="profile_image_preview"
-                            src="{{ $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : '' }}"
+                            src="<?php echo e($user->gambar_profil ? asset('storage/' . $user->gambar_profil) : ''); ?>"
                             alt=""
-                            class="img-fluid rounded-circle mb-3 {{ $user->gambar_profil ? '' : 'd-none' }}"
+                            class="img-fluid rounded-circle mb-3 <?php echo e($user->gambar_profil ? '' : 'd-none'); ?>"
                             style="width: 150px; height: 150px; object-fit: cover; border: 1px solid var(--bs-border-color);">
-                        <div id="profile_image_fallback" class="mb-3 {{ $user->gambar_profil ? 'd-none' : '' }}" style="width: 150px; height: 150px; align-items: center; justify-content: center; display: flex;">
+                        <div id="profile_image_fallback" class="mb-3 <?php echo e($user->gambar_profil ? 'd-none' : ''); ?>" style="width: 150px; height: 150px; align-items: center; justify-content: center; display: flex;">
                             <i class="bi bi-person-circle" style="font-size: 96px; color: var(--bs-body-color);"></i>
                         </div>
                         <button type="button" id="btn-upload-profile" class="btn btn-outline-primary mt-2" style="width: 100%; max-width: 200px;">
-                            <i class="bi bi-upload"></i> Unggah Foto Profil
+                            <i class="bi bi-upload"></i> <?php echo e($user->gambar_profil ? 'Ganti Foto Profil' : 'Unggah Foto Profil'); ?>
+
                         </button>
-                        <button type="button" id="btn-mark-delete-photo" class="btn btn-outline-danger mt-2" style="width: 100%; max-width: 200px; {{ $user->gambar_profil ? '' : 'display: none;' }}">
+                        <button type="button" id="btn-mark-delete-photo" class="btn btn-outline-danger mt-2" style="width: 100%; max-width: 200px; <?php echo e($user->gambar_profil ? '' : 'display: none;'); ?>">
                             <i class="bi bi-trash"></i> Hapus Foto Profil
                         </button>
                         <div id="delete-photo-note" class="text-danger small mt-1" style="display: none;">
@@ -144,13 +227,16 @@
                         <div class="small text-muted">
                             <p class="mb-2">
                                 <strong>Bergabung:</strong><br>
-                                {{ $user->created_at->format('d M Y') }}
+                                <?php echo e($user->created_at->format('d M Y')); ?>
+
                             </p>
                             <p class="mb-0">
                                 <strong>Terakhir Diperbarui:</strong><br>
-                                {{ $user->updated_at->format('d M Y H:i') }}
+                                <?php echo e($user->updated_at->format('d M Y H:i')); ?>
+
                             </p>
                         </div>
+                        <hr class="my-4">
                         <div class="mt-3 text-start align-self-stretch w-100">
                             <table class="table table-sm preview-info-table mb-0">
                                 <tbody>
@@ -158,54 +244,54 @@
                                         <td class="icon-col"><i class="bi bi-person-badge"></i></td>
                                         <td class="label-col">Username</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col fw-semibold">{{ $user->username }}</td>
+                                        <td class="value-col fw-semibold"><?php echo e($user->username); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-person"></i></td>
                                         <td class="label-col">Nama</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->nick_name ?: '-' }}</td>
+                                        <td class="value-col"><?php echo e($user->nick_name ?: '-'); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-envelope"></i></td>
                                         <td class="label-col">Email</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->email }}</td>
+                                        <td class="value-col"><?php echo e($user->email); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
                                         <td class="label-col">Alamat</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->alamat ?: '-' }}</td>
+                                        <td class="value-col"><?php echo e($user->alamat ?: '-'); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-telephone"></i></td>
                                         <td class="label-col">Nomor Telepon</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->nomor_telepon ?: '-' }}</td>
+                                        <td class="value-col"><?php echo e($user->nomor_telepon ?: '-'); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-gender-ambiguous"></i></td>
                                         <td class="label-col">Jenis Kelamin</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->jenis_kelamin ?: '-' }}</td>
+                                        <td class="value-col"><?php echo e($user->jenis_kelamin ?: '-'); ?></td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                         <div class="mt-4 w-100">
                             <div class="d-grid gap-2">
-                                <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
+                                <a href="<?php echo e(route('user.pesanan')); ?>" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
                                     <i class="bi bi-receipt"></i> Pesanan Saya
                                 </a>
-                                <a href="{{ route('user.denda-saya') }}" class="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2">
+                                <a href="<?php echo e(route('user.denda-saya')); ?>" class="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2">
                                     <i class="bi bi-exclamation-triangle"></i> Denda Saya
                                 </a>
                                 <button type="button" class="btn btn-outline-danger d-flex align-items-center justify-content-center gap-2 w-100" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
                                     <i class="bi bi-trash"></i> Hapus Akun
                                 </button>
-                                <form method="POST" action="{{ route('logout') }}" class="m-0">
-                                    @csrf
+                                <form method="POST" action="<?php echo e(route('logout')); ?>" class="m-0">
+                                    <?php echo csrf_field(); ?>
                                     <button type="submit" class="btn btn-danger d-flex align-items-center justify-content-center gap-2 w-100">
                                         <i class="bi bi-box-arrow-right"></i> Logout
                                     </button>
@@ -218,78 +304,162 @@
 
             <!-- Edit Profile Form -->
             <div class="col-lg-8">
-                <div class="card shadow-sm border-0 rounded-xl">
-                    <div class="card-header bg-primary text-white py-3">
+                <div class="card user-profile-card border-0 rounded-xl">
+                    <div class="card-header py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-pencil-square"></i> Edit Profil</h5>
                     </div>
                     <div class="card-body p-4">
-                        <form method="POST" action="{{ route('user.profile.update') }}" enctype="multipart/form-data">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('user.profile.update')); ?>" enctype="multipart/form-data">
+                            <?php echo csrf_field(); ?>
 
                             <input type="hidden" name="remove_photo" id="remove_photo" value="0">
 
                             <input type="file" class="d-none" id="profile_image_input" name="gambar_profil" accept="image/*">
-                            @error('gambar_profil')
-                                <div class="text-danger small mb-3">{{ $message }}</div>
-                            @enderror
+                            <?php $__errorArgs = ['gambar_profil'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                <div class="text-danger small mb-3"><?php echo e($message); ?></div>
+                            <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
 
                             <h6 class="fw-bold mb-3 text-primary">Informasi Akun</h6>
                             
                             <div class="mb-3">
                                 <label for="username" class="form-label fw-semibold">Username</label>
-                                <input type="text" class="form-control @error('username') is-invalid @enderror" id="username" name="username" value="{{ old('username', $user->username) }}" required pattern="[a-z0-9_]+" title="Username hanya boleh huruf kecil, angka, dan underscore (_), tanpa spasi">
+                                <input type="text" class="form-control <?php $__errorArgs = ['username'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="username" name="username" value="<?php echo e(old('username', $user->username)); ?>" required pattern="[a-z0-9_]+" title="Username hanya boleh huruf kecil, angka, dan underscore (_), tanpa spasi">
                                 <small class="text-muted">Hanya huruf kecil, angka, dan underscore (_). Tidak boleh ada spasi.</small>
-                                @error('username')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['username'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
                                 <label for="nick_name" class="form-label fw-semibold">Nama</label>
-                                <input type="text" class="form-control @error('nick_name') is-invalid @enderror" id="nick_name" name="nick_name" value="{{ old('nick_name', $user->nick_name) }}" placeholder="Opsional">
-                                @error('nick_name')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <input type="text" class="form-control <?php $__errorArgs = ['nick_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="nick_name" name="nick_name" value="<?php echo e(old('nick_name', $user->nick_name)); ?>" placeholder="Opsional">
+                                <?php $__errorArgs = ['nick_name'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label fw-semibold">Email</label>
-                                <input type="email" class="form-control @error('email') is-invalid @enderror" id="email" name="email" value="{{ old('email', $user->email) }}" required>
-                                @error('email')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <input type="email" class="form-control <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="email" name="email" value="<?php echo e(old('email', $user->email)); ?>" required>
+                                <?php $__errorArgs = ['email'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
                                 <label for="alamat" class="form-label fw-semibold">Alamat</label>
-                                <textarea class="form-control @error('alamat') is-invalid @enderror" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap anda">{{ old('alamat', $user->alamat) }}</textarea>
-                                @error('alamat')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <textarea class="form-control <?php $__errorArgs = ['alamat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="alamat" name="alamat" rows="3" placeholder="Masukkan alamat lengkap anda"><?php echo e(old('alamat', $user->alamat)); ?></textarea>
+                                <?php $__errorArgs = ['alamat'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-3">
                                 <label for="nomor_telepon" class="form-label fw-semibold">Nomor Telepon</label>
-                                <input type="text" class="form-control @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" name="nomor_telepon" value="{{ old('nomor_telepon', $user->nomor_telepon) }}" placeholder="08xxxxxxxxxx" pattern="08[0-9]{8,13}" title="Nomor telepon harus diawali 08 dan berisi 10-15 digit">
+                                <input type="text" class="form-control <?php $__errorArgs = ['nomor_telepon'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="nomor_telepon" name="nomor_telepon" value="<?php echo e(old('nomor_telepon', $user->nomor_telepon)); ?>" placeholder="08xxxxxxxxxx" pattern="08[0-9]{8,13}" title="Nomor telepon harus diawali 08 dan berisi 10-15 digit">
                                 <small class="text-muted">Format: 08xxxxxxxxxx.</small>
-                                @error('nomor_telepon')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['nomor_telepon'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold d-block">Jenis Kelamin</label>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_pria" value="Pria" {{ old('jenis_kelamin', $user->jenis_kelamin) === 'Pria' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_pria" value="Pria" <?php echo e(old('jenis_kelamin', $user->jenis_kelamin) === 'Pria' ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="jenis_kelamin_pria">Pria</label>
                                 </div>
                                 <div class="form-check form-check-inline">
-                                    <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_wanita" value="Wanita" {{ old('jenis_kelamin', $user->jenis_kelamin) === 'Wanita' ? 'checked' : '' }}>
+                                    <input class="form-check-input" type="radio" name="jenis_kelamin" id="jenis_kelamin_wanita" value="Wanita" <?php echo e(old('jenis_kelamin', $user->jenis_kelamin) === 'Wanita' ? 'checked' : ''); ?>>
                                     <label class="form-check-label" for="jenis_kelamin_wanita">Wanita</label>
                                 </div>
-                                @error('jenis_kelamin')
-                                    <div class="invalid-feedback d-block">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['jenis_kelamin'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <hr class="my-4">
@@ -299,14 +469,28 @@
                             <div class="mb-3">
                                 <label for="password" class="form-label fw-semibold">Password Baru</label>
                                 <div class="password-wrapper">
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Biarkan kosong jika tidak ingin mengubah" style="padding-right: 40px;">
+                                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="password" name="password" placeholder="Biarkan kosong jika tidak ingin mengubah" style="padding-right: 40px;">
                                     <button type="button" class="password-toggle" onclick="togglePassword('password')">
                                         <i class="bi bi-eye" id="password-icon"></i>
                                     </button>
                                 </div>
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <?php $__errorArgs = ['password'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <small class="text-muted">Minimal 8 karakter</small>
                             </div>
 
@@ -343,9 +527,9 @@
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form method="POST" action="{{ route('user.account.delete') }}" id="deleteAccountForm">
-                @csrf
-                @method('DELETE')
+            <form method="POST" action="<?php echo e(route('user.account.delete')); ?>" id="deleteAccountForm">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('DELETE'); ?>
                 <div class="modal-body">
                     <div class="alert alert-warning mb-3">
                         <i class="bi bi-exclamation-triangle-fill"></i>
@@ -380,9 +564,9 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
 
-@section('scripts')
+<?php $__env->startSection('scripts'); ?>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         // Auto-hide alerts after 3 seconds
@@ -558,4 +742,6 @@
         }
     }
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.main', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\rc_laravel\resources\views/user/profil.blade.php ENDPATH**/ ?>

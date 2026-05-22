@@ -118,8 +118,9 @@ class AdminController extends Controller
         // Get latest 5 orders
         $latest_orders = Formulir::orderByDesc('created_at')->take(5)->get();
         
-        // Get total revenue
-        $total_revenue = Formulir::sum('total_harga');
+        // Get total revenue from accepted and completed orders only
+        $revenueStatuses = ['confirmed', 'diterima', 'completed', 'selesai'];
+        $total_revenue = Formulir::whereIn('status', $revenueStatuses)->sum('total_harga');
         
         // Get top 5 kostum
         $top_kostum = Formulir::selectRaw('nama_kostum, COUNT(*) as count')
@@ -238,7 +239,9 @@ class AdminController extends Controller
                     $labels[] = $from->format('H:00');
 
                     $orders = Formulir::whereBetween('created_at', [$from, $to])->count();
-                    $revenue = Formulir::whereBetween('created_at', [$from, $to])->sum('total_harga');
+                    $revenue = Formulir::whereBetween('created_at', [$from, $to])
+                        ->whereIn('status', ['confirmed', 'diterima', 'completed', 'selesai'])
+                        ->sum('total_harga');
 
                     $ordersData[] = $orders;
                     $revenueData[] = (float) $revenue;
@@ -253,7 +256,9 @@ class AdminController extends Controller
                     $labels[] = $from->format('d M');
 
                     $orders = Formulir::whereBetween('created_at', [$from, $to])->count();
-                    $revenue = Formulir::whereBetween('created_at', [$from, $to])->sum('total_harga');
+                    $revenue = Formulir::whereBetween('created_at', [$from, $to])
+                        ->whereIn('status', ['confirmed', 'diterima', 'completed', 'selesai'])
+                        ->sum('total_harga');
 
                     $ordersData[] = $orders;
                     $revenueData[] = (float) $revenue;
@@ -268,7 +273,9 @@ class AdminController extends Controller
                     $labels[] = $from->format('M');
 
                     $orders = Formulir::whereBetween('created_at', [$from, $to])->count();
-                    $revenue = Formulir::whereBetween('created_at', [$from, $to])->sum('total_harga');
+                    $revenue = Formulir::whereBetween('created_at', [$from, $to])
+                        ->whereIn('status', ['confirmed', 'diterima', 'completed', 'selesai'])
+                        ->sum('total_harga');
 
                     $ordersData[] = $orders;
                     $revenueData[] = (float) $revenue;
@@ -284,7 +291,9 @@ class AdminController extends Controller
                     $labels[] = $from->format('D d');
 
                     $orders = Formulir::whereBetween('created_at', [$from, $to])->count();
-                    $revenue = Formulir::whereBetween('created_at', [$from, $to])->sum('total_harga');
+                    $revenue = Formulir::whereBetween('created_at', [$from, $to])
+                        ->whereIn('status', ['confirmed', 'diterima', 'completed', 'selesai'])
+                        ->sum('total_harga');
 
                     $ordersData[] = $orders;
                     $revenueData[] = (float) $revenue;
@@ -296,7 +305,9 @@ class AdminController extends Controller
         $periodEnd = $to ?? $now->copy()->endOfDay();
 
         $totalOrders = Formulir::whereBetween('created_at', [$periodStart, $periodEnd])->count();
-        $totalRevenue = Formulir::whereBetween('created_at', [$periodStart, $periodEnd])->sum('total_harga');
+        $totalRevenue = Formulir::whereBetween('created_at', [$periodStart, $periodEnd])
+            ->whereIn('status', ['confirmed', 'diterima', 'completed', 'selesai'])
+            ->sum('total_harga');
 
         return response()->json([
             'labels' => $labels,
@@ -511,22 +522,23 @@ class AdminController extends Controller
 
         $kostum = $query->get();
         $kategori = DataKatalog::pluck('name')->toArray();
-        // Get all unique sizes, split combined entries like "M & L" into individual sizes
+        // Use a fixed size list so the dropdown is always available, even when the table is empty.
+        $ukuran = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+
         $allSizesRaw = DataKostum::get()->pluck('ukuran_kostum')->toArray();
-        $sizeList = [];
         foreach ($allSizesRaw as $sizeStr) {
             if (!is_string($sizeStr)) {
                 continue;
             }
-            $parts = preg_split('/[,;&]/', $sizeStr);
-            foreach ($parts as $p) {
-                $clean = trim($p);
-                if ($clean !== '') {
-                    $sizeList[] = $clean;
+
+            foreach (preg_split('/[,;&]/', $sizeStr) as $part) {
+                $clean = trim($part);
+                if ($clean !== '' && !in_array($clean, $ukuran, true)) {
+                    $ukuran[] = $clean;
                 }
             }
         }
-        $ukuran = array_values(array_unique($sizeList));
+
         $orderMap = ['XS' => 1, 'S' => 2, 'M' => 3, 'L' => 4, 'XL' => 5, 'XXL' => 6, 'XXXL' => 7];
         usort($ukuran, function($a, $b) use ($orderMap) {
             $aKey = strtoupper($a);

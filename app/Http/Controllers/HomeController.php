@@ -146,7 +146,7 @@ class HomeController extends Controller
             return redirect()->route('login')->with('error', 'User tidak ditemukan.');
         }
 
-        return view('user.dashboard', [
+        return view('user.profil', [
             'user' => $user,
         ]);
     }

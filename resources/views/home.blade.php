@@ -2,30 +2,129 @@
 
 @section('title', 'Rei Cosrent - Sewa Kostum Cosplay')
 
+@section('styles')
+    /* AiStarterKit-like visual tweaks for homepage only */
+    :root {
+        --ak-card-bg: #f8fbff;
+        --ak-card-border: rgba(37, 99, 235, 0.12);
+        --ak-secondary-text: #0f172a;
+        --ak-card-shadow: 0 12px 30px -12px rgba(16,24,40,0.12);
+    }
+
+    [data-bs-theme="dark"] {
+        --ak-card-bg: #0f172a;
+        --ak-card-border: rgba(96,165,250,0.16);
+        --ak-secondary-text: #ffffff;
+        --ak-card-shadow: 0 18px 40px -22px rgba(0,0,0,0.55);
+    }
+
+    .ak-hero {
+        padding: clamp(2rem, 6vw, 4rem) 0;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(135deg, rgba(11, 18, 32, 0.2), rgba(37, 99, 235, 0.2));
+        border-bottom-left-radius: 32px;
+        border-bottom-right-radius: 32px;
+    }
+    .ak-hero::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: url("{{ asset('assets/img/Header Pic.png') }}") center/cover no-repeat;
+        filter: blur(3px) saturate(1.05);
+        transform: scale(1.02);
+        pointer-events: none;
+        z-index: 0;
+    }
+    .ak-hero::after {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(11, 18, 32, 0.42), rgba(37, 99, 235, 0.28));
+        pointer-events: none;
+        z-index: 0;
+    }
+    .ak-hero > * { position: relative; z-index: 1; }
+    .ak-hero .ak-container { max-width: 1100px; margin: 0 auto; padding: 0 1rem; }
+    .ak-hero h1 { font-size: clamp(1.8rem, 4.6vw, 3rem); color: #ffffff; font-weight:800; }
+    .ak-hero p { color: #ffffff !important; max-width: 760px; margin: 0 auto; }
+    .ak-cta { display:inline-flex; align-items:center; gap:.75rem; padding: .7rem 1.25rem; border-radius:999px; color:#fff; background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%) !important; box-shadow: 0 12px 30px -12px rgba(37,99,235,0.5); text-decoration: none; background-size: 200% auto; background-position: 0% center; transition: background-position 0.6s ease-in-out; }
+    .ak-cta:hover { background-image: linear-gradient(97deg, #93c5fd 0%, #2563eb 140.21%) !important; background-position: 100% center; color: #fff; text-decoration: none; }
+    .ak-cta:focus { background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%) !important; color: #fff; text-decoration: none; }
+
+    .ak-glow { position:absolute; right:-10%; top:-10%; width:700px; height:400px; filter: blur(60px); opacity: .35; pointer-events:none; z-index:0; background: radial-gradient(circle at 30% 30%, #2563eb 0%, rgba(37,99,235,0.25) 30%, transparent 60%), radial-gradient(circle at 70% 70%, #60a5fa 0%, rgba(96,165,250,0.18) 20%, transparent 50%); }
+
+    /* Catalog cards: rounded, soft shadow, gradient border */
+    .ak-catalog .card.category-card { border-radius:22px; overflow:visible; background: var(--ak-card-bg); border: 1px solid var(--ak-card-border); box-shadow: var(--ak-card-shadow); color: var(--ak-secondary-text); }
+    .ak-catalog .card.category-card img { border-radius:16px; height:200px; object-fit:cover; }
+    .ak-catalog .card-body h5 { color: var(--ak-secondary-text) !important; font-weight:700; }
+    .ak-catalog .card-body p { color: var(--ak-secondary-text) !important; }
+    .ak-catalog .alert,
+    .ak-catalog .alert * { color: var(--ak-secondary-text) !important; }
+
+    /* Profile card style */
+    .ak-profile { background: transparent; }
+    .ak-profile .profile-card { border-radius:18px; padding:1.25rem; box-shadow:0 24px 50px -24px rgba(16,24,40,0.2); background: var(--ak-card-bg); border: 1px solid var(--ak-card-border); color: var(--ak-secondary-text); }
+    .ak-profile .profile-card .text-muted,
+    .ak-profile .profile-card .card-title,
+    .ak-profile .profile-card h4,
+    .ak-profile .profile-card h5 { color: var(--ak-secondary-text) !important; }
+    .ak-profile .text-primary { color: var(--ak-secondary-text) !important; }
+    .ak-profile img.rounded-circle { width:130px; height:130px; object-fit:cover; border-radius:999px; }
+
+    /* Contact card */
+    .ak-contact .card { border-radius:18px; box-shadow: 0 20px 40px -20px rgba(16,24,40,0.2); background: var(--ak-card-bg); border: 1px solid var(--ak-card-border); color: var(--ak-secondary-text); }
+    .ak-contact .card .text-muted { color: var(--ak-secondary-text) !important; }
+    .ak-contact .text-secondary,
+    .ak-contact .text-success,
+    .ak-contact p,
+    .ak-contact small,
+    .ak-contact .list-group-item,
+    .ak-contact .list-group-item p,
+    .ak-contact .list-group-item small { color: var(--ak-secondary-text) !important; }
+
+    /* Dark mode (follows your JS-driven data-bs-theme) */
+    [data-bs-theme="dark"] .ak-hero::after {
+        background: linear-gradient(135deg, rgba(4, 8, 16, 0.6), rgba(37, 99, 235, 0.35));
+    }
+
+    [data-bs-theme="dark"] .ak-cta {
+        background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%) !important;
+        color: #fff !important;
+    }
+    [data-bs-theme="dark"] .ak-cta:hover {
+        background-image: linear-gradient(97deg, #93c5fd 0%, #2563eb 140.21%) !important;
+        background-position: 100% center;
+        color: #fff !important;
+    }
+@endsection
+
 @section('content')
     <!-- Hero -->
-    <header class="hero-section text-center">
-        <div class="container">
-            <h1 class="display-3 fw-bolder mb-3 text-primary">Sewa Kostum Impian Anda!</h1>
-            <p class="subheading mb-4 px-lg-5">Temukan dan sewa kostum cosplay berkualitas tinggi</p>
-            <a href="#kategori" class="btn btn-primary btn-lg rounded-pill px-5 shadow-lg" id="scrollToKategori">Jelajahi Kostum Sekarang!</a>
+    <header class="ak-hero text-center">
+        <div class="ak-glow" aria-hidden="true"></div>
+        <div class="ak-container" style="position:relative; z-index:10;">
+            <h1 class="mb-3">Sewa Kostum Impian Anda!</h1>
+            <p class="subheading mb-4">Temukan dan sewa kostum cosplay berkualitas tinggi</p>
         </div>
     </header>
 
     <!-- Katalog -->
-    <section id="kategori" class="py-5">
+    <section id="kategori" class="py-5 ak-catalog">
         <div class="container">
             <h2 class="text-center mb-5 fw-bold section-title">Katalog Kostum</h2>
             @if(isset($katalog) && $katalog->count() > 0)
-                <div class="row justify-content-center row-cols-2 row-cols-md-3 g-3">
+                <div class="row justify-content-center row-cols-1 row-cols-sm-2 row-cols-md-3 g-4">
                     @foreach($katalog as $kategori)
                     <div class="col">
-                        <a href="{{ url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name))) }}" class="text-decoration-none text-dark">
-                            <div class="card category-card h-100 rounded-xl border-0 shadow-sm">
-                                <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : asset($kategori->image) }}" class="card-img-top" alt="{{ $kategori->name }}" style="aspect-ratio:1/1;width:100%;object-fit:cover;border-radius:1.5rem 1.5rem 0 0;">
-                                <div class="card-body py-2 px-3">
-                                    <h5 class="fw-bold text-primary">{{ $kategori->name }}</h5>
-                                    <p class="text-muted small mb-0">{{ $kategori->description }}</p>
+                        <a href="{{ url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name))) }}" class="text-decoration-none">
+                            <div class="card category-card h-100 border-0">
+                                <div style="padding:1rem;">
+                                    <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : asset($kategori->image) }}" class="w-100" alt="{{ $kategori->name }}">
+                                </div>
+                                <div class="card-body py-3 px-3">
+                                    <h5 class="fw-bold">{{ $kategori->name }}</h5>
+                                    <p class="small mb-0">{{ $kategori->description }}</p>
                                 </div>
                             </div>
                         </a>
@@ -42,27 +141,27 @@
     </section>
 
     <!-- Profil -->
-    <section id="profil" class="py-5 bg-body-tertiary">
+    <section id="profil" class="py-5 ak-profile">
         <div class="container">
             <h2 class="text-center mb-5 fw-bold section-title">Profil Pengurus</h2>
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <div class="card profile-card rounded-xl border-0 shadow-lg p-4">
+                    <div class="profile-card rounded-xl border-0 p-4">
                         <div class="row g-0 align-items-center">
                             <div class="col-md-4 text-center p-3">
                                 @if($profile && $profile->photo)
-                                    <img src="{{ asset('storage/' . $profile->photo) }}" class="img-fluid rounded-circle border mb-3" alt="Foto Pengurus" style="width: 150px; height: 150px; object-fit: cover; border-color: var(--bs-border-color) !important;">
+                                    <img src="{{ asset('storage/' . $profile->photo) }}" class="img-fluid rounded-circle border mb-3" alt="Foto Pengurus">
                                 @else
                                     <div class="mb-3">
                                         <i class="bi bi-person-circle text-primary" style="font-size: 150px;"></i>
                                     </div>
                                 @endif
-                                <h4 class="fw-bold text-primary">{{ optional($profile)->name }}</h4>
+                                <h4 class="fw-bold">{{ optional($profile)->name }}</h4>
                                 <p class="text-muted mb-0">{{ optional($profile)->title }}</p>
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title fw-bold blue-title">Tentang Saya</h5>
+                                    <h5 class="card-title fw-bold">Tentang Saya</h5>
                                     <p class="card-text text-muted">{!! nl2br(e(optional($profile)->vision)) !!}</p>
                                 </div>
                             </div>
@@ -74,7 +173,7 @@
     </section>
 
     <!-- Kontak -->
-    <section id="kontak" class="py-5">
+    <section id="kontak" class="py-5 ak-contact">
         <div class="container">
             <h2 class="text-center mb-5 fw-bold section-title">Alamat & Informasi Kontak</h2>
             <div class="row g-4">
@@ -85,27 +184,9 @@
                     <p class="text-muted mt-2 text-center small">Peta Lokasi Toko.</p>
                 </div>
                 <div class="col-lg-6">
-                    <div class="card h-100 rounded-xl border-0 shadow-sm p-3">
+                    <div class="card h-100 rounded-xl border-0 p-3">
                         <div class="card-body">
-                            <h5 class="card-title fw-bold blue-title mb-3">Hubungi Kami</h5>
-
-                            @php
-                                $rawPhone = (string) (optional($profile)->phone ?? '');
-                                $waPhone = preg_replace('/\D+/', '', $rawPhone);
-
-                                if ($waPhone !== '') {
-                                    if (str_starts_with($waPhone, '0')) {
-                                        $waPhone = '62' . substr($waPhone, 1);
-                                    } elseif (str_starts_with($waPhone, '8')) {
-                                        $waPhone = '62' . $waPhone;
-                                    }
-                                }
-
-                                $waMessage = 'Halo, saya ingin bertanya tentang sewa kostum.';
-                                $waUrl = $waPhone !== ''
-                                    ? 'https://wa.me/' . $waPhone . '?text=' . urlencode($waMessage)
-                                    : null;
-                            @endphp
+                            <h5 class="card-title fw-bold mb-3">Hubungi Kami</h5>
 
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
@@ -116,17 +197,15 @@
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
-                                    <i class="bi bi-whatsapp text-secondary me-3 h5 mb-0"></i>
+                                    <i class="bi bi-instagram text-secondary me-3 h5 mb-0"></i>
                                     <div>
-                                        <small class="text-muted d-block">Nomor Telepon (WhatsApp):</small>
-                                        <p class="mb-0 fw-bold text-success">{{ optional($profile)->phone }}</p>
+                                        <small class="text-muted d-block">Instagram:</small>
+                                        <p class="mb-0 fw-bold">@rei_cosrent</p>
 
-                                        @if($waUrl)
-                                            <a href="{{ $waUrl }}" target="_blank" rel="noopener noreferrer"
-                                               class="btn btn-success btn-sm rounded-pill mt-2">
-                                                <i class="bi bi-whatsapp me-1"></i> Chat WhatsApp
-                                            </a>
-                                        @endif
+                                        <a href="https://www.instagram.com/rei_cosrent/" target="_blank" rel="noopener noreferrer"
+                                           class="btn btn-success btn-sm rounded-pill mt-2">
+                                            <i class="bi bi-instagram me-1"></i> Buka Instagram
+                                        </a>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
@@ -143,6 +222,7 @@
             </div>
         </div>
     </section>
+
 @endsection
 
 @section('scripts')
@@ -150,38 +230,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const kategoriSection = document.getElementById('kategori');
-            const profilSection = document.getElementById('profil');
-            const kontakSection = document.getElementById('kontak');
-
-            // Apply dark mode background changes
-            const observer = new MutationObserver(function(mutations) {
-                mutations.forEach(function(mutation) {
-                    if (mutation.attributeName === 'data-bs-theme') {
-                        const theme = document.body.getAttribute('data-bs-theme');
-                        if (theme === 'dark') {
-                            kategoriSection.classList.remove('bg-body-tertiary');
-                            kontakSection.classList.remove('bg-body-tertiary');
-                        } else {
-                            profilSection.classList.add('bg-body-tertiary');
-                        }
-                    }
-                });
-            });
-
-            observer.observe(document.body, {
-                attributes: true
-            });
 
             // Scroll Tengah Function
             function scrollToCenter(element) {
-                if (element) {
-                    const elementPosition = element.getBoundingClientRect().top + window.scrollY;
-                    const offset = (window.innerHeight / 2) - (element.offsetHeight / 2);
-                    window.scrollTo({
-                        top: elementPosition - offset,
-                        behavior: 'smooth'
-                    });
-                }
+                if (!element) return;
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
             }
 
             // Scroll on nav link click

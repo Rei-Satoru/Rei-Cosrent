@@ -48,6 +48,72 @@
     .password-toggle:hover {
         color: var(--bs-primary);
     }
+
+    :root {
+        --auth-card-bg: var(--app-surface);
+        --auth-card-border: var(--bs-border-color);
+        --auth-card-text: var(--brand-blue);
+        --auth-input-bg: rgba(255, 255, 255, 0.92);
+        --auth-input-text: var(--brand-blue);
+        --auth-placeholder: rgba(15, 23, 42, 0.6);
+        --auth-muted: var(--brand-blue);
+    }
+
+    [data-bs-theme="dark"] {
+        --auth-card-bg: rgba(15, 23, 42, 0.95);
+        --auth-card-border: rgba(96, 165, 250, 0.2);
+        --auth-card-text: #ffffff;
+        --auth-input-bg: rgba(15, 23, 42, 0.7);
+        --auth-input-text: #ffffff;
+        --auth-placeholder: rgba(255, 255, 255, 0.6);
+        --auth-muted: #ffffff;
+    }
+
+    .auth-card {
+        background: var(--auth-card-bg);
+        border: 1px solid var(--auth-card-border) !important;
+        color: var(--auth-card-text);
+    }
+
+    .auth-card .card-header {
+        background-image: linear-gradient(97deg, #2563eb 0%, #93c5fd 140.21%);
+        background-color: transparent;
+        color: #ffffff;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .auth-card .card-header p {
+        color: #ffffff !important;
+    }
+
+    .auth-card .form-control,
+    .auth-card .form-select {
+        background: var(--auth-input-bg);
+        color: var(--auth-input-text);
+        border-color: var(--auth-card-border);
+    }
+
+    .auth-card .form-control::placeholder {
+        color: var(--auth-placeholder);
+    }
+
+    .auth-card,
+    .auth-card p,
+    .auth-card label,
+    .auth-card .form-label,
+    .auth-card a,
+    .auth-card small {
+        color: var(--auth-card-text) !important;
+    }
+
+    .auth-card .text-muted {
+        color: var(--auth-muted) !important;
+    }
+
+    .auth-card .auth-footer,
+    .auth-card .auth-footer a {
+        color: #ffffff !important;
+    }
 </style>
 @endsection
 
@@ -56,7 +122,7 @@
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-5 col-md-7">
-                <div class="card shadow-lg border-0 rounded-xl">
+                <div class="card shadow-lg border-0 rounded-xl auth-card">
                     <div class="card-header bg-primary text-white text-center py-4 rounded-top">
                         <h3 class="mb-0 fw-bold">Login</h3>
                         <p class="mb-0 small">Masuk sebagai Admin atau User</p>
@@ -125,16 +191,9 @@
                                 </button>
                             </div>
 
-                            <div class="text-center mb-3">
-                                <p class="text-muted mb-2">atau</p>
-                                <a href="{{ route('auth.google') }}" class="btn btn-outline-danger w-100">
-                                    <i class="bi bi-google"></i> Login dengan Google
-                                </a>
-                            </div>
-
                             <hr>
 
-                            <p class="text-center mb-0">
+                            <p class="text-center mb-0 auth-footer">
                                 Belum punya akun? <a href="{{ route('register') }}" class="text-decoration-none fw-semibold">Daftar Sekarang</a>
                             </p>
                         </form>
