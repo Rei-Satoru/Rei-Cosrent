@@ -2,6 +2,55 @@
 
 @section('title', 'Denda Saya - Rei Cosrent')
 
+@section('styles')
+<style>
+    .fines-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .fines-table thead th {
+        background: rgba(220, 38, 38, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .fines-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+    }
+
+    .fines-table tbody tr:hover td {
+        background: rgba(220, 38, 38, 0.04);
+    }
+
+    [data-bs-theme="dark"] .fines-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .fines-table thead th {
+        background: rgba(248, 113, 113, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .fines-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .fines-table tbody tr:hover td {
+        background: rgba(248, 113, 113, 0.14);
+    }
+</style>
+@endsection
+
 @section('content')
 <section class="py-4">
     <div class="container">
@@ -25,7 +74,7 @@
 
         @if(isset($dendas) && count($dendas) > 0)
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle fines-table">
                     <thead>
                         <tr>
                             <th>ID</th>

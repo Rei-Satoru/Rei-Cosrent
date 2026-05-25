@@ -747,7 +747,7 @@
                             <strong>Rei Cosrent</strong>
                         </div>
                     </div>
-                    <div class="footer-desc small">Sewa Kostum Cosplay — solusi mudah untuk kebutuhan kostum acara dan photoshoot. Layanan ramah, koleksi lengkap.</div>
+                    <div class="footer-desc small">Sewa kostum cosplay Impian Anda!</div>
                 </div>
 
                 <div class="col-md-4 footer-col text-md-end">

@@ -279,6 +279,9 @@
                                 <a href="{{ route('user.pesanan') }}" class="btn btn-outline-primary d-flex align-items-center justify-content-center gap-2">
                                     <i class="bi bi-receipt"></i> Pesanan Saya
                                 </a>
+                                <a href="{{ route('user.pengembalian') }}" class="btn btn-outline-success d-flex align-items-center justify-content-center gap-2">
+                                    <i class="bi bi-arrow-counterclockwise"></i> Pengembalian
+                                </a>
                                 <a href="{{ route('user.denda-saya') }}" class="btn btn-outline-warning d-flex align-items-center justify-content-center gap-2">
                                     <i class="bi bi-exclamation-triangle"></i> Denda Saya
                                 </a>

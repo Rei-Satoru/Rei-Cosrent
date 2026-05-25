@@ -2,6 +2,55 @@
 
 @section('title', 'Pesanan Saya - Rei Cosrent')
 
+@section('styles')
+<style>
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 1rem;
+        overflow: hidden;
+    }
+
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+</style>
+@endsection
+
 @section('content')
 <section class="py-4">
     <div class="container">
@@ -34,7 +83,7 @@
             </div>
         @else
             <div class="table-responsive">
-                <table class="table table-hover align-middle">
+                <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -76,7 +125,7 @@
                                         'revisi' => 'bg-secondary',
                                         'selesai' => 'bg-success',
                                         'diterima' => 'bg-info text-dark',
-                                        'dibatalkan' => 'bg-secondary'
+                                        'dibatalkan' => 'bg-secondary',
                                     ][$order->status] ?? 'bg-dark';
                                 @endphp
                                 <span class="badge {{ $statusClass }}">{{ ucfirst($order->status) }}</span>

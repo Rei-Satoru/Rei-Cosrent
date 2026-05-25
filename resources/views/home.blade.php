@@ -105,7 +105,7 @@
         <div class="ak-glow" aria-hidden="true"></div>
         <div class="ak-container" style="position:relative; z-index:10;">
             <h1 class="mb-3">Sewa Kostum Impian Anda!</h1>
-            <p class="subheading mb-4">Temukan dan sewa kostum cosplay berkualitas tinggi</p>
+            <p class="subheading mb-4">Menyediakan Kostum Cosplay untuk berbagai acara dengan pelayanan ramah dan koleksi lengkap.</p>
         </div>
     </header>
 

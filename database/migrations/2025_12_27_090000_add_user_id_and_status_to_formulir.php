@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::table('formulir', function (Blueprint $table) {
             $table->unsignedBigInteger('user_id')->nullable()->after('id');
-            $table->string('status', 20)->default('proses')->after('pernyataan');
+            $table->string('status', 50)->default('proses')->after('pernyataan');
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('set null');
         });

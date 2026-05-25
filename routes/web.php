@@ -38,6 +38,10 @@ Route::post('/pesanan-saya/{id}/update', [HomeController::class, 'updatePesanan'
 Route::post('/pesanan-saya/{id}/cancel', [HomeController::class, 'cancelPesanan'])->name('user.pesanan.cancel');
 Route::delete('/pesanan-saya/{id}/delete', [HomeController::class, 'deletePesanan'])->name('user.pesanan.delete');
 
+// Pengembalian Routes
+Route::get('/pengembalian-saya', [HomeController::class, 'pengembalianSaya'])->name('user.pengembalian');
+Route::post('/pengembalian-saya/{id}/submit', [HomeController::class, 'submitPengembalian'])->name('user.pengembalian.submit');
+
 // Auth Routes (Unified Login/Register for Admin & User)
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.post');
@@ -96,6 +100,9 @@ Route::post('/admin/aturan/delete/{id}', [AdminController::class, 'deleteAturan'
 
 // Data Pesanan Routes
 Route::get('/admin/data-pesanan', [AdminController::class, 'dataPesanan'])->name('admin.data-pesanan');
+// Data Pengembalian Routes
+Route::get('/admin/data-pengembalian', [AdminController::class, 'dataPengembalian'])->name('admin.data-pengembalian');
+Route::post('/admin/pengembalian/{id}/verifikasi', [AdminController::class, 'verifikasiPengembalian'])->name('admin.pengembalian.verifikasi');
 // Data Denda & Kerusakan Routes
 Route::get('/admin/data-denda', [AdminController::class, 'dataDenda'])->name('admin.data-denda');
 // CRUD for denda (store/update/destroy used by embedded UI on /admin/data-denda)

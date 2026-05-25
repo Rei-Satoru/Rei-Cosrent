@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Pengembalian;
 use Illuminate\Support\Facades\Schema;
 
 class Formulir extends Model
@@ -49,6 +50,24 @@ class Formulir extends Model
     {
         // latest pembayaran for this formulir
         return $this->hasOne(\App\Models\Pembayaran::class, 'formulir_id')->latestOfMany();
+    }
+
+    public function pengembalian()
+    {
+        return $this->hasOne(\App\Models\Pengembalian::class, 'formulir_id')->latestOfMany();
+    }
+
+    public function getPengembalianSafeAttribute()
+    {
+        try {
+            if (Schema::hasColumn('pengembalian', 'formulir_id')) {
+                return $this->pengembalian()->first();
+            }
+
+            return Pengembalian::latest()->first();
+        } catch (\Exception $e) {
+            return Pengembalian::latest()->first();
+        }
     }
 
     /**

@@ -11,6 +11,7 @@ use App\Models\Formulir;
 use App\Models\User;
 use App\Models\Denda;
 use App\Models\Pembayaran;
+use App\Models\Pengembalian;
 use App\Models\Ulasan;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\JsonResponse;
@@ -112,7 +113,10 @@ class AdminController extends Controller
         $pesanan_count = Formulir::count();
         $users_count = User::count();
         $denda_count = Denda::count();
+        $total_denda = Denda::sum('jumlah_denda');
         $ulasan_count = Ulasan::count();
+        // Count pending pengembalian requests (use Pengembalian.status instead of polluting formulir.status)
+        $pengembalian_count = Pengembalian::where('status', 'proses')->count();
         $profile_contact = ProfileContact::find(1);
         
         // Get latest 5 orders
@@ -151,8 +155,10 @@ class AdminController extends Controller
             'aturan_count' => $aturan_count,
             'pesanan_count' => $pesanan_count,
             'denda_count' => $denda_count,
+            'total_denda' => $total_denda,
             'users_count' => $users_count,
             'ulasan_count' => $ulasan_count,
+            'pengembalian_count' => $pengembalian_count,
             'profile_contact' => $profile_contact,
             'latest_orders' => $latest_orders,
             'total_revenue' => $total_revenue,
@@ -1110,9 +1116,70 @@ class AdminController extends Controller
         }
 
         $pesanan = Formulir::orderBy('created_at', 'desc')->get();
+        // Keep pesanan status options focused on order lifecycle; pengembalian has its own statuses
         $statusOptions = ['proses', 'revisi', 'diterima', 'selesai'];
 
         return view('admin.data-pesanan', compact('pesanan', 'statusOptions'));
+    }
+
+    public function dataPengembalian()
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $pengembalianList = Pengembalian::with('formulir')->orderByDesc('created_at')->get();
+        $pendingCount = $pengembalianList->filter(function ($item) {
+            return $item->status === 'proses';
+        })->count();
+
+        return view('admin.data-pengembalian', [
+            'pengembalianList' => $pengembalianList,
+            'pendingCount' => $pendingCount,
+        ]);
+    }
+
+    public function verifikasiPengembalian(Request $request, $id)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        $request->validate([
+            'aksi' => 'required|in:setujui,revisi',
+            'catatan_admin' => 'nullable|string|max:255',
+        ]);
+
+        try {
+            $pengembalian = Pengembalian::with('formulir')->findOrFail($id);
+            $order = $pengembalian->formulir;
+
+            if (!$order) {
+                return redirect()->route('admin.data-pengembalian')->with('error', 'Data pesanan untuk pengembalian ini tidak ditemukan.');
+            }
+
+            $catatanAdmin = trim((string) $request->input('catatan_admin'));
+
+            if ($request->input('aksi') === 'setujui') {
+                $pengembalian->status = 'diterima';
+                $order->status = 'selesai';
+                $successMessage = 'Pengembalian berhasil diverifikasi.';
+            } else {
+                $pengembalian->status = 'ditolak';
+                $order->status = 'diterima';
+                $successMessage = 'Pengembalian dikembalikan ke user untuk revisi.';
+            }
+
+            if ($catatanAdmin !== '') {
+                $pengembalian->catatan_admin = $catatanAdmin;
+            }
+            $pengembalian->save();
+            $order->save();
+
+            return redirect()->route('admin.data-pengembalian')->with('success', $successMessage);
+        } catch (\Exception $e) {
+            return redirect()->route('admin.data-pengembalian')->with('error', 'Gagal memproses verifikasi pengembalian: ' . $e->getMessage());
+        }
     }
 
     // ==================== DATA DENDA & KERUSAKAN ====================

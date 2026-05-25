@@ -605,7 +605,7 @@
             </div>
         </div>
 
-        <div class="row row-cols-1 row-cols-md-2 g-3 mb-4">
+        <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
             <div class="col">
                 <div class="data-card admin-surface-card h-100 p-3 text-start">
                     <div class="data-card-label">Total Seluruh Pendapatan</div>
@@ -616,6 +616,12 @@
                 <div class="data-card admin-surface-card h-100 p-3 text-start">
                     <div class="data-card-label">Total Seluruh Pesanan</div>
                     <div class="data-card-value" id="totalOverallOrders">{{ $pesanan_count ?? 0 }}</div>
+                </div>
+            </div>
+            <div class="col">
+                <div class="data-card admin-surface-card h-100 p-3 text-start">
+                    <div class="data-card-label">Total Seluruh Denda</div>
+                    <div class="data-card-value" id="totalOverallDenda">Rp {{ number_format($total_denda ?? 0, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
@@ -793,6 +799,16 @@
                     <div class="flex-grow-1">
                         <h6 class="fw-semibold mb-0">Data Pesanan & Pembayaran</h6>
                         <small class="text-muted">Total: {{ $pesanan_count }}</small>
+                    </div>
+                </div>
+            </a>
+
+            <a href="{{ route('admin.data-pengembalian') }}" aria-label="Data Pengembalian" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="menu-icon me-3 mb-0"><i class="bi bi-arrow-counterclockwise"></i></div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-semibold mb-0">Data Pengembalian</h6>
+                        <small class="text-muted">Menunggu Verifikasi: {{ $pengembalian_count ?? 0 }}</small>
                     </div>
                 </div>
             </a>

@@ -1,0 +1,567 @@
+@extends('layouts.main')
+
+@section('title', 'Pengembalian Saya - Rei Cosrent')
+
+@section('styles')
+<style>
+    .user-profile-card {
+        background: #f8fbff !important;
+        border: 1px solid rgba(37, 99, 235, 0.12) !important;
+        box-shadow: 0 12px 30px -12px rgba(16, 24, 40, 0.12) !important;
+        color: #0f172a !important;
+        border-radius: 1.25rem !important;
+    }
+
+    [data-bs-theme="dark"] .user-profile-card {
+        background: #0f172a !important;
+        border-color: rgba(96, 165, 250, 0.16) !important;
+        color: #ffffff !important;
+        box-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55) !important;
+    }
+
+    .user-profile-card .card-header {
+        background: transparent !important;
+        color: var(--brand-blue) !important;
+        border-bottom: 1px solid rgba(37, 99, 235, 0.12) !important;
+    }
+
+    [data-bs-theme="dark"] .user-profile-card .card-header {
+        border-bottom-color: rgba(96, 165, 250, 0.16) !important;
+    }
+
+    .user-profile-card .card-body,
+    .user-profile-card p,
+    .user-profile-card small,
+    .user-profile-card h5,
+    .user-profile-card td,
+    .user-profile-card th,
+    .user-profile-card label,
+    .user-profile-card .text-muted {
+        color: inherit !important;
+    }
+
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
+    }
+
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+
+    .modal-content {
+        background: #f8fbff;
+        color: #0f172a;
+        border: 1px solid rgba(37, 99, 235, 0.12);
+    }
+
+    [data-bs-theme="dark"] .modal-content {
+        background: #0f172a;
+        color: #ffffff;
+        border-color: rgba(96, 165, 250, 0.16);
+    }
+
+    .modal-header,
+    .modal-footer {
+        border-color: rgba(37, 99, 235, 0.12);
+    }
+
+    [data-bs-theme="dark"] .modal-header,
+    [data-bs-theme="dark"] .modal-footer {
+        border-color: rgba(96, 165, 250, 0.16);
+    }
+
+    .modal-body .form-control,
+    .modal-body .form-select {
+        background: #f8fbff;
+        color: #0f172a;
+        border-color: rgba(37, 99, 235, 0.12);
+    }
+
+    .modal-body .form-control:focus,
+    .modal-body .form-select:focus {
+        background: #f8fbff;
+        color: #0f172a;
+        border-color: rgba(37, 99, 235, 0.35);
+        box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.12);
+    }
+
+    [data-bs-theme="dark"] .modal-body .form-control,
+    [data-bs-theme="dark"] .modal-body .form-select {
+        background: #0f172a;
+        color: #ffffff;
+        border-color: rgba(96, 165, 250, 0.16);
+    }
+
+    [data-bs-theme="dark"] .modal-body .form-control:focus,
+    [data-bs-theme="dark"] .modal-body .form-select:focus {
+        background: #0f172a;
+        color: #ffffff;
+        border-color: rgba(96, 165, 250, 0.35);
+        box-shadow: 0 0 0 0.2rem rgba(96, 165, 250, 0.12);
+    }
+
+    .modal-body .form-control::file-selector-button {
+        background: rgba(37, 99, 235, 0.08);
+        color: #0f172a;
+        border: 0;
+        border-right: 1px solid rgba(37, 99, 235, 0.12);
+        margin-right: 0.75rem;
+    }
+
+    [data-bs-theme="dark"] .modal-body .form-control::file-selector-button {
+        background: rgba(96, 165, 250, 0.16);
+        color: #ffffff;
+        border-right-color: rgba(96, 165, 250, 0.16);
+    }
+
+    .history-card {
+        cursor: pointer;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .history-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 24px -14px rgba(15, 23, 42, 0.22);
+    }
+
+    .history-row {
+        padding: 0.85rem 0;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .history-row:last-child {
+        border-bottom: none;
+        padding-bottom: 0;
+    }
+
+    [data-bs-theme="dark"] .history-row {
+        border-bottom-color: rgba(148, 163, 184, 0.16);
+    }
+
+    .history-detail-btn {
+        min-width: 92px;
+        padding: 0.35rem 0.75rem;
+        white-space: nowrap;
+    }
+
+    .history-thumb {
+        width: 100%;
+        height: 120px;
+        object-fit: cover;
+        border-radius: 0;
+        border: 1px solid rgba(148, 163, 184, 0.2);
+    }
+
+    .reapply-alert-title {
+        font-size: 1.08rem;
+        line-height: 1.35;
+    }
+
+    .reapply-alert-note {
+        font-size: 0.98rem;
+        line-height: 1.5;
+    }
+
+    .reapply-image-label {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin-bottom: 0.45rem;
+    }
+
+    .reapply-guidance {
+        display: block;
+        font-size: 1.03rem;
+        font-weight: 700;
+        line-height: 1.6;
+        margin-top: 1.15rem;
+        margin-bottom: 0.9rem;
+    }
+</style>
+@endsection
+
+@section('content')
+<section class="py-4">
+    <div class="container">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Pengembalian Kostum</h2>
+                <p class="text-muted mb-0">Ajukan pengembalian untuk pesanan yang sudah diterima.</p>
+            </div>
+            <div class="d-grid d-sm-block">
+                <a href="{{ route('user.profile') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali ke Profil
+                </a>
+            </div>
+        </div>
+
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <i class="bi bi-check-circle"></i> {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="row g-4">
+            <div class="col-12 col-lg-7">
+                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+                    <div>
+                        <h5 class="fw-bold mb-0">Pesanan Siap Dikembalikan</h5>
+                        <p class="text-muted mb-0">Hanya pesanan dengan status <strong>diterima</strong> yang bisa diajukan pengembalian.</p>
+                    </div>
+                </div>
+
+                @if($activeOrders->isEmpty())
+                    <div class="alert alert-info text-center" role="alert">
+                        Tidak ada pesanan yang sedang aktif untuk dikembalikan.
+                    </div>
+                @else
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle orders-table">
+                            <thead>
+                                <tr>
+                                    <th>Nama Kostum</th>
+                                    <th>Tgl Pakai</th>
+                                    <th>Tgl Kembali</th>
+                                    <th>Pengembalian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach($activeOrders as $order)
+                                    @php
+                                        $isReapplyOrder = data_get($order, 'pengembalian.status') === 'ditolak';
+                                    @endphp
+                                    <tr>
+                                        <td>{{ $order->nama_kostum ?? '-' }}</td>
+                                        <td>{{ $order->tanggal_pemakaian ? \Carbon\Carbon::parse($order->tanggal_pemakaian)->format('d M Y') : '-' }}</td>
+                                        <td>{{ $order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-' }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm {{ $isReapplyOrder ? 'btn-outline-warning' : 'btn-outline-primary' }} w-100" data-bs-toggle="modal" data-bs-target="#returnModal-{{ $order->id }}">
+                                                <i class="bi bi-arrow-counterclockwise"></i> {{ $isReapplyOrder ? 'Ajukan Ulang' : 'Ajukan' }}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+
+            <div class="col-12 col-lg-5">
+                <div class="card user-profile-card border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-geo-alt"></i> Alamat Admin</h5>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <p class="mb-2 fw-semibold">{{ $profile_contact->name ?? 'Admin Rei Cosrent' }}</p>
+                        <p class="mb-1 text-muted">{{ $profile_contact->address ?? 'Alamat admin belum tersedia.' }}</p>
+                        <p class="mb-3 text-muted">{{ $profile_contact->phone ? 'No. Telepon: ' . $profile_contact->phone : 'Nomor telepon admin belum tersedia.' }}</p>
+                    </div>
+                </div>
+
+                <div class="card user-profile-card border-0 mb-4">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle"></i> Panduan Pengembalian</h5>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                        <p class="mb-3">Ikuti aturan pengembalian yang berlaku sebelum mengajukan proses pengembalian kostum.</p>
+                        <a href="{{ route('peraturan') }}" class="btn btn-outline-primary w-100 d-flex align-items-center justify-content-center gap-2">
+                            <i class="bi bi-journal-text"></i> Lihat Peraturan
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card user-profile-card border-0">
+                    <div class="card-header py-3">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history"></i> Riwayat Pengembalian</h5>
+                    </div>
+                    <div class="card-body p-3 p-md-4">
+                    @if($returnRequests->isEmpty())
+                        <div class="text-muted">Belum ada pengajuan pengembalian.</div>
+                    @else
+                        <div>
+                            @foreach($returnRequests->take(5) as $request)
+                                @php
+                                    $statusMap = [
+                                        'proses' => ['Proses', 'bg-warning text-dark'],
+                                        'ditolak' => ['Ditolak', 'bg-danger'],
+                                        'diterima' => ['Diterima', 'bg-success'],
+                                    ];
+                                    $statusData = $statusMap[$request->status ?? 'proses'] ?? ['Proses', 'bg-secondary'];
+                                    $pemesanName = data_get($request, 'formulir.nama', '-');
+                                    $kostumName = data_get($request, 'formulir.nama_kostum', '-');
+                                @endphp
+                                <div class="history-row d-flex justify-content-between align-items-center gap-3">
+                                    <div class="flex-grow-1">
+                                        <div class="fw-semibold">{{ $pemesanName }}</div>
+                                        <div class="small text-muted">Kostum: {{ $kostumName }}</div>
+                                        <div class="mt-1">
+                                            <span class="badge {{ $statusData[1] }}">{{ $statusData[0] }}</span>
+                                        </div>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-outline-info history-detail-btn" data-bs-toggle="modal" data-bs-target="#historyModal-{{ $request->id }}">
+                                        <i class="bi bi-card-list"></i> Detail
+                                    </button>
+                                </div>
+                            @endforeach
+                        </div>
+                    @endif
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+@foreach($activeOrders as $order)
+@php
+    $latestPengembalian = data_get($order, 'pengembalian');
+    $isReapplyOrder = $latestPengembalian && $latestPengembalian->status === 'ditolak';
+@endphp
+<div class="modal fade" id="returnModal-{{ $order->id }}" tabindex="-1" aria-labelledby="returnModalLabel-{{ $order->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="returnModalLabel-{{ $order->id }}">Ajukan Pengembalian - {{ $order->nama_kostum ?? 'Kostum' }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form method="POST" action="{{ route('user.pengembalian.submit', $order->id) }}" enctype="multipart/form-data">
+                @csrf
+                <div class="modal-body">
+                    @if($isReapplyOrder)
+                        <div class="alert alert-info">
+                            <div class="fw-semibold reapply-alert-title mb-1">Pengajuan sebelumnya ditolak admin</div>
+                            <div class="reapply-alert-note mb-2">Catatan admin: {{ data_get($latestPengembalian, 'catatan_admin') ?: 'Belum ada catatan admin.' }}</div>
+                            <div class="row g-2">
+                                @foreach(['gambar1', 'gambar2', 'gambar3'] as $imageField)
+                                    @php
+                                        $imagePath = data_get($latestPengembalian, $imageField);
+                                        $imageLabel = preg_replace('/([a-zA-Z]+)(\d+)/', '$1 $2', ucfirst($imageField));
+                                    @endphp
+                                    <div class="col-md-4">
+                                        <div class="reapply-image-label text-muted">{{ $imageLabel }} sebelumnya</div>
+                                        @if($imagePath)
+                                            <img src="{{ asset('storage/' . $imagePath) }}" alt="Foto sebelumnya {{ $imageField }}" class="img-fluid history-thumb">
+                                        @else
+                                            <div class="alert alert-secondary mb-0">Tidak tersedia.</div>
+                                        @endif
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                        <div class="text-muted reapply-guidance">Unggah foto baru jika ingin mengganti, atau biarkan kosong untuk memakai foto sebelumnya.</div>
+                    @endif
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <div class="small text-muted mb-1">Nama Kostum</div>
+                            <div class="fw-semibold">{{ $order->nama_kostum ?? '-' }}</div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="small text-muted mb-1">Tanggal Pengembalian</div>
+                            <div class="fw-semibold">{{ $order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-' }}</div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="gambar1_{{ $order->id }}">Gambar 1</label>
+                        <input type="file" id="gambar1_{{ $order->id }}" name="gambar1" class="form-control" accept="image/*" {{ $isReapplyOrder ? '' : 'required' }}>
+                        <div class="form-text">{{ $isReapplyOrder ? 'Opsional saat pengajuan ulang. Kosongkan jika foto lama masih dipakai.' : 'Wajib diisi. Foto kelengkapan kostum sebelum dikemas.' }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="gambar2_{{ $order->id }}">Gambar 2</label>
+                        <input type="file" id="gambar2_{{ $order->id }}" name="gambar2" class="form-control" accept="image/*" {{ $isReapplyOrder ? '' : 'required' }}>
+                        <div class="form-text">{{ $isReapplyOrder ? 'Opsional saat pengajuan ulang. Kosongkan jika foto lama masih dipakai.' : 'Wajib diisi. Foto kostum yang sudah dikemas.' }}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="gambar3_{{ $order->id }}">Gambar 3</label>
+                        <input type="file" id="gambar3_{{ $order->id }}" name="gambar3" class="form-control" accept="image/*">
+                        <div class="form-text">Opsional.</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold" for="catatan_{{ $order->id }}">Catatan Pengembalian</label>
+                        <textarea
+                            id="catatan_{{ $order->id }}"
+                            name="catatan"
+                            class="form-control"
+                            rows="4"
+                            placeholder="Contoh: Kostum sudah saya kembalikan hari ini dalam kondisi baik.">{{ old('catatan', $isReapplyOrder ? (data_get($latestPengembalian, 'catatan') ?? '') : '') }}</textarea>
+                        <div class="form-text">Opsional.</div>
+                    </div>
+
+                    <div class="alert alert-warning mb-0">
+                        Setelah dikirim, status pesanan akan <strong>diverifikasi admin</strong>.
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="bi bi-check-circle"></i> Kirim Pengembalian
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endforeach
+
+@foreach($returnRequests->take(5) as $request)
+<div class="modal fade" id="historyModal-{{ $request->id }}" tabindex="-1" aria-labelledby="historyModalLabel-{{ $request->id }}" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="historyModalLabel-{{ $request->id }}">Detail Pengembalian - {{ data_get($request, 'formulir.nama_kostum', '-') }}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if($request)
+                    @php
+                        $statusMap = [
+                            'proses' => ['Proses', 'bg-warning text-dark'],
+                            'ditolak' => ['Ditolak', 'bg-danger'],
+                            'diterima' => ['Diterima', 'bg-success'],
+                        ];
+                        $statusData = $statusMap[$request->status ?? 'proses'] ?? ['Proses', 'bg-secondary'];
+                        $pemesanName = data_get($request, 'formulir.nama', '-');
+                        $pemesanEmail = data_get($request, 'formulir.email');
+                        $kostumName = data_get($request, 'formulir.nama_kostum', '-');
+                        $tanggalPakai = data_get($request, 'formulir.tanggal_pemakaian');
+                        $tanggalKembali = data_get($request, 'formulir.tanggal_pengembalian');
+                        $tanggalPengajuan = $request->created_at ? $request->created_at->format('d M Y H:i') : '-';
+                    @endphp
+                    <div class="mb-3">
+                        <span class="badge {{ $statusData[1] }}">{{ $statusData[0] }}</span>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Pemesan</div>
+                            <div class="fw-semibold">{{ $pemesanName }}</div>
+                            @if($pemesanEmail)
+                                <div class="small text-muted">{{ $pemesanEmail }}</div>
+                            @endif
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Nama Kostum</div>
+                            <div class="fw-semibold">{{ $kostumName }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Tanggal Pengajuan</div>
+                            <div class="fw-semibold">{{ $tanggalPengajuan }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Tanggal Pakai</div>
+                            <div class="fw-semibold">{{ $tanggalPakai ? \Carbon\Carbon::parse($tanggalPakai)->format('d M Y') : '-' }}</div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="small text-muted mb-1">Tanggal Kembali</div>
+                            <div class="fw-semibold">{{ $tanggalKembali ? \Carbon\Carbon::parse($tanggalKembali)->format('d M Y') : '-' }}</div>
+                        </div>
+                    </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            @if($request->gambar1)
+                                <img src="{{ asset('storage/' . $request->gambar1) }}" alt="Gambar 1" class="img-fluid history-thumb">
+                            @else
+                                <div class="alert alert-secondary mb-0">Gambar 1 tidak tersedia.</div>
+                            @endif
+                        </div>
+                        <div class="col-md-4">
+                            @if($request->gambar2)
+                                <img src="{{ asset('storage/' . $request->gambar2) }}" alt="Gambar 2" class="img-fluid history-thumb">
+                            @else
+                                <div class="alert alert-secondary mb-0">Gambar 2 tidak tersedia.</div>
+                            @endif
+                        </div>
+                        <div class="col-md-4">
+                            @if($request->gambar3)
+                                <img src="{{ asset('storage/' . $request->gambar3) }}" alt="Gambar 3" class="img-fluid history-thumb">
+                            @else
+                                <div class="alert alert-secondary mb-0">Gambar 3 tidak tersedia.</div>
+                            @endif
+                        </div>
+                    </div>
+                    <div class="card user-profile-card border-0">
+                        <div class="card-body p-3 p-md-4">
+                            <div class="fw-semibold mb-2">Catatan User</div>
+                            <div class="text-muted">{{ $request->catatan ?: 'Tidak ada catatan.' }}</div>
+                            <hr>
+                            <div class="fw-semibold mb-2">Catatan Admin</div>
+                            <div class="text-muted">{{ $request->catatan_admin ?: 'Belum ada catatan admin.' }}</div>
+                        </div>
+                    </div>
+                @else
+                    <div class="alert alert-info mb-0">Detail pengembalian belum tersedia.</div>
+                @endif
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+            </div>
+        </div>
+    </div>
+</div>
+@endforeach
+@endsection
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const alerts = document.querySelectorAll('.alert-success');
+        alerts.forEach(alert => {
+            setTimeout(() => {
+                if (window.bootstrap && typeof window.bootstrap.Alert !== 'undefined') {
+                    const instance = window.bootstrap.Alert.getOrCreateInstance(alert);
+                    instance.close();
+                } else {
+                    alert.remove();
+                }
+            }, 5000);
+        });
+    });
+</script>
+@endsection

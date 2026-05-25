@@ -6,6 +6,7 @@ use App\Models\Aturan;
 use App\Models\DataKatalog;
 use App\Models\DataKostum;
 use App\Models\Formulir;
+use App\Models\Pengembalian;
 use App\Models\ProfileContact;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -525,5 +526,151 @@ class HomeController extends Controller
         $order->delete();
 
         return redirect()->route('user.pesanan')->with('success', 'Pesanan berhasil dihapus.');
+    }
+
+    public function pengembalianSaya()
+    {
+        if (!session('user_logged_in')) {
+            return redirect()->route('login');
+        }
+
+        $userEmail = session('user_email');
+
+        $pengembalianHasLinkColumn = Schema::hasColumn('pengembalian', 'formulir_id');
+
+        $ordersQuery = Formulir::query();
+        if ($pengembalianHasLinkColumn) {
+            $ordersQuery->with('pengembalian');
+        }
+
+        $orders = $ordersQuery
+            ->where('email', $userEmail)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        $profile_contact = ProfileContact::find(1);
+        $returnRequests = collect();
+
+        // Exclude orders that already have a pengembalian (or were just submitted)
+        $recentFormulirId = session('recent_pengembalian_formulir_id');
+
+        $activeOrders = $orders->filter(function ($o) use ($recentFormulirId, $pengembalianHasLinkColumn) {
+            if (($o->status ?? null) !== 'diterima') {
+                return false;
+            }
+
+            // If pengembalian link exists, only exclude orders whose latest pengembalian is still pending/approved.
+            // Rejected pengembalian should reappear here so the user can submit again.
+            if ($pengembalianHasLinkColumn) {
+                $latestReturnStatus = data_get($o, 'pengembalian.status');
+                if ($latestReturnStatus && $latestReturnStatus !== 'ditolak') {
+                    return false;
+                }
+            }
+
+            // Also exclude the order if it was just submitted in this session
+            if ($recentFormulirId && $o->id == $recentFormulirId) {
+                return false;
+            }
+
+            return true;
+        })->values();
+
+        if ($pengembalianHasLinkColumn) {
+            $returnRequests = Pengembalian::with('formulir')
+                ->whereHas('formulir', function ($query) use ($userEmail) {
+                    $query->where('email', $userEmail);
+                })
+                ->orderByDesc('created_at')
+                ->get();
+
+            // If a recent pengembalian was just created in this session but not linked, include it
+            $recentId = session('recent_pengembalian_id');
+            if ($recentId) {
+                try {
+                    $recent = Pengembalian::with('formulir')->find($recentId);
+                    if ($recent && !$returnRequests->contains('id', $recent->id)) {
+                        $returnRequests->prepend($recent);
+                    }
+                } catch (\Exception $e) {
+                    // ignore
+                }
+            }
+        }
+
+        return view('user.pengembalian-saya', [
+            'activeOrders' => $activeOrders,
+            'returnRequests' => $returnRequests,
+            'profile_contact' => $profile_contact,
+            'pengembalianHasLinkColumn' => $pengembalianHasLinkColumn,
+        ]);
+    }
+
+    public function submitPengembalian(Request $request, $id)
+    {
+        if (!session('user_logged_in')) {
+            return redirect()->route('login');
+        }
+
+        $userEmail = session('user_email');
+        $order = Formulir::where('id', $id)->where('email', $userEmail)->firstOrFail();
+
+        if ($order->status !== 'diterima') {
+            return redirect()->route('user.pengembalian')->with('error', 'Pesanan ini belum bisa diproses untuk pengembalian.');
+        }
+
+        $latestPengembalian = null;
+        $isReapply = false;
+        if (Schema::hasColumn('pengembalian', 'formulir_id')) {
+            $latestPengembalian = $order->pengembalian;
+            $isReapply = $latestPengembalian && $latestPengembalian->status === 'ditolak';
+        }
+
+        $gambarRule = $isReapply
+            ? 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120'
+            : 'required|image|mimes:jpg,jpeg,png,webp|max:5120';
+
+        $request->validate([
+            'gambar1' => $gambarRule,
+            'gambar2' => $gambarRule,
+            'gambar3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'catatan' => 'nullable|string|max:1000',
+        ]);
+
+        $gambar1Path = $request->hasFile('gambar1')
+            ? $request->file('gambar1')->store('pengembalian', 'public')
+            : data_get($latestPengembalian, 'gambar1');
+        $gambar2Path = $request->hasFile('gambar2')
+            ? $request->file('gambar2')->store('pengembalian', 'public')
+            : data_get($latestPengembalian, 'gambar2');
+        $gambar3Path = $request->hasFile('gambar3')
+            ? $request->file('gambar3')->store('pengembalian', 'public')
+            : data_get($latestPengembalian, 'gambar3');
+
+        if (!$gambar1Path || !$gambar2Path) {
+            return redirect()->route('user.pengembalian')->with('error', 'Gambar pengembalian sebelumnya belum lengkap. Silakan unggah ulang Gambar 1 dan Gambar 2.')->withInput();
+        }
+
+        $catatan = trim((string) $request->input('catatan'));
+
+        $pengembalianData = [
+            'gambar1' => $gambar1Path,
+            'gambar2' => $gambar2Path,
+            'gambar3' => $gambar3Path,
+            'status' => 'proses',
+            'catatan' => $catatan !== '' ? $catatan : null,
+        ];
+
+        if ($pengembalianHasLinkColumn = Schema::hasColumn('pengembalian', 'formulir_id')) {
+            $pengembalianData['formulir_id'] = $order->id;
+        }
+
+        $created = Pengembalian::create($pengembalianData);
+
+        // Remember recent submission so the user sees it immediately in history
+        session()->flash('recent_pengembalian_id', $created->id);
+        session()->flash('recent_pengembalian_formulir_id', $order->id);
+
+        return redirect()->route('user.pengembalian')->with('success', 'Pengembalian kostum berhasil diajukan dan sedang menunggu verifikasi admin.');
     }
 }
