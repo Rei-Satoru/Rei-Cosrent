@@ -21,35 +21,92 @@
 
     .bukti-thumb:hover { transform: scale(1.02); }
 
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
+    }
+
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+    }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+
     [data-bs-theme="dark"] .page-title { color: #a855f7; }
     [data-bs-theme="light"] .page-title { color: #0056b3; }
 </style>
 @endsection
 
 @section('content')
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Data Denda & Kerusakan</h1>
-        <p class="text-muted">Kelola denda dan laporan kerusakan kostum.</p>
-    </div>
-</header>
-
-<section class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center mb-3 flex-wrap gap-2">
-                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Kembali</a>
-                <div class="d-grid d-sm-block w-100" style="max-width: 260px;">
-                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#addModal"><i class="bi bi-plus-circle"></i> Tambah Denda</button>
-                </div>
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Data Denda & Kerusakan</h2>
+                <p class="text-muted mb-0 small">Kelola denda dan laporan kerusakan kostum.</p>
             </div>
+            <div class="d-grid d-sm-block">
+                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </div>
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-            @endif
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
-            @endif
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
 
             @php
                 // Build a map of unique names -> nama_kostum for selects/datalists
@@ -65,10 +122,10 @@
 
             @if(count($dendas) > 0)
             <div class="table-responsive">
-                <table class="table table-bordered align-middle">
+                <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th style="width: 50px;">No</th>
                             <th>Nama</th>
                             <th>Nama Kostum</th>
                             <th>Jenis Denda</th>

@@ -4,16 +4,6 @@
 
 @section('styles')
     <style>
-        table th {
-            background-color: var(--bs-primary);
-            color: white;
-            text-align: center;
-            font-size: 1.0rem;
-        }
-
-        table td {
-            font-size: 1.0rem;
-        }
 
         .action-buttons {
             display: flex;
@@ -33,6 +23,66 @@
 
         [data-bs-theme="light"] .page-title {
             color: #0056b3;
+        }
+
+        .orders-table {
+            background: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            border: 1px solid rgba(148, 163, 184, 0.18);
+            border-radius: 0;
+            overflow: hidden;
+        }
+
+        .orders-table thead th {
+            background: rgba(37, 99, 235, 0.08);
+            color: var(--bs-body-color);
+            border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .orders-table tbody td {
+            background: var(--bs-body-bg);
+            color: var(--bs-body-color);
+            border-color: rgba(148, 163, 184, 0.14);
+            vertical-align: middle;
+        }
+
+        .orders-table thead th,
+        .orders-table tbody td {
+            border-right: 1px solid rgba(148, 163, 184, 0.14);
+        }
+
+        .orders-table thead th:last-child,
+        .orders-table tbody td:last-child {
+            border-right: 0;
+        }
+
+        .orders-table tbody tr:hover td {
+            background: rgba(37, 99, 235, 0.04);
+        }
+
+        [data-bs-theme="dark"] .orders-table {
+            border-color: rgba(148, 163, 184, 0.24);
+        }
+
+        [data-bs-theme="dark"] .orders-table thead th {
+            background: rgba(59, 130, 246, 0.16);
+            border-bottom-color: rgba(148, 163, 184, 0.22);
+        }
+
+        [data-bs-theme="dark"] .orders-table tbody td {
+            background: rgba(15, 23, 42, 0.96);
+            border-color: rgba(148, 163, 184, 0.16);
+        }
+
+        [data-bs-theme="dark"] .orders-table thead th,
+        [data-bs-theme="dark"] .orders-table tbody td {
+            border-right-color: rgba(148, 163, 184, 0.16);
+        }
+
+        [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+            background: rgba(59, 130, 246, 0.14);
         }
 
         .table img {
@@ -64,90 +114,72 @@
 @endsection
 
 @section('content')
-<!-- Header -->
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Data Katalog</h1>
-        <p class="text-muted">Kelola daftar katalog kostum yang tampil di halaman utama.</p>
-    </div>
-</header>
-
-<!-- Konten -->
-<section class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <!-- Tombol di atas tabel -->
-            <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Data Katalog</h2>
+                <p class="text-muted mb-0 small">Kelola daftar katalog kostum yang tampil di halaman utama.</p>
+            </div>
+            <div class="d-grid d-sm-block">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="bi bi-plus-circle"></i> Tambah Katalog
                 </button>
             </div>
+        </div>
 
-            <!-- Pencarian dan Sortir -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <form method="GET" action="{{ route('admin.data-katalog') }}" class="row g-3 align-items-end">
-                        <div class="col-md-4">
-                            <input type="text" name="search" class="form-control" placeholder="Cari nama atau deskripsi..." value="{{ $search ?? '' }}">
-                        </div>
-                        <div class="col-md-3">
-                            <select name="kategori" class="form-select">
-                                <option value="">Semua Kategori</option>
-                                @foreach(($kategori_options ?? []) as $kat)
-                                    <option value="{{ $kat }}" {{ ($filter_kategori ?? '') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <select name="sort" class="form-select">
-                                <option value="id_desc" {{ ($sort ?? '') === 'id_desc' ? 'selected' : '' }}>Terbaru</option>
-                                <option value="name_asc" {{ ($sort ?? '') === 'name_asc' ? 'selected' : '' }}>Nama A - Z</option>
-                                <option value="name_desc" {{ ($sort ?? '') === 'name_desc' ? 'selected' : '' }}>Nama Z - A</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2 d-grid">
-                            <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
-                        </div>
-                    </form>
-                    @if($search || $filter_kategori || ($sort && $sort !== 'id_desc'))
-                        <div class="mt-2">
-                            <a href="{{ route('admin.data-katalog') }}" class="btn btn-sm btn-secondary">
-                                <i class="bi bi-x-circle"></i> Reset Pencarian
-                            </a>
-                        </div>
-                    @endif
-                </div>
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+
+        <!-- Pencarian dan Sortir -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-body">
+                <form method="GET" action="{{ route('admin.data-katalog') }}" class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama atau deskripsi..." value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="kategori" class="form-select">
+                            <option value="">Semua Kategori</option>
+                            @foreach(($kategori_options ?? []) as $kat)
+                                <option value="{{ $kat }}" {{ ($filter_kategori ?? '') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <select name="sort" class="form-select">
+                            <option value="id_desc" {{ ($sort ?? '') === 'id_desc' ? 'selected' : '' }}>Terbaru</option>
+                            <option value="name_asc" {{ ($sort ?? '') === 'name_asc' ? 'selected' : '' }}>Nama A - Z</option>
+                            <option value="name_desc" {{ ($sort ?? '') === 'name_desc' ? 'selected' : '' }}>Nama Z - A</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2 d-grid">
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
+                    </div>
+                </form>
+                @if($search || $filter_kategori || ($sort && $sort !== 'id_desc'))
+                    <div class="mt-2">
+                        <a href="{{ route('admin.data-katalog') }}" class="btn btn-sm btn-secondary">
+                            <i class="bi bi-x-circle"></i> Reset Pencarian
+                        </a>
+                    </div>
+                @endif
             </div>
+        </div>
 
-            <!-- Success Alert -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            <!-- Error Alert -->
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @if($katalog->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center">
-                        <thead>
-                            <tr>
-                                <th>ID</th>
-                                <th>Nama Katalog</th>
-                                <th>Kategori</th>
-                                <th class="d-none d-md-table-cell">Deskripsi</th>
+        @if($katalog->count() > 0)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle orders-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Nama Katalog</th>
+                            <th>Kategori</th>
+                            <th class="d-none d-md-table-cell">Deskripsi</th>
                                 <th class="d-none d-md-table-cell">Gambar</th>
                                 <th>Aksi</th>
                             </tr>
@@ -161,8 +193,22 @@
                                 <td class="d-none d-md-table-cell">{{ Str::limit($item->description, 50) }}</td>
                                 <td class="d-none d-md-table-cell">
                                     @if(!empty($item->image))
-                                        <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="{{ asset($item->image) }}" data-image-title="Gambar Katalog: {{ $item->name }}" aria-label="Lihat gambar katalog {{ $item->name }}">
-                                            <img src="{{ asset($item->image) }}" alt="{{ $item->name }}" class="katalog-thumb" style="max-width:80px;">
+                                        @php
+                                            $imgRaw = $item->image ?? '';
+                                            if (str_starts_with($imgRaw, 'http')) {
+                                                $katalogImageSrc = $imgRaw;
+                                            } elseif (str_starts_with($imgRaw, '/storage/')) {
+                                                $katalogImageSrc = asset(ltrim($imgRaw, '/'));
+                                            } elseif (str_starts_with($imgRaw, 'storage/')) {
+                                                $katalogImageSrc = asset($imgRaw);
+                                            } elseif ($imgRaw) {
+                                                $katalogImageSrc = asset('storage/' . $imgRaw);
+                                            } else {
+                                                $katalogImageSrc = null;
+                                            }
+                                        @endphp
+                                        <button type="button" class="btn p-0 border-0 bg-transparent js-katalog-image-preview" data-image-src="{{ $katalogImageSrc }}" data-image-title="Gambar Katalog: {{ $item->name }}" aria-label="Lihat gambar katalog {{ $item->name }}">
+                                            <img src="{{ $katalogImageSrc }}" alt="{{ $item->name }}" class="katalog-thumb" style="max-width:80px;">
                                         </button>
                                     @else
                                         <span class="text-muted">Tidak ada gambar</span>

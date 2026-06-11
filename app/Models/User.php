@@ -28,6 +28,8 @@ class User extends Authenticatable
         'gambar_profil',
         'google_id',
         'avatar',
+        'password_reset_requested_at',
+        'password_reset_approved_at',
     ];
 
     /**
@@ -50,6 +52,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'password_reset_requested_at' => 'datetime',
+            'password_reset_approved_at' => 'datetime',
         ];
     }
 }

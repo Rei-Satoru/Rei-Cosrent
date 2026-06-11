@@ -41,58 +41,50 @@
 @endsection
 
 @section('content')
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-2">Data Pengembalian</h1>
-        <p class="text-muted mb-0">Kelola verifikasi data pengembalian yang telah diisi user.</p>
-    </div>
-</header>
-
-<section class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Data Pengembalian</h2>
+                <p class="text-muted mb-0 small">Kelola verifikasi data pengembalian yang telah diisi user.</p>
+            </div>
+            <div class="d-grid d-sm-block">
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
-                <div class="small text-muted">
-                    Total Pengajuan: <strong>{{ $pengembalianList->count() }}</strong> | Menunggu Verifikasi: <strong>{{ $pendingCount }}</strong>
-                </div>
             </div>
+        </div>
 
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+        <div class="small text-muted mb-3">
+            Total Pengajuan: <strong>{{ $pengembalianList->count() }}</strong> | Menunggu Verifikasi: <strong>{{ $pendingCount }}</strong>
+        </div>
 
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
 
-            @if($pengembalianList->isEmpty())
-                <div class="alert alert-info mb-0">Belum ada data pengembalian dari user.</div>
-            @else
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center">
-                        <thead>
-                            <tr>
-                                <th>User</th>
-                                <th>Kostum</th>
-                                <th>Bukti</th>
-                                <th>Status</th>
-                                <th>Catatan User</th>
-                                <th>Catatan Admin</th>
-                                <th>Diajukan</th>
-                                <th>Aksi</th>
-                            </tr>
+        @if($pengembalianList->isEmpty())
+            <div class="alert alert-info mb-0">Belum ada data pengembalian dari user.</div>
+        @else
+            <div class="table-responsive">
+                <table class="table table-hover align-middle orders-table text-center">
+                    <thead>
+                        <tr style="background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);">
+                            <th style="width: 50px; color: var(--bs-body-color);">No</th>
+                            <th style="color: var(--bs-body-color);">User</th>
+                            <th style="color: var(--bs-body-color);">Kostum</th>
+                            <th style="color: var(--bs-body-color);">Bukti</th>
+                            <th style="color: var(--bs-body-color);">Status</th>
+                            <th style="color: var(--bs-body-color);">Catatan User</th>
+                            <th style="color: var(--bs-body-color);">Catatan Admin</th>
+                            <th style="color: var(--bs-body-color);">Diajukan</th>
+                            <th style="color: var(--bs-body-color);">Aksi</th>
                         </thead>
                         <tbody>
-                            @foreach($pengembalianList as $item)
+                            @foreach($pengembalianList as $index => $item)
                                 @php
                                     $order = $item->formulir;
                                     $userName = data_get($order, 'nama', '-');
@@ -109,6 +101,7 @@
                                     $statusData = $statusMap[$statusKey] ?? [ucfirst(str_replace('_', ' ', (string) $statusKey)), 'bg-secondary'];
                                 @endphp
                                 <tr>
+                                    <td class="fw-semibold">{{ $index + 1 }}</td>
                                     <td class="text-start">
                                         <div class="fw-semibold">{{ $userName }}</div>
                                         @if($userEmail)

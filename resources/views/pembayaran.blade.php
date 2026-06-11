@@ -2,6 +2,47 @@
 
 @section('title', 'Pembayaran - Rei Cosrent')
 
+@section('styles')
+<style>
+    .payment-card {
+        background-color: var(--app-page-bg) !important;
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 1rem;
+    }
+
+    .payment-card .card-body {
+        background-color: var(--app-page-bg) !important;
+    }
+
+    .payment-card .card-title,
+    .payment-card .payment-meta,
+    .payment-card .payment-meta strong {
+        color: var(--footer-secondary-text) !important;
+    }
+
+    .payment-card .payment-detail-title {
+        color: var(--brand-blue) !important;
+    }
+
+    .payment-card .payment-instruction-title {
+        color: var(--brand-blue) !important;
+    }
+
+    .payment-card .card-body,
+    .payment-card p,
+    .payment-card li,
+    .payment-card label,
+    .payment-card .text-muted {
+        color: inherit;
+    }
+
+    [data-bs-theme="dark"] .payment-card {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+</style>
+@endsection
+
 @section('content')
 <section class="py-4">
     <div class="container">
@@ -17,7 +58,7 @@
             Silakan lakukan pembayaran sesuai instruksi yang tertera di bawah ini.
         </div>
         <!-- Contoh konten pembayaran, silakan sesuaikan dengan kebutuhan -->
-        <div class="card mb-4">
+        <div class="card mb-4 payment-card">
             <div class="card-body">
                 @php
                     $orderId = null;
@@ -37,21 +78,38 @@
                         $metode_pembayaran = $order['metode_pembayaran'] ?? '-';
                     }
                 @endphp
-                <h5 class="card-title">Detail Pembayaran</h5>
-                <p class="mb-2"><strong>ID Pesanan:</strong> {{ $orderId ?? '-' }}</p>
-                <p class="mb-2"><strong>Nama Kostum:</strong> {{ $nama_kostum }}</p>
-                <p class="mb-2"><strong>Total Harga:</strong> Rp {{ number_format((float) $total_harga, 0, ',', '.') }}</p>
-                <p class="mb-2"><strong>Metode Pembayaran:</strong> {{ $metode_pembayaran }}</p>
+                <h5 class="card-title payment-detail-title">Detail Pembayaran</h5>
+                <p class="mb-2 payment-meta"><strong>ID Pesanan:</strong> {{ $orderId ?? '-' }}</p>
+                <p class="mb-2 payment-meta"><strong>Nama Kostum:</strong> {{ $nama_kostum }}</p>
+                <p class="mb-2 payment-meta"><strong>Total Harga:</strong> Rp {{ number_format((float) $total_harga, 0, ',', '.') }}</p>
+                <p class="mb-2 payment-meta"><strong>Metode Pembayaran:</strong> {{ $metode_pembayaran }}</p>
                 <hr>
-                <h6>Instruksi Pembayaran:</h6>
+                <h6 class="payment-instruction-title">Instruksi Pembayaran:</h6>
                 <ul>
                     <li>Untuk transfer ke rekening berikut: <strong>{{ $profile->nomor_bank ?? '' }}</strong></li>
                     <li>Untuk pembayaran e-wallet, gunakan nomor: <strong>{{ $profile->nomor_ewallet ?? '' }}</strong></li>
                     <li>
                         Untuk pembayaran QRIS, scan kode berikut:
                         <div class="mt-2">
-                            @if(!empty($profile) && !empty($profile->qris))
-                                <img src="{{ asset('storage/' . $profile->qris) }}" alt="QRIS" class="img-fluid rounded border" style="max-width: 260px;">
+                            @php
+                                $qrisSrc = null;
+                                if (!empty($profile) && !empty($profile->qris)) {
+                                    $qrisPath = (string) $profile->qris;
+                                    $qrisSrc = str_starts_with($qrisPath, 'storage/')
+                                        ? asset($qrisPath)
+                                        : asset('storage/' . $qrisPath);
+                                }
+                            @endphp
+
+                            @if($qrisSrc)
+                                <img
+                                    id="qris_img"
+                                    src="{{ $qrisSrc }}"
+                                    alt="QRIS"
+                                    class="img-fluid rounded border"
+                                    style="max-width: 260px;"
+                                    onerror="this.classList.add('d-none'); document.getElementById('qris_fallback')?.classList.remove('d-none');">
+                                <div id="qris_fallback" class="text-muted small d-none"><i class="bi bi-info-circle"></i> QRIS belum tersedia.</div>
                             @else
                                 <div class="text-muted small"><i class="bi bi-info-circle"></i> QRIS belum tersedia.</div>
                             @endif

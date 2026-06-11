@@ -69,11 +69,24 @@
     .ak-profile .profile-card .card-title,
     .ak-profile .profile-card h4,
     .ak-profile .profile-card h5 { color: var(--ak-secondary-text) !important; }
+    .ak-profile .profile-card .profile-heading,
+    .ak-profile .profile-card .profile-name {
+        color: var(--brand-blue) !important;
+    }
+    .ak-profile .profile-card .profile-about {
+        color: var(--ak-secondary-text) !important;
+    }
     .ak-profile .text-primary { color: var(--ak-secondary-text) !important; }
     .ak-profile img.rounded-circle { width:130px; height:130px; object-fit:cover; border-radius:999px; }
 
     /* Contact card */
     .ak-contact .card { border-radius:18px; box-shadow: 0 20px 40px -20px rgba(16,24,40,0.2); background: var(--ak-card-bg); border: 1px solid var(--ak-card-border); color: var(--ak-secondary-text); }
+    .ak-contact .card-title,
+    .ak-contact .contact-heading,
+    .ak-contact .contact-label,
+    .ak-contact .contact-value {
+        color: var(--brand-blue) !important;
+    }
     .ak-contact .card .text-muted { color: var(--ak-secondary-text) !important; }
     .ak-contact .text-secondary,
     .ak-contact .text-success,
@@ -120,7 +133,27 @@
                         <a href="{{ url('/katalog_kostum?cat='. urlencode(strtolower($kategori->name))) }}" class="text-decoration-none">
                             <div class="card category-card h-100 border-0">
                                 <div style="padding:1rem;">
-                                    <img src="{{ str_starts_with($kategori->image, 'http') ? $kategori->image : asset($kategori->image) }}" class="w-100" alt="{{ $kategori->name }}">
+                                    @php
+                                        $imgRaw = $kategori->image ?? '';
+                                        if (str_starts_with($imgRaw, 'http')) {
+                                            $catImg = $imgRaw;
+                                        } elseif (str_starts_with($imgRaw, '/storage/')) {
+                                            $catImg = asset(ltrim($imgRaw, '/'));
+                                        } elseif (str_starts_with($imgRaw, 'storage/')) {
+                                            $catImg = asset($imgRaw);
+                                        } elseif ($imgRaw) {
+                                            $catImg = asset('storage/' . $imgRaw);
+                                        } else {
+                                            $catImg = null;
+                                        }
+                                    @endphp
+                                    @if($catImg)
+                                        <img src="{{ $catImg }}" class="w-100" alt="{{ $kategori->name }}">
+                                    @else
+                                        <div class="w-100 d-flex align-items-center justify-content-center" style="height:140px;background:#f5f5f5;border-radius:6px;">
+                                            <i class="bi bi-image" style="font-size:28px;color:#9aa0a6;"></i>
+                                        </div>
+                                    @endif
                                 </div>
                                 <div class="card-body py-3 px-3">
                                     <h5 class="fw-bold">{{ $kategori->name }}</h5>
@@ -156,13 +189,13 @@
                                         <i class="bi bi-person-circle text-primary" style="font-size: 150px;"></i>
                                     </div>
                                 @endif
-                                <h4 class="fw-bold">{{ optional($profile)->name }}</h4>
+                                <h4 class="fw-bold profile-name">{{ optional($profile)->name }}</h4>
                                 <p class="text-muted mb-0">{{ optional($profile)->title }}</p>
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body">
-                                    <h5 class="card-title fw-bold">Tentang Saya</h5>
-                                    <p class="card-text text-muted">{!! nl2br(e(optional($profile)->vision)) !!}</p>
+                                    <h5 class="card-title fw-bold profile-heading">Tentang Saya</h5>
+                                    <p class="card-text text-muted profile-about">{!! nl2br(e(optional($profile)->vision)) !!}</p>
                                 </div>
                             </div>
                         </div>
@@ -186,33 +219,42 @@
                 <div class="col-lg-6">
                     <div class="card h-100 rounded-xl border-0 p-3">
                         <div class="card-body">
-                            <h5 class="card-title fw-bold mb-3">Hubungi Kami</h5>
+                            @php
+                                $instagramHandle = trim((string) optional($profile)->instagram);
+                                $instagramHandle = ltrim($instagramHandle, '@');
+                                $instagramUrl = $instagramHandle !== ''
+                                    ? 'https://www.instagram.com/' . $instagramHandle . '/'
+                                    : null;
+                            @endphp
+                            <h5 class="card-title fw-bold mb-3 contact-heading">Hubungi Kami</h5>
 
                             <ul class="list-group list-group-flush">
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
                                     <i class="bi bi-geo-alt-fill text-secondary me-3 h5 mb-0"></i>
                                     <div>
-                                        <small class="text-muted d-block">Alamat:</small>
-                                        <p class="mb-0 fw-bold">{{ optional($profile)->address }}</p>
+                                        <small class="text-muted d-block contact-label">Alamat:</small>
+                                        <p class="mb-0 fw-bold contact-value">{{ optional($profile)->address }}</p>
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
                                     <i class="bi bi-instagram text-secondary me-3 h5 mb-0"></i>
                                     <div>
-                                        <small class="text-muted d-block">Instagram:</small>
-                                        <p class="mb-0 fw-bold">@rei_cosrent</p>
+                                        <small class="text-muted d-block contact-label">Instagram:</small>
+                                        <p class="mb-0 fw-bold contact-value">{{ $instagramHandle !== '' ? '@' . $instagramHandle : '-' }}</p>
 
-                                        <a href="https://www.instagram.com/rei_cosrent/" target="_blank" rel="noopener noreferrer"
-                                           class="btn btn-success btn-sm rounded-pill mt-2">
-                                            <i class="bi bi-instagram me-1"></i> Buka Instagram
-                                        </a>
+                                        @if($instagramUrl)
+                                            <a href="{{ $instagramUrl }}" target="_blank" rel="noopener noreferrer"
+                                               class="btn btn-success btn-sm rounded-pill mt-2">
+                                                <i class="bi bi-instagram me-1"></i> Buka Instagram
+                                            </a>
+                                        @endif
                                     </div>
                                 </li>
                                 <li class="list-group-item d-flex align-items-center bg-transparent px-0">
                                     <i class="bi bi-envelope-fill text-secondary me-3 h5 mb-0"></i>
                                     <div>
-                                        <small class="text-muted d-block">Email Resmi:</small>
-                                        <p class="mb-0 fw-bold">{{ optional($profile)->email }}</p>
+                                        <small class="text-muted d-block contact-label">Email Resmi:</small>
+                                        <p class="mb-0 fw-bold contact-value">{{ optional($profile)->email }}</p>
                                     </div>
                                 </li>
                             </ul>

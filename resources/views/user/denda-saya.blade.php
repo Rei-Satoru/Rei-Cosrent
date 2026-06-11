@@ -4,49 +4,64 @@
 
 @section('styles')
 <style>
-    .fines-table {
+    .orders-table {
         background: var(--bs-body-bg);
         color: var(--bs-body-color);
         border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 1rem;
+        border-radius: 0;
         overflow: hidden;
     }
 
-    .fines-table thead th {
-        background: rgba(220, 38, 38, 0.08);
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
         color: var(--bs-body-color);
         border-bottom: 1px solid rgba(148, 163, 184, 0.22);
         font-weight: 700;
         white-space: nowrap;
     }
 
-    .fines-table tbody td {
+    .orders-table tbody td {
         background: var(--bs-body-bg);
         color: var(--bs-body-color);
         border-color: rgba(148, 163, 184, 0.14);
         vertical-align: middle;
     }
 
-    .fines-table tbody tr:hover td {
-        background: rgba(220, 38, 38, 0.04);
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
     }
 
-    [data-bs-theme="dark"] .fines-table {
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
         border-color: rgba(148, 163, 184, 0.24);
     }
 
-    [data-bs-theme="dark"] .fines-table thead th {
-        background: rgba(248, 113, 113, 0.16);
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
         border-bottom-color: rgba(148, 163, 184, 0.22);
     }
 
-    [data-bs-theme="dark"] .fines-table tbody td {
+    [data-bs-theme="dark"] .orders-table tbody td {
         background: rgba(15, 23, 42, 0.96);
         border-color: rgba(148, 163, 184, 0.16);
     }
 
-    [data-bs-theme="dark"] .fines-table tbody tr:hover td {
-        background: rgba(248, 113, 113, 0.14);
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
     }
 </style>
 @endsection
@@ -74,7 +89,7 @@
 
         @if(isset($dendas) && count($dendas) > 0)
             <div class="table-responsive">
-                <table class="table table-hover align-middle fines-table">
+                <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
                             <th>ID</th>
@@ -106,42 +121,44 @@
                             </td>
                             <td class="d-none d-md-table-cell text-center">{{ $d->created_at ? $d->created_at->format('d M Y') : '-' }}</td>
                             <td class="text-end">
-                                <button type="button" class="btn btn-sm btn-outline-info" data-bs-toggle="modal" data-bs-target="#dendaDetailModal-{{ $d->id }}">
-                                    <i class="bi bi-card-list"></i> Detail
-                                </button>
+                                <div class="d-grid gap-2">
+                                    <button type="button" class="btn btn-sm btn-outline-info w-100" data-bs-toggle="modal" data-bs-target="#dendaDetailModal-{{ $d->id }}">
+                                        <i class="bi bi-card-list"></i> Detail
+                                    </button>
 
-                                @php
-                                    $hasBukti = false;
-                                    $foundBuktiPath = null;
-                                    try {
-                                        if (!empty($d->bukti_pembayaran)) {
-                                            $hasBukti = true;
-                                        } else {
-                                            $files = \Illuminate\Support\Facades\Storage::disk('public')->files('denda');
-                                            foreach ($files as $f) {
-                                                if (\Illuminate\Support\Str::startsWith(basename($f), 'bukti_denda_' . $d->id . '_')) {
-                                                    $hasBukti = true;
-                                                    $foundBuktiPath = $f;
-                                                    break;
+                                    @php
+                                        $hasBukti = false;
+                                        $foundBuktiPath = null;
+                                        try {
+                                            if (!empty($d->bukti_pembayaran)) {
+                                                $hasBukti = true;
+                                            } else {
+                                                $files = \Illuminate\Support\Facades\Storage::disk('public')->files('denda');
+                                                foreach ($files as $f) {
+                                                    if (\Illuminate\Support\Str::startsWith(basename($f), 'bukti_denda_' . $d->id . '_')) {
+                                                        $hasBukti = true;
+                                                        $foundBuktiPath = $f;
+                                                        break;
+                                                    }
                                                 }
                                             }
+                                        } catch (\Exception $e) {
+                                            $hasBukti = false;
                                         }
-                                    } catch (\Exception $e) {
-                                        $hasBukti = false;
-                                    }
-                                @endphp
+                                    @endphp
 
-                                @if($hasBukti)
-                                    <button type="button" class="btn btn-sm btn-outline-primary ms-2" data-bs-toggle="modal" data-bs-target="#buktiModal-{{ $d->id }}">
-                                        <i class="bi bi-eye"></i> Lihat Bukti
-                                    </button>
-                                @else
-                                    @if(strtolower($d->status) === strtolower('Belum Lunas'))
-                                        <a href="{{ route('denda.bayar', $d->id) }}" class="btn btn-success btn-sm ms-2">
-                                            <i class="bi bi-cash-coin"></i> Bayar Denda
-                                        </a>
+                                    @if($hasBukti)
+                                        <button type="button" class="btn btn-sm btn-outline-primary w-100" data-bs-toggle="modal" data-bs-target="#buktiModal-{{ $d->id }}">
+                                            <i class="bi bi-eye"></i> Lihat Bukti
+                                        </button>
+                                    @else
+                                        @if(strtolower($d->status) === strtolower('Belum Lunas'))
+                                            <a href="{{ route('denda.bayar', $d->id) }}" class="btn btn-success btn-sm w-100">
+                                                <i class="bi bi-cash-coin"></i> Bayar Denda
+                                            </a>
+                                        @endif
                                     @endif
-                                @endif
+                                </div>
                             </td>
                         </tr>
 

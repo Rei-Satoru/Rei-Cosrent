@@ -48,19 +48,21 @@
         overflow: hidden;
     }
 
-    .orders-table thead th {
-        background: rgba(37, 99, 235, 0.08);
-        color: var(--bs-body-color);
-        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
-        font-weight: 700;
-        white-space: nowrap;
-    }
-
     .orders-table tbody td {
         background: var(--bs-body-bg);
         color: var(--bs-body-color);
         border-color: rgba(148, 163, 184, 0.14);
         vertical-align: middle;
+    }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
     }
 
     .orders-table tbody tr:hover td {
@@ -72,13 +74,27 @@
     }
 
     [data-bs-theme="dark"] .orders-table thead th {
-        background: rgba(59, 130, 246, 0.16);
-        border-bottom-color: rgba(148, 163, 184, 0.22);
+        background: #132645 !important;
+        background-color: #132645 !important;
+        border-bottom-color: rgba(255, 255, 255, 0.14);
+        --bs-table-bg: #132645;
+        --bs-table-color: #ffffff;
+        color: #ffffff;
+    }
+
+    [data-bs-theme="dark"] .orders-table thead tr {
+        background: #132645 !important;
+        background-color: #132645 !important;
     }
 
     [data-bs-theme="dark"] .orders-table tbody td {
         background: rgba(15, 23, 42, 0.96);
         border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
     }
 
     [data-bs-theme="dark"] .orders-table tbody tr:hover td {
@@ -213,16 +229,40 @@
         margin-top: 1.15rem;
         margin-bottom: 0.9rem;
     }
+
+    .return-page-note,
+    .return-page-subnote {
+        color: #000000 !important;
+    }
+
+    [data-bs-theme="dark"] .return-page-note,
+    [data-bs-theme="dark"] .return-page-subnote {
+        color: #ffffff !important;
+    }
+
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: #0f172a;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        color: #ffffff;
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
 </style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
 <section class="py-4">
     <div class="container">
-        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4 page-intro">
             <div>
                 <h2 class="fw-bold mb-0">Pengembalian Kostum</h2>
-                <p class="text-muted mb-0">Ajukan pengembalian untuk pesanan yang sudah diterima.</p>
+                <p class="mb-0 return-page-note">Ajukan pengembalian untuk pesanan yang sudah diterima.</p>
             </div>
             <div class="d-grid d-sm-block">
                 <a href="<?php echo e(route('user.profile')); ?>" class="btn btn-outline-primary">
@@ -247,55 +287,53 @@
             </div>
         <?php endif; ?>
 
-        <div class="row g-4">
-            <div class="col-12 col-lg-7">
-                <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3">
-                    <div>
-                        <h5 class="fw-bold mb-0">Pesanan Siap Dikembalikan</h5>
-                        <p class="text-muted mb-0">Hanya pesanan dengan status <strong>diterima</strong> yang bisa diajukan pengembalian.</p>
-                    </div>
-                </div>
-
-                <?php if($activeOrders->isEmpty()): ?>
-                    <div class="alert alert-info text-center" role="alert">
-                        Tidak ada pesanan yang sedang aktif untuk dikembalikan.
-                    </div>
-                <?php else: ?>
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle orders-table">
-                            <thead>
-                                <tr>
-                                    <th>Nama Kostum</th>
-                                    <th>Tgl Pakai</th>
-                                    <th>Tgl Kembali</th>
-                                    <th>Pengembalian</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php $__currentLoopData = $activeOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <?php
-                                        $isReapplyOrder = data_get($order, 'pengembalian.status') === 'ditolak';
-                                    ?>
-                                    <tr>
-                                        <td><?php echo e($order->nama_kostum ?? '-'); ?></td>
-                                        <td><?php echo e($order->tanggal_pemakaian ? \Carbon\Carbon::parse($order->tanggal_pemakaian)->format('d M Y') : '-'); ?></td>
-                                        <td><?php echo e($order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-'); ?></td>
-                                        <td>
-                                            <button type="button" class="btn btn-sm <?php echo e($isReapplyOrder ? 'btn-outline-warning' : 'btn-outline-primary'); ?> w-100" data-bs-toggle="modal" data-bs-target="#returnModal-<?php echo e($order->id); ?>">
-                                                <i class="bi bi-arrow-counterclockwise"></i> <?php echo e($isReapplyOrder ? 'Ajukan Ulang' : 'Ajukan'); ?>
-
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </tbody>
-                        </table>
-                    </div>
-                <?php endif; ?>
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-3 section-intro">
+            <div>
+                <h5 class="fw-bold mb-0">Pesanan Siap Dikembalikan</h5>
+                <p class="mb-0 return-page-subnote">Hanya pesanan dengan status diterima dan sudah melakukan pembayaran yang bisa diajukan pengembalian.</p>
             </div>
+        </div>
 
-            <div class="col-12 col-lg-5">
-                <div class="card user-profile-card border-0 mb-4">
+        <?php if($activeOrders->isEmpty()): ?>
+            <div class="alert alert-info text-center" role="alert">
+                Tidak ada pesanan yang sedang aktif untuk dikembalikan.
+            </div>
+        <?php else: ?>
+            <div class="table-responsive mb-4">
+                <table class="table table-hover align-middle orders-table">
+                    <thead>
+                        <tr>
+                            <th>Nama Kostum</th>
+                            <th>Tgl Pakai</th>
+                            <th>Tgl Kembali</th>
+                            <th>Pengembalian</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php $__currentLoopData = $activeOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <?php
+                                $isReapplyOrder = data_get($order, 'pengembalian.status') === 'ditolak';
+                            ?>
+                            <tr>
+                                <td><?php echo e($order->nama_kostum ?? '-'); ?></td>
+                                <td><?php echo e($order->tanggal_pemakaian ? \Carbon\Carbon::parse($order->tanggal_pemakaian)->format('d M Y') : '-'); ?></td>
+                                <td><?php echo e($order->tanggal_pengembalian ? \Carbon\Carbon::parse($order->tanggal_pengembalian)->format('d M Y') : '-'); ?></td>
+                                <td>
+                                    <button type="button" class="btn btn-sm <?php echo e($isReapplyOrder ? 'btn-outline-warning' : 'btn-outline-primary'); ?> w-100" data-bs-toggle="modal" data-bs-target="#returnModal-<?php echo e($order->id); ?>">
+                                        <i class="bi bi-arrow-counterclockwise"></i> <?php echo e($isReapplyOrder ? 'Ajukan Ulang' : 'Ajukan'); ?>
+
+                                    </button>
+                                </td>
+                            </tr>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
+
+        <div class="row g-4">
+            <div class="col-12 col-md-4">
+                <div class="card user-profile-card border-0 h-100">
                     <div class="card-header py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-geo-alt"></i> Alamat Admin</h5>
                     </div>
@@ -305,8 +343,10 @@
                         <p class="mb-3 text-muted"><?php echo e($profile_contact->phone ? 'No. Telepon: ' . $profile_contact->phone : 'Nomor telepon admin belum tersedia.'); ?></p>
                     </div>
                 </div>
+            </div>
 
-                <div class="card user-profile-card border-0 mb-4">
+            <div class="col-12 col-md-4">
+                <div class="card user-profile-card border-0 h-100">
                     <div class="card-header py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-info-circle"></i> Panduan Pengembalian</h5>
                     </div>
@@ -317,8 +357,10 @@
                         </a>
                     </div>
                 </div>
+            </div>
 
-                <div class="card user-profile-card border-0">
+            <div class="col-12 col-md-4">
+                <div class="card user-profile-card border-0 h-100">
                     <div class="card-header py-3">
                         <h5 class="mb-0 fw-bold"><i class="bi bi-clock-history"></i> Riwayat Pengembalian</h5>
                     </div>

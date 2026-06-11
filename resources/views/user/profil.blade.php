@@ -149,6 +149,14 @@
         transition: color 0s ease;
     }
 
+    .profile-page-note {
+        color: #000000 !important;
+    }
+
+    [data-bs-theme="dark"] .profile-page-note {
+        color: #ffffff !important;
+    }
+
     @media (max-width: 575.98px) {
         .preview-info-table td { padding: 0.25rem 0.25rem; }
         .preview-info-table .label-col { width: auto; white-space: normal; }
@@ -162,7 +170,7 @@
         <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-5">
             <div>
                 <h2 class="fw-bold mb-0">Profil Pengguna</h2>
-                <p class="text-muted mb-0">Kelola informasi akun Anda</p>
+                <p class="profile-page-note mb-0">Kelola informasi akun Anda</p>
             </div>
             <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
                 <a href="{{ route('home') }}#kategori" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-left"></i> Kembali</a>

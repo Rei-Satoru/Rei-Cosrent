@@ -35,80 +35,146 @@ table td {
     color: #0056b3;
 }
 
-.table img {
-    max-width: 80px;
-    height: auto;
-}
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
+    }
 
-.kostum-thumb {
-    cursor: zoom-in;
-    transition: transform .12s ease;
-}
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
 
-.kostum-thumb:hover {
-    transform: scale(1.02);
-}
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
 
-footer {
-    transition: background-color 1000ms;
-}
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
 
-body[data-bs-theme="light"] footer {
-    background-color: #0d6efd !important;
-}
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
 
-body[data-bs-theme="dark"] footer {
-    background-color: #8a2be2 !important;
-}
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
 
-.rupiah-format::before {
-    content: "Rp";
-}
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
 
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+
+    .table img {
+        max-width: 80px;
+        height: auto;
+    }
+
+    .kostum-thumb {
+        cursor: zoom-in;
+        transition: transform .12s ease;
+    }
+
+    .kostum-thumb:hover {
+        transform: scale(1.02);
+    }
+
+    footer {
+        transition: background-color 1000ms;
+    }
+
+    body[data-bs-theme=\"light\"] footer {
+        background-color: #0d6efd !important;
+    }
+
+    body[data-bs-theme=\"dark\"] footer {
+        background-color: #8a2be2 !important;
+    }
+
+    .rupiah-format::before {
+        content: \"Rp\";
+    }
 </style>
 @endsection
 
 @section('content')
-<!-- Header -->
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Data Kostum</h1>
-        <p class="text-muted">Kelola daftar kostum yang tersedia untuk disewa.</p>
-    </div>
-</header>
-
-<!-- Konten -->
-<section class="container-fluid py-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <!-- Tombol di atas tabel -->
-            <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
-                    <i class="bi bi-arrow-left"></i> Kembali
-                </a>
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Data Kostum</h2>
+                <p class="text-muted mb-0 small">Kelola daftar kostum yang tersedia untuk disewa.</p>
+            </div>
+            <div class="d-grid d-sm-block">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
                     <i class="bi bi-plus-circle"></i> Tambah Kostum
                 </button>
             </div>
+        </div>
 
-            <!-- Pencarian dan Filter -->
-            <div class="card shadow-sm mb-4">
-                <div class="card-body">
-                    <form method="GET" action="{{ route('admin.data-kostum') }}" class="row g-3">
-                        <div class="col-md-3">
-                            <input type="text" name="search" class="form-control" placeholder="Cari nama, brand, kategori..." value="{{ $search ?? '' }}">
-                        </div>
-                        <div class="col-md-2">
-                            <select name="kategori" class="form-select">
-                                <option value="">Semua Kategori</option>
-                                @foreach($kategori as $kat)
-                                    <option value="{{ $kat }}" {{ ($filter_kategori ?? '') === $kat ? 'selected' : '' }}>{{ ucfirst($kat) }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="jenis_kelamin" class="form-select">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <ul class="mb-0">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        @endif
+
+        <div class="card shadow-sm mb-4" style="background-color: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.12);">
+            <div class="card-body">
+                    <div class="col-md-3">
+                        <input type="text" name="search" class="form-control" placeholder="Cari nama, brand, kategori..." value="{{ $search ?? '' }}">
+                    </div>
+                    <div class="col-md-2">
+                        <select name="kategori" class="form-select">
+                            <option value="">Semua Kategori</option>
+                            @foreach($kategori as $kat)
+                                <option value="{{ $kat }}" {{ ($filter_kategori ?? '') === $kat ? 'selected' : '' }}>{{ ucfirst($kat) }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="jenis_kelamin" class="form-select">
                                 <option value="">Semua Jenis Kelamin</option>
                                 <option value="Pria" {{ ($filter_jenis_kelamin ?? '') === 'Pria' ? 'selected' : '' }}>Pria</option>
                                 <option value="Wanita" {{ ($filter_jenis_kelamin ?? '') === 'Wanita' ? 'selected' : '' }}>Wanita</option>
@@ -147,21 +213,6 @@ body[data-bs-theme="dark"] footer {
                 </div>
             </div>
 
-            <!-- Success Alert -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            <!-- Error Alert -->
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
 
             <!-- Validation Errors -->
             @if($errors->any())
@@ -181,10 +232,10 @@ body[data-bs-theme="dark"] footer {
                     <i class="bi bi-info-circle"></i> Menampilkan <strong>{{ $kostum->count() }}</strong> dari data kostum
                 </div>
                 <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center">
+                    <table class="table table-hover align-middle orders-table">
                         <thead>
                             <tr>
-                                <th>ID</th>
+                                <th style="width: 50px;">No</th>
                                 <th>Nama</th>
                                 <th>Kategori</th>
                                 <th class="d-none d-md-table-cell">Gambar</th>
@@ -207,10 +258,24 @@ body[data-bs-theme="dark"] footer {
                                 <td>{{ ucfirst($item->kategori) }}</td>
                                 <td class="d-none d-md-table-cell">
                                     @if(!empty($item->gambar))
-                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ asset($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
-                                            <img src="{{ asset($item->gambar) }}" alt="{{ $item->nama_kostum }}" class="kostum-thumb" style="max-width:80px;">
-                                        </button>
-                                    @else
+                                            @php
+                                                $imgRaw = $item->gambar ?? '';
+                                                if (str_starts_with($imgRaw, 'http')) {
+                                                    $kostumImgSrc = $imgRaw;
+                                                } elseif (str_starts_with($imgRaw, '/storage/')) {
+                                                    $kostumImgSrc = asset(ltrim($imgRaw, '/'));
+                                                } elseif (str_starts_with($imgRaw, 'storage/')) {
+                                                    $kostumImgSrc = asset($imgRaw);
+                                                } elseif ($imgRaw) {
+                                                    $kostumImgSrc = asset('storage/' . $imgRaw);
+                                                } else {
+                                                    $kostumImgSrc = null;
+                                                }
+                                            @endphp
+                                            <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ $kostumImgSrc }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
+                                                <img src="{{ $kostumImgSrc }}" alt="{{ $item->nama_kostum }}" class="kostum-thumb" style="max-width:80px;">
+                                            </button>
+                                        @else
                                         <span class="text-muted">-</span>
                                     @endif
                                 </td>
@@ -261,8 +326,22 @@ body[data-bs-theme="dark"] footer {
                                             <div class="row g-3">
                                                 <div class="col-md-5 text-center">
                                                     @if(!empty($item->gambar))
-                                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ asset($item->gambar) }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
-                                                            <img src="{{ asset($item->gambar) }}" alt="Gambar Kostum" class="img-fluid rounded kostum-thumb" style="aspect-ratio:1/1;object-fit:cover;">
+                                                        @php
+                                                            $imgRaw = $item->gambar ?? '';
+                                                            if (str_starts_with($imgRaw, 'http')) {
+                                                                $kostumImgSrc = $imgRaw;
+                                                            } elseif (str_starts_with($imgRaw, '/storage/')) {
+                                                                $kostumImgSrc = asset(ltrim($imgRaw, '/'));
+                                                            } elseif (str_starts_with($imgRaw, 'storage/')) {
+                                                                $kostumImgSrc = asset($imgRaw);
+                                                            } elseif ($imgRaw) {
+                                                                $kostumImgSrc = asset('storage/' . $imgRaw);
+                                                            } else {
+                                                                $kostumImgSrc = null;
+                                                            }
+                                                        @endphp
+                                                        <button type="button" class="btn p-0 border-0 bg-transparent js-kostum-image-preview" data-image-src="{{ $kostumImgSrc }}" data-image-title="Gambar Kostum: {{ $item->nama_kostum }}" aria-label="Lihat gambar kostum {{ $item->nama_kostum }}">
+                                                            <img src="{{ $kostumImgSrc }}" alt="Gambar Kostum" class="img-fluid rounded kostum-thumb" style="aspect-ratio:1/1;object-fit:cover;">
                                                         </button>
                                                     @else
                                                         <img src="{{ asset('assets/img/no-image.png') }}" alt="Tidak ada gambar" class="img-fluid rounded" style="aspect-ratio:1/1;object-fit:cover;">
@@ -289,7 +368,18 @@ body[data-bs-theme="dark"] footer {
                                                             return $aR === $bR ? strcasecmp($aKey,$bKey) : ($aR <=> $bR);
                                                         });
                                                     @endphp
-                                                    <div class="row mb-2"><div class="col-5 text-muted">Ukuran</div><div class="col-7">: {{ $sizes ? implode(' ', $sizes) : '-' }}</div></div>
+                                                    <div class="row mb-2">
+                                                        <div class="col-5 text-muted">Ukuran</div>
+                                                        <div class="col-7">
+                                                            @if($sizes)
+                                                                @foreach($sizes as $size)
+                                                                    <span class="badge bg-secondary me-1 mb-1">{{ $size }}</span>
+                                                                @endforeach
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </div>
+                                                    </div>
                                                     <div class="row mb-2"><div class="col-5 text-muted">Include</div><div class="col-7">: {!! nl2br(e($item->include)) !!}</div></div>
                                                     <div class="row mb-2"><div class="col-5 text-muted">Exclude</div><div class="col-7">: {!! nl2br(e($item->exclude)) !!}</div></div>
                                                     <div class="row"><div class="col-5 text-muted">Domisili</div><div class="col-7">: {{ $item->domisili ?: '-' }}</div></div>
@@ -337,7 +427,9 @@ body[data-bs-theme="dark"] footer {
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label d-block">Jenis Kelamin</label>
-                                                    @php($jk = strtolower($item->jenis_kelamin ?? ''))
+                                                    @php
+                                                        $jk = strtolower($item->jenis_kelamin ?? '');
+                                                    @endphp
                                                     <div class="d-flex gap-3">
                                                         <div class="form-check">
                                                             <input class="form-check-input" type="radio" name="jenis_kelamin" id="jkPria{{ $item->id_kostum }}" value="Pria" {{ $jk === 'pria' ? 'checked' : '' }} required>
@@ -363,17 +455,8 @@ body[data-bs-theme="dark"] footer {
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Ukuran Kostum</label>
-                                                    @php
-                                                        $rawUkuran = (string) ($item->ukuran_kostum ?? '');
-                                                        $ukuranParts = array_filter(array_map('trim', preg_split('/[,;&]/', $rawUkuran)));
-                                                        $selectedUkuran = $ukuranParts[0] ?? '';
-                                                    @endphp
-                                                    <select name="ukuran_kostum" class="form-select" required>
-                                                        <option value="" disabled>Pilih ukuran</option>
-                                                        @foreach($ukuran as $uk)
-                                                            <option value="{{ $uk }}" @selected(strcasecmp(trim($uk), trim($selectedUkuran ?? '')) === 0)>{{ $uk }}</option>
-                                                        @endforeach
-                                                    </select>
+                                                    <input type="text" name="ukuran_kostum" class="form-control" placeholder="Contoh: XS, S, M, L atau S,M,L" value="{{ old('ukuran_kostum', $item->ukuran_kostum ?? '') }}">
+                                                    <small class="text-muted">Masukkan ukuran dipisah koma (contoh: XS, S, M, L).</small>
                                                 </div>
                                                 <div class="mb-3">
                                                     <label class="form-label">Include</label>
@@ -497,12 +580,8 @@ body[data-bs-theme="dark"] footer {
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Ukuran Kostum</label>
-                        <select name="ukuran_kostum" class="form-select" required>
-                            <option value="" disabled selected>Pilih ukuran</option>
-                            @foreach($ukuran as $uk)
-                                <option value="{{ $uk }}">{{ $uk }}</option>
-                            @endforeach
-                        </select>
+                        <input type="text" name="ukuran_kostum" class="form-control" placeholder="Contoh: XS, S, M, L atau S,M,L" value="{{ old('ukuran_kostum') }}" required>
+                        <small class="text-muted">Masukkan ukuran dipisah koma (contoh: XS, S, M, L).</small>
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Include</label>

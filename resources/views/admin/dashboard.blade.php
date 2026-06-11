@@ -9,6 +9,9 @@
         --admin-card-border: rgba(37, 99, 235, 0.12);
         --admin-card-text: #0f172a;
         --admin-card-shadow: 0 12px 30px -12px rgba(16, 24, 40, 0.12);
+        --admin-main-text: var(--brand-blue);
+        --admin-sub-text: #0f172a;
+        --admin-hero-bg: linear-gradient(135deg, rgba(248, 251, 255, 0.98), rgba(219, 234, 254, 0.92));
     }
 
     [data-bs-theme="dark"] {
@@ -16,13 +19,15 @@
         --admin-card-border: rgba(96, 165, 250, 0.16);
         --admin-card-text: #ffffff;
         --admin-card-shadow: 0 18px 40px -22px rgba(0, 0, 0, 0.55);
+        --admin-sub-text: #ffffff;
+        --admin-hero-bg: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.92));
     }
 
     .admin-surface-card {
         background: var(--admin-card-bg) !important;
         border: 1px solid var(--admin-card-border) !important;
         box-shadow: var(--admin-card-shadow) !important;
-        color: var(--admin-card-text) !important;
+        color: var(--admin-sub-text) !important;
         border-radius: 1.25rem !important;
     }
 
@@ -35,24 +40,34 @@
     .admin-surface-card .card-body,
     .admin-surface-card p,
     .admin-surface-card small,
+    .admin-surface-card td,
+    .admin-surface-card th,
+    .admin-surface-card label {
+        color: var(--admin-sub-text) !important;
+    }
+
     .admin-surface-card h1,
     .admin-surface-card h2,
     .admin-surface-card h3,
     .admin-surface-card h4,
     .admin-surface-card h5,
     .admin-surface-card h6,
-    .admin-surface-card td,
-    .admin-surface-card th,
-    .admin-surface-card label {
-        color: var(--admin-card-text) !important;
+    .admin-surface-card .data-card-value,
+    .admin-surface-card .metric-value,
+    .admin-surface-card .stats-table th {
+        color: var(--admin-main-text) !important;
     }
 
     .admin-surface-card .text-muted {
-        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent) !important;
+        color: color-mix(in srgb, var(--admin-sub-text) 70%, transparent) !important;
+    }
+
+    .admin-title-blue {
+        color: var(--admin-main-text) !important;
     }
 
     .admin-surface-card .table {
-        color: var(--admin-card-text) !important;
+        color: var(--admin-sub-text) !important;
     }
 
     .admin-surface-card .table > :not(caption) > * > * {
@@ -72,12 +87,13 @@
     .dashboard-hero {
         position: relative;
         overflow: hidden;
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(96, 165, 250, 0.88));
+        background: var(--admin-hero-bg);
         border-radius: 1.5rem;
         padding: 2rem;
-        color: #fff;
+        color: var(--admin-main-text);
         margin-bottom: 2rem;
-        box-shadow: 0 18px 40px -18px rgba(37, 99, 235, 0.45);
+        box-shadow: var(--admin-card-shadow);
+        border: 1px solid var(--admin-card-border);
     }
 
     .dashboard-hero::before {
@@ -100,7 +116,8 @@
     }
 
     .dashboard-hero p {
-        opacity: 0.9;
+        color: var(--admin-sub-text);
+        opacity: 0.95;
         margin-bottom: 1rem;
     }
 
@@ -111,7 +128,7 @@
         margin-top: 1rem;
         padding: 1rem;
         border-radius: 12px;
-        background: rgba(255, 255, 255, 0.12);
+        background: color-mix(in srgb, var(--admin-card-bg) 88%, #ffffff);
         backdrop-filter: blur(6px);
     }
 
@@ -120,7 +137,7 @@
         height: 72px;
         border-radius: 50%;
         object-fit: cover;
-        border: 3px solid rgba(255, 255, 255, 0.5);
+        border: 3px solid color-mix(in srgb, var(--admin-card-border) 80%, #ffffff);
         flex-shrink: 0;
     }
 
@@ -133,7 +150,8 @@
     .hero-profile-title,
     .hero-profile-vision {
         margin-bottom: 0.25rem;
-        opacity: 0.92;
+        color: var(--admin-sub-text);
+        opacity: 0.95;
     }
 
     .hero-btn {
@@ -159,7 +177,7 @@
         padding: 1.5rem;
         transition: all 0.3s ease;
         box-shadow: var(--admin-card-shadow);
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     .metric-card:hover {
@@ -207,12 +225,12 @@
     .metric-value {
         font-size: 1.875rem;
         font-weight: 700;
-        color: var(--admin-card-text);
+        color: var(--admin-main-text);
     }
 
     .metric-label {
         font-size: 0.875rem;
-        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
+        color: color-mix(in srgb, var(--admin-sub-text) 70%, transparent);
         margin-top: 0.5rem;
     }
 
@@ -253,12 +271,12 @@
         padding: 1.5rem;
         margin-bottom: 1.5rem;
         box-shadow: var(--admin-card-shadow);
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     .chart-subtitle {
         font-size: 0.875rem;
-        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
+        color: color-mix(in srgb, var(--admin-sub-text) 70%, transparent);
         margin-top: 0.25rem;
     }
 
@@ -267,7 +285,7 @@
         border-radius: 14px;
         border: 1px solid var(--admin-card-border);
         background: var(--admin-card-bg);
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
         box-shadow: none;
     }
 
@@ -281,7 +299,7 @@
         border: 1px solid var(--admin-card-border);
         border-radius: 12px;
         overflow: hidden;
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     .stats-table th {
@@ -289,7 +307,7 @@
         border-bottom: 1px solid var(--admin-card-border);
         padding: 1rem;
         font-weight: 600;
-        color: var(--admin-card-text);
+        color: var(--admin-main-text);
         font-size: 0.875rem;
     }
 
@@ -342,7 +360,7 @@
         text-align: center;
         transition: all 0.3s ease;
         box-shadow: var(--admin-card-shadow);
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     .data-card:hover {
@@ -356,7 +374,7 @@
         border-radius: 14px;
         border: 1px solid rgba(37, 99, 235, 0.16);
         background: var(--admin-card-bg);
-        color: var(--admin-card-text) !important;
+        color: var(--admin-main-text) !important;
         font-weight: 600;
         text-align: left;
         display: flex;
@@ -368,7 +386,7 @@
     .quick-action-btn:hover,
     .quick-action-btn:focus {
         background: color-mix(in srgb, var(--admin-card-bg) 92%, #ffffff);
-        color: var(--admin-card-text) !important;
+        color: var(--admin-main-text) !important;
         box-shadow: 0 10px 20px rgba(16, 24, 40, 0.08);
     }
 
@@ -381,12 +399,12 @@
     .data-card-value {
         font-size: 1.875rem;
         font-weight: 700;
-        color: var(--admin-card-text);
+        color: var(--admin-main-text);
     }
 
     .data-card-label {
         font-size: 0.875rem;
-        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
+        color: var(--brand-blue) !important;
         margin-top: 0.5rem;
     }
 
@@ -398,7 +416,7 @@
     #ordersSortSelect {
         background: var(--admin-card-bg);
         border-color: var(--admin-card-border);
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     #ordersSortSelect:focus {
@@ -426,11 +444,13 @@
     }
 
     .profile-hero {
-        background: linear-gradient(135deg, rgba(37, 99, 235, 0.92), rgba(96, 165, 250, 0.88));
+        background: var(--admin-hero-bg);
         border-radius: 1.25rem;
         padding: 2rem;
-        color: white;
+        color: var(--admin-main-text);
         margin-bottom: 2rem;
+        border: 1px solid var(--admin-card-border);
+        box-shadow: var(--admin-card-shadow);
     }
 
     .profile-card {
@@ -439,7 +459,7 @@
         border-radius: 1.25rem;
         padding: 2rem;
         margin-bottom: 2rem;
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
         box-shadow: var(--admin-card-shadow);
     }
 
@@ -455,7 +475,7 @@
     .profile-name {
         font-size: 1.5rem;
         font-weight: 700;
-        color: var(--admin-card-text);
+        color: var(--admin-main-text);
         margin-bottom: 0.5rem;
     }
 
@@ -488,13 +508,13 @@
 
     .profile-info-label {
         font-size: 0.875rem;
-        color: color-mix(in srgb, var(--admin-card-text) 70%, transparent);
+        color: color-mix(in srgb, var(--admin-sub-text) 70%, transparent);
         margin-bottom: 0.25rem;
     }
 
     .profile-info-value {
         font-weight: 600;
-        color: var(--admin-card-text);
+        color: var(--admin-sub-text);
     }
 
     .location-progress {
@@ -565,7 +585,7 @@
                 <div class="dashboard-hero admin-surface-card h-100 mb-0">
                     <div class="d-flex flex-column h-100">
                         <div class="mb-3">
-                            <h1>👋 Selamat Datang {{ auth()->user()->name ?? 'Admin' }}</h1>
+                            <h1 class="admin-title-blue" style="color: var(--brand-blue) !important;">Selamat Datang Admin</h1>
                             <p class="mb-0">Kelola sistem dan data aplikasi Rei Cosrent</p>
                         </div>
                         <div class="hero-profile-summary mt-auto">
@@ -587,7 +607,7 @@
             <div class="col-lg-4">
                 <div class="admin-surface-card h-100 p-4 d-flex flex-column justify-content-between">
                     <div>
-                        <h5 class="fw-bold mb-2">Aksi Cepat</h5>
+                        <h5 class="fw-bold mb-2 admin-title-blue" style="color: var(--brand-blue) !important;">Aksi Cepat</h5>
                         <p class="mb-4">Kelola profil admin atau akhiri sesi masuk dari panel ini.</p>
                     </div>
                     <div class="d-grid gap-2">
@@ -607,21 +627,21 @@
 
         <div class="row row-cols-1 row-cols-md-3 g-3 mb-4">
             <div class="col">
-                <div class="data-card admin-surface-card h-100 p-3 text-start">
-                    <div class="data-card-label">Total Seluruh Pendapatan</div>
+                    <div class="data-card admin-surface-card h-100 p-3 text-start">
+                        <div class="data-card-label fw-bold" style="font-weight: 700;">Total Seluruh Pendapatan</div>
                     <div class="data-card-value" id="totalOverallRevenue">Rp {{ number_format($total_revenue ?? 0, 0, ',', '.') }}</div>
                 </div>
             </div>
             <div class="col">
                 <div class="data-card admin-surface-card h-100 p-3 text-start">
-                    <div class="data-card-label">Total Seluruh Pesanan</div>
+                    <div class="data-card-label fw-bold" style="font-weight: 700;">Total Seluruh Pesanan</div>
                     <div class="data-card-value" id="totalOverallOrders">{{ $pesanan_count ?? 0 }}</div>
                 </div>
             </div>
             <div class="col">
                 <div class="data-card admin-surface-card h-100 p-3 text-start">
-                    <div class="data-card-label">Total Seluruh Denda</div>
-                    <div class="data-card-value" id="totalOverallDenda">Rp {{ number_format($total_denda ?? 0, 0, ',', '.') }}</div>
+                    <div class="data-card-label fw-bold" style="font-weight: 700;">Total Seluruh Denda</div>
+                    <div class="data-card-value" id="totalOverallDenda">{{ number_format($denda_count ?? 0, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>
@@ -633,7 +653,7 @@
                     <div class="d-flex flex-column gap-3 px-4 py-3 border-bottom" style="border-color: var(--admin-card-border) !important;">
                         <div class="d-flex flex-column flex-md-row align-items-start align-items-md-center justify-content-between gap-3">
                             <div>
-                                <h5 id="revenueChartTitle" class="fw-bold mb-0">Grafik Pendapatan Minggu Ini</h5>
+                                <h5 id="revenueChartTitle" class="fw-bold mb-0 admin-title-blue" style="color: var(--brand-blue) !important;">Grafik Pendapatan Minggu Ini</h5>
                                 <div class="chart-subtitle">Tampilkan grafik harga sewa dan jumlah pesanan berdasarkan periode terpilih.</div>
                             </div>
                             <div class="d-flex align-items-center gap-2">
@@ -665,7 +685,7 @@
                         <div class="row g-4">
                             <div class="col-12 col-lg-6">
                                 <div class="admin-surface-card p-3 h-100">
-                                    <h6 class="fw-semibold mb-3">Grafik Harga</h6>
+                                    <h6 class="fw-semibold mb-3 admin-title-blue" style="color: var(--brand-blue) !important;">Grafik Harga</h6>
                                     <div class="chart-plot-wrapper" style="min-height: 320px;">
                                         <canvas id="revenueChart"></canvas>
                                     </div>
@@ -673,7 +693,7 @@
                             </div>
                             <div class="col-12 col-lg-6">
                                 <div class="admin-surface-card p-3 h-100">
-                                    <h6 class="fw-semibold mb-3">Grafik Pesanan</h6>
+                                    <h6 class="fw-semibold mb-3 admin-title-blue" style="color: var(--brand-blue) !important;">Grafik Pesanan</h6>
                                     <div class="chart-plot-wrapper" style="min-height: 320px;">
                                         <canvas id="ordersChart"></canvas>
                                     </div>
@@ -688,7 +708,7 @@
         <!-- Orders Table -->
         <div class="chart-container admin-surface-card mb-4">
             <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <h5 class="fw-bold mb-0">Pesanan</h5>
+                <h5 class="fw-bold mb-0 admin-title-blue" style="color: var(--brand-blue) !important;">Pesanan</h5>
                 <div class="d-flex align-items-center gap-2">
                     <select id="ordersSortSelect" class="form-select form-select-sm" style="width: 220px;">
                         <option value="created_desc">Terbaru (Dibuat)</option>
@@ -753,6 +773,15 @@
     </div>
     <div class="p-3">
         <div class="d-grid gap-3">
+            <a href="{{ route('admin.data-tanggal') }}" aria-label="Kelola Data Tanggal" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+                <div class="card-body p-3 d-flex align-items-center">
+                    <div class="menu-icon me-3 mb-0"><i class="bi bi-calendar2-week"></i></div>
+                    <div class="flex-grow-1">
+                        <h6 class="fw-semibold mb-0">Kelola Data Tanggal</h6>
+                    </div>
+                </div>
+            </a>
+
             <a href="{{ route('admin.data-pengguna') }}" aria-label="Data Pengguna" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-people"></i></div>
@@ -845,7 +874,8 @@
         height: calc(100vh - var(--nav-height, 56px));
         width: 56px; /* collapsed by default */
         max-width: 85vw;
-        background: var(--bs-body-bg);
+        background: var(--admin-card-bg);
+        border-right: 1px solid var(--admin-card-border);
         transition: width 0.32s cubic-bezier(.2,.8,.2,1), box-shadow 0.2s ease, transform 0.32s ease;
         z-index: 1040;
         overflow-y: auto;
@@ -900,10 +930,13 @@
         width: 100%; 
         cursor: pointer;
         text-decoration: none !important;
+        background: var(--admin-card-bg);
+        border: 1px solid var(--admin-card-border) !important;
         transition: all 0.3s ease;
     }
     .app-sidebar .menu-card:hover {
         transform: translateY(-2px);
+        background: color-mix(in srgb, var(--admin-card-bg) 92%, #ffffff);
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15) !important;
     }
     .app-sidebar .card-body { 
@@ -915,11 +948,11 @@
         margin-bottom: 0 !important;
     }
     .app-sidebar h6 {
-        color: var(--bs-body-color);
+        color: var(--admin-main-text);
     }
     .app-sidebar small {
-        color: var(--bs-body-color);
-        opacity: 0.7;
+        color: var(--admin-sub-text);
+        opacity: 0.8;
     }
 
     @media (max-width: 768px) {
@@ -929,25 +962,25 @@
     }
 
     [data-bs-theme="dark"] .app-sidebar {
-        background: #1f2937;
-        border-right: 1px solid #374151;
+        background: var(--admin-card-bg);
+        border-right: 1px solid var(--admin-card-border);
     }
 
     [data-bs-theme="dark"] .app-sidebar .menu-card {
-        background: #111827;
-        border-color: #374151 !important;
+        background: var(--admin-card-bg);
+        border-color: var(--admin-card-border) !important;
     }
 
     [data-bs-theme="dark"] .app-sidebar .menu-card:hover {
-        background: #1f2937;
+        background: color-mix(in srgb, var(--admin-card-bg) 88%, #ffffff);
     }
 
     [data-bs-theme="dark"] .app-sidebar h6 {
-        color: #f3f4f6;
+        color: var(--admin-main-text);
     }
 
     [data-bs-theme="dark"] .app-sidebar small {
-        color: #9ca3af;
+        color: var(--admin-sub-text);
     }
 
     /* Collapsed / icon-only sidebar: hide labels and totals, keep icons visible */
@@ -955,6 +988,13 @@
         width: 56px;
         transform: translateX(0);
         overflow-x: hidden;
+        overflow-y: hidden;
+        scrollbar-width: none;
+    }
+
+    .app-sidebar:not(.open)::-webkit-scrollbar {
+        width: 0;
+        height: 0;
     }
 
     .app-sidebar:not(.open) .menu-card .card-body {

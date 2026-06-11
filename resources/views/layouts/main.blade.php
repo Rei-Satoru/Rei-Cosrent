@@ -1,6 +1,11 @@
 @php
     // SweetAlert on logout flash
     $logoutMessage = session('logout_message');
+    $adminProfile = class_exists(\App\Models\ProfileContact::class) ? \App\Models\ProfileContact::find(1) : null;
+    $adminProfilePhoto = $adminProfile->photo ?? session('admin_profile_photo');
+    $adminProfilePhotoSrc = $adminProfilePhoto
+        ? (str_starts_with($adminProfilePhoto, 'storage/') ? asset($adminProfilePhoto) : asset('storage/' . $adminProfilePhoto))
+        : null;
 @endphp
 <!DOCTYPE html>
 <html lang="id">
@@ -665,7 +670,7 @@
                 <li class="nav-item"><a class="nav-link fw-semibold ak-nav-btn" href="{{ request()->routeIs('home') ? '#kontak' : route('home') . '#kontak' }}">Informasi</a></li>
                 <li class="nav-item"><a class="nav-link fw-semibold ak-nav-btn" href="{{ route('peraturan') }}">Aturan</a></li>
                 <li class="nav-item ms-lg-2">
-                    <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="https://docs.google.com/spreadsheets/d/1Z3OneYIfDxKs0I0rX-_yZQfFLBb-UHf4TcC4P8oqZsI/edit?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnnjkGZH13OPjB23XrUTuuZOd1TJ_ahNiYf7BzJYyJf2lT-rjeBQvIysJ4Dx0_aem_2v0rLLt0XGAhaE4v5iCgYQ&gid=0#gid=0" target="_blank" rel="noopener noreferrer"> 
+                    <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="{{ route('tanggal.pemesanan') }}">
                         Lihat Tanggal
                     </a>
                 </li>
@@ -680,7 +685,7 @@
                     <li class="nav-item"><a class="nav-link fw-semibold ak-nav-btn" href="{{ request()->routeIs('home') ? '#kontak' : route('home') . '#kontak' }}">Informasi</a></li>
                     <li class="nav-item"><a class="nav-link fw-semibold ak-nav-btn" href="{{ route('peraturan') }}">Aturan</a></li>
                     <li class="nav-item ms-lg-2">
-                        <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="https://docs.google.com/spreadsheets/d/1Z3OneYIfDxKs0I0rX-_yZQfFLBb-UHf4TcC4P8oqZsI/edit?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnnjkGZH13OPjB23XrUTuuZOd1TJ_ahNiYf7BzJYyJf2lT-rjeBQvIysJ4Dx0_aem_2v0rLLt0XGAhaE4v5iCgYQ&gid=0#gid=0" target="_blank" rel="noopener noreferrer"> 
+                        <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="{{ route('tanggal.pemesanan') }}">
                             Lihat Tanggal
                         </a>
                     </li>
@@ -703,7 +708,12 @@
                     @if(session('admin_logged_in'))
                         <li class="nav-item ms-lg-3">
                             <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="{{ route('admin.profile') }}">
-                                <i class="bi bi-person-badge"></i> Profil
+                                @if($adminProfilePhotoSrc)
+                                    <div style="width: 32px; height: 32px; border-radius: 50%; background-size: cover; background-position: center; background-image: url('{{ $adminProfilePhotoSrc }}'); border: 1px solid var(--bs-border-color);"></div>
+                                @else
+                                    <i class="bi bi-person-badge"></i>
+                                @endif
+                                Profil
                             </a>
                         </li>
                     @elseif(session('user_logged_in'))
@@ -952,6 +962,7 @@
         });
     </script>
 
+    @yield('scripts')
     @stack('scripts')
 </body>
 </html>

@@ -17,15 +17,65 @@
         color: #0056b3;
     }
     
-    table th {
-        background-color: var(--bs-primary);
-        color: white;
-        text-align: center;
-        font-size: 1.0rem;
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
     }
 
-    table td {
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
         font-size: 0.95rem;
+    }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
     }
 
     .action-buttons {
@@ -50,49 +100,40 @@
 @endsection
 
 @section('content')
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Kelola Data Pengguna</h1>
-        <p class="text-muted">Edit atau hapus akun pengguna</p>
-    </div>
-</header>
-
-<!-- Konten -->
-<section class="container py-4">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Kelola Data Pengguna</h2>
+                <p class="text-muted mb-0 small">Edit atau hapus akun pengguna</p>
+            </div>
+            <div class="d-grid d-sm-block">
+                <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
+                    <i class="bi bi-arrow-left"></i> Kembali
+                </a>
+            </div>
+        </div>
 
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show" role="alert">
-                <i class="bi bi-check-circle"></i> {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
         @endif
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
         @endif
 
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
-                    <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
-                        <i class="bi bi-arrow-left"></i> Kembali
-                    </a>
-                    <div></div>
-                </div>
-                @if(isset($users) && $users->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table table-bordered table-striped align-middle text-center">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
+        @if(isset($users) && $users->count() > 0)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle orders-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 50px;">No</th>
                                     <th>Username</th>
                                     <th class="d-none d-md-table-cell">Nick Name</th>
                                     <th>Email</th>
                                     <th class="d-none d-md-table-cell">Alamat</th>
                                     <th class="d-none d-md-table-cell">Nomor Telepon</th>
                                     <th class="d-none d-md-table-cell">Jenis Kelamin</th>
+                                    <th class="d-none d-md-table-cell">Status Password</th>
                                     <th class="d-none d-md-table-cell">Gambar Profil</th>
                                     <th style="width: 220px;">Aksi</th>
                                 </tr>
@@ -107,6 +148,17 @@
                                         <td class="d-none d-md-table-cell">{{ $user->alamat }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->nomor_telepon }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->jenis_kelamin }}</td>
+                                        <td class="d-none d-md-table-cell">
+                                            @if($user->password_reset_approved_at)
+                                                <span class="badge bg-info text-dark">Disetujui</span>
+                                                <div class="small text-muted">{{ $user->password_reset_approved_at->format('d M Y H:i') }}</div>
+                                            @elseif($user->password_reset_requested_at)
+                                                <span class="badge bg-danger">Meminta Reset</span>
+                                                <div class="small text-muted">{{ $user->password_reset_requested_at->format('d M Y H:i') }}</div>
+                                            @else
+                                                <span class="badge bg-success">Normal</span>
+                                            @endif
+                                        </td>
                                         <td class="d-none d-md-table-cell">
                                             @php
                                                 $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
@@ -164,9 +216,29 @@
                                                                         <textarea name="alamat" class="form-control" rows="3">{{ old('alamat', $user->alamat) }}</textarea>
                                                                     </div>
                                                                     <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Password (opsional, minimal 8 karakter)</label>
-                                                                        <input type="password" name="password" class="form-control" placeholder="Biarkan kosong jika tidak diubah" minlength="8">
+                                                                        <div class="alert alert-info mb-3">
+                                                                            <strong>Status reset:</strong>
+                                                                            @if($user->password_reset_approved_at)
+                                                                                <span class="text-info">Permintaan reset password sudah disetujui.</span>
+                                                                                <div class="small text-muted">Pengguna dapat mengisi password baru di halaman Lupa Password.</div>
+                                                                            @elseif($user->password_reset_requested_at)
+                                                                                <span class="text-danger">Permintaan reset password terdeteksi.</span>
+                                                                                <div class="small text-muted">Silakan setujui permintaan ini agar pengguna dapat mengubah password di halaman Lupa Password.</div>
+                                                                            @else
+                                                                                <span class="text-success">Tidak ada permintaan reset.</span>
+                                                                            @endif
+                                                                        </div>
                                                                     </div>
+                                                                    @if($user->password_reset_requested_at && !$user->password_reset_approved_at)
+                                                                        <div class="col-12">
+                                                                            <form method="POST" action="{{ route('admin.pengguna.approve', $user->id) }}">
+                                                                                @csrf
+                                                                                <button type="submit" class="btn btn-success btn-sm">
+                                                                                    <i class="bi bi-check-circle"></i> Setujui Permintaan Reset
+                                                                                </button>
+                                                                            </form>
+                                                                        </div>
+                                                                    @endif
                                                                     <div class="col-12">
                                                                         <div class="row g-3 align-items-start">
                                                                             <div class="col-md-6">
@@ -212,13 +284,12 @@
                                         </td>
                                     </tr>
                                 @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @else
-                    <div class="alert alert-info text-center"><i class="bi bi-info-circle"></i> Belum ada pengguna.</div>
-                @endif
-        </div>
+                    </tbody>
+                </table>
+            </div>
+        @else
+            <div class="alert alert-info text-center mb-0"><i class="bi bi-info-circle"></i> Belum ada pengguna.</div>
+        @endif
     </div>
 </section>
 

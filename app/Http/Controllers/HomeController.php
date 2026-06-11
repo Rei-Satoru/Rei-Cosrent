@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aturan;
+use App\Models\BookingDate;
 use App\Models\DataKatalog;
 use App\Models\DataKostum;
 use App\Models\Formulir;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -25,6 +27,54 @@ class HomeController extends Controller
         return view('home', [
             'katalog' => $katalog,
             'profile' => $profile,
+        ]);
+    }
+
+    public function bookingDates()
+    {
+        // Build a month grid from DataKostum and Formulir bookings
+        $years = Formulir::selectRaw('YEAR(tanggal_pemakaian) as y')->whereNotNull('tanggal_pemakaian')->groupBy('y')->orderBy('y', 'desc')->pluck('y')->toArray();
+        $current = Carbon::now();
+        $selectedYear = (int) request()->query('year', $current->year);
+        $selectedMonth = (int) request()->query('month', $current->month);
+
+        // fall back if year list empty
+        if (empty($years)) {
+            $years = [$current->year];
+        }
+
+        // dates in selected month
+        $startOfMonth = Carbon::create($selectedYear, $selectedMonth, 1);
+        $daysInMonth = $startOfMonth->daysInMonth;
+        $dates = [];
+        for ($d = 1; $d <= $daysInMonth; $d++) {
+            $dates[] = $startOfMonth->copy()->day($d)->format('Y-m-d');
+        }
+
+        $kostums = DataKostum::orderBy('judul')->orderBy('nama_kostum')->get();
+
+        // map bookings: [nama_kostum][date] = form.nama
+        $orders = Formulir::whereNotNull('tanggal_pemakaian')
+            ->whereYear('tanggal_pemakaian', $selectedYear)
+            ->whereMonth('tanggal_pemakaian', $selectedMonth)
+            ->get();
+
+        $bookingMap = [];
+        foreach ($orders as $o) {
+            $kname = trim((string) $o->nama_kostum);
+            $date = Carbon::parse($o->tanggal_pemakaian)->format('Y-m-d');
+            if (!$kname) continue;
+            $bookingMap[$kname][$date] = $o->nama;
+        }
+
+        return view('tanggal-pemesanan', [
+            'kostums' => $kostums,
+            'dates' => $dates,
+            'bookingMap' => $bookingMap,
+            'years' => $years,
+            'selectedYear' => $selectedYear,
+            'selectedMonth' => $selectedMonth,
+            'isAdmin' => false,
         ]);
     }
 
@@ -402,7 +452,7 @@ class HomeController extends Controller
         }
 
         $pesanan = Formulir::where('email', session('user_email'))
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at', 'asc')
             ->get();
 
         return view('user.pesanan-saya', [
@@ -538,9 +588,19 @@ class HomeController extends Controller
 
         $pengembalianHasLinkColumn = Schema::hasColumn('pengembalian', 'formulir_id');
 
+        $pembayaranHasLinkColumn = false;
+        try {
+            $pembayaranHasLinkColumn = Schema::hasColumn('pembayaran', 'formulir_id');
+        } catch (\Exception $e) {
+            $pembayaranHasLinkColumn = false;
+        }
+
         $ordersQuery = Formulir::query();
         if ($pengembalianHasLinkColumn) {
             $ordersQuery->with('pengembalian');
+        }
+        if ($pembayaranHasLinkColumn) {
+            $ordersQuery->with('pembayaran');
         }
 
         $orders = $ordersQuery
@@ -548,14 +608,48 @@ class HomeController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
+        $paidOrderIdsFromStorage = [];
+        try {
+            $files = Storage::disk('public')->files('bukti_pembayaran');
+            foreach ($files as $file) {
+                $filename = basename($file);
+                if (preg_match('/^bukti_(\d+)_/i', $filename, $matches)) {
+                    $paidOrderIdsFromStorage[(int) $matches[1]] = true;
+                }
+            }
+        } catch (\Exception $e) {
+            $paidOrderIdsFromStorage = [];
+        }
+
         $profile_contact = ProfileContact::find(1);
         $returnRequests = collect();
 
         // Exclude orders that already have a pengembalian (or were just submitted)
         $recentFormulirId = session('recent_pengembalian_formulir_id');
 
-        $activeOrders = $orders->filter(function ($o) use ($recentFormulirId, $pengembalianHasLinkColumn) {
+        $activeOrders = $orders->filter(function ($o) use ($recentFormulirId, $pengembalianHasLinkColumn, $pembayaranHasLinkColumn, $paidOrderIdsFromStorage) {
             if (($o->status ?? null) !== 'diterima') {
+                return false;
+            }
+
+            $hasPaymentProof = false;
+
+            // Legacy field on formulir table
+            if (!empty($o->bukti_pembayaran)) {
+                $hasPaymentProof = true;
+            }
+
+            // Latest pembayaran relation (if available)
+            if (!$hasPaymentProof && $pembayaranHasLinkColumn) {
+                $hasPaymentProof = !empty(data_get($o, 'pembayaran.bukti_pembayaran'));
+            }
+
+            // Fallback: scan storage for bukti_{id}_* files
+            if (!$hasPaymentProof && isset($paidOrderIdsFromStorage[$o->id])) {
+                $hasPaymentProof = true;
+            }
+
+            if (!$hasPaymentProof) {
                 return false;
             }
 
@@ -617,6 +711,40 @@ class HomeController extends Controller
 
         if ($order->status !== 'diterima') {
             return redirect()->route('user.pengembalian')->with('error', 'Pesanan ini belum bisa diproses untuk pengembalian.');
+        }
+
+        $hasPaymentProof = false;
+
+        // Legacy field on formulir table
+        if (!empty($order->bukti_pembayaran)) {
+            $hasPaymentProof = true;
+        }
+
+        // Latest pembayaran record (if schema supports it)
+        if (!$hasPaymentProof) {
+            $pembayaranSafe = $order->pembayaran_safe;
+            if ($pembayaranSafe && !empty($pembayaranSafe->bukti_pembayaran)) {
+                $hasPaymentProof = true;
+            }
+        }
+
+        // Fallback: scan storage for bukti_{id}_* files
+        if (!$hasPaymentProof) {
+            try {
+                $files = Storage::disk('public')->files('bukti_pembayaran');
+                foreach ($files as $file) {
+                    if (str_starts_with(basename($file), 'bukti_' . $order->id . '_')) {
+                        $hasPaymentProof = true;
+                        break;
+                    }
+                }
+            } catch (\Exception $e) {
+                $hasPaymentProof = false;
+            }
+        }
+
+        if (!$hasPaymentProof) {
+            return redirect()->route('user.pengembalian')->with('error', 'Pesanan ini belum bisa diajukan pengembalian karena bukti pembayaran belum diunggah.');
         }
 
         $latestPengembalian = null;

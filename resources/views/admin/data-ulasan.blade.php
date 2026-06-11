@@ -17,19 +17,65 @@
         color: #0056b3;
     }
 
-    table th {
-        background-color: var(--bs-primary);
-        color: white;
-        text-align: center;
-        font-size: 1.0rem;
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
     }
 
-    table td {
-        font-size: 0.95rem;
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
         vertical-align: top;
     }
 
-    .table-responsive { overflow-x: auto; }
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
 
     .balasan-textarea {
         min-height: 110px;
@@ -46,53 +92,42 @@
 @endsection
 
 @section('content')
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Kelola Data Ulasan</h1>
-        <p class="text-muted">Admin dapat membalas ulasan berdasarkan ID pesanan (Formulir)</p>
-    </div>
-</header>
-
-<section class="container py-4">
-
-    @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-            <i class="bi bi-check-circle"></i> {{ session('success') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-    @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show" role="alert">
-            <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-        </div>
-    @endif
-
-    <div class="card shadow-sm">
-        <div class="card-body">
-            <div class="d-flex justify-content-between mb-3 flex-wrap gap-2">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Kelola Data Ulasan</h2>
+                <p class="text-muted mb-0 small">Admin dapat membalas ulasan berdasarkan ID pesanan (Formulir)</p>
+            </div>
+            <div class="d-grid d-sm-block">
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
-                <div></div>
             </div>
+        </div>
 
-            @if(isset($ulasanList) && $ulasanList->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center">
-                        <thead>
-                            <tr>
-                                <th style="width: 90px;">ID</th>
-                                <th>User</th>
-                                <th>Kostum</th>
-                                <th style="width: 120px;">Rating</th>
-                                <th>Ulasan</th>
-                                <th class="d-none d-md-table-cell" style="width: 160px;">Gambar</th>
-                                <th class="d-none d-md-table-cell" style="width: 360px;">Balasan Admin</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach($ulasanList as $u)
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+
+        @if(isset($ulasanList) && $ulasanList->count() > 0)
+            <div class="table-responsive">
+                <table class=\"table table-hover align-middle orders-table text-center\">
+                    <thead>
+                        <tr style=\"background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);\">
+                            <th style=\"width: 50px; color: var(--bs-body-color);\">No</th>
+                            <th style=\"color: var(--bs-body-color);\">Pesanan</th>
+                            <th style=\"width: 120px; color: var(--bs-body-color);\">Rating</th>
+                            <th style=\"color: var(--bs-body-color);\">Ulasan</th>
+                            <th class=\"d-none d-md-table-cell\" style=\"width: 160px; color: var(--bs-body-color);\">Gambar</th>
+                            <th class=\"d-none d-md-table-cell\" style=\"width: 360px; color: var(--bs-body-color);\">Balasan Admin</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($ulasanList as $index => $u)
                                 @php
                                     $images = [];
                                     for ($i = 1; $i <= 5; $i++) {
@@ -103,24 +138,23 @@
                                     }
                                 @endphp
                                 <tr>
-                                    <td class="fw-semibold">{{ $loop->iteration }}</td>
-                                    <td class="text-start">
-                                        <div class="fw-semibold">{{ $u->nama_user ?? 'User' }}</div>
-                                        <div class="text-muted" style="font-size:0.85rem;">{{ $u->email_user ?? '-' }}</div>
+                                    <td class="fw-semibold\">{{ $index + 1 }}</td>
+                                    <td class=\"text-start\">
+                                        <div class=\"fw-semibold\">{{ $u->nama_kostum ?? '-' }}</div>
+                                        <div class=\"text-muted\" style=\"font-size:0.85rem;\">{{ $u->nama_user ?? 'User' }}</div>
                                     </td>
-                                    <td class="text-start">{{ $u->nama_kostum ?? '-' }}</td>
                                     <td>
-                                        <div class="text-warning" aria-label="Rating">
+                                        <div class=\"text-warning\" aria-label=\"Rating\">
                                             @for($i = 1; $i <= 5; $i++)
-                                                <i class="bi {{ ((int)$u->rating >= $i) ? 'bi-star-fill' : 'bi-star' }}"></i>
+                                                <i class=\"bi {{ ((int)$u->rating >= $i) ? 'bi-star-fill' : 'bi-star' }}\"></i>
                                             @endfor
                                         </div>
                                     </td>
-                                    <td class="text-start">
+                                    <td class=\"text-start\">
                                         @if(!empty($u->review))
                                             {{ $u->review }}
                                         @else
-                                            <span class="text-muted">(Tidak ada teks ulasan)</span>
+                                            <span class=\"text-muted\">(Tidak ada teks ulasan)</span>
                                         @endif
                                     </td>
                                     <td class="d-none d-md-table-cell">
@@ -183,7 +217,7 @@
                     </table>
                 </div>
             @else
-                <div class="alert alert-info text-center mb-0"><i class="bi bi-info-circle"></i> Belum ada ulasan.</div>
+                <div class="alert alert-info text-center mb-0">Belum ada ulasan.</div>
             @endif
         </div>
     </div>

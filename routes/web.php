@@ -17,6 +17,9 @@ Route::get('/home', [HomeController::class, 'index'])->name('home');
 Route::get('/katalog_kostum', [HomeController::class, 'katalogKostum'])->name('katalog.kostum');
 // Public Peraturan page
 Route::get('/peraturan', [HomeController::class, 'peraturan'])->name('peraturan');
+// Public Booking Dates page
+Route::get('/tanggal-pemesanan', [HomeController::class, 'bookingDates'])->name('tanggal.pemesanan');
+Route::redirect('/booking-dates', '/tanggal-pemesanan');
 // Formulir Penyewaan Routes
 Route::get('/formulir-penyewaan/{id_kostum}', [HomeController::class, 'formulirPenyewaan'])->name('formulir.penyewaan');
 Route::post('/formulir-penyewaan/submit', [HomeController::class, 'submitFormulirPenyewaan'])->name('formulir.penyewaan.submit');
@@ -54,6 +57,7 @@ Route::get('/forgot-password', [PasswordResetController::class, 'requestForm'])-
 Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'resetForm'])->name('password.reset');
 Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+Route::post('/forgot-password/approved', [PasswordResetController::class, 'resetApproved'])->name('password.update.approved');
 
 // Google OAuth Routes
 Route::get('/auth/google', [AuthController::class, 'redirectToGoogle'])->name('auth.google');
@@ -70,6 +74,8 @@ Route::get('/admin/logout', [AdminController::class, 'logout'])->name('admin.log
 
 // Admin stats endpoint (AJAX) for dashboard charts
 Route::get('/admin/stats', [AdminController::class, 'stats'])->name('admin.stats');
+Route::get('/admin/data-tanggal', [AdminController::class, 'dataTanggal'])->name('admin.data-tanggal');
+Route::post('/admin/data-tanggal/{sheetCode}/update', [AdminController::class, 'updateDataTanggal'])->name('admin.data-tanggal.update');
 
 // Data Katalog Routes
 Route::get('/admin/data-katalog', [AdminController::class, 'dataKatalog'])->name('admin.data-katalog');
@@ -121,6 +127,7 @@ Route::delete('/admin/pesanan/{id}/delete', [AdminController::class, 'deletePesa
 // Data Pengguna (Users) Routes
 Route::get('/admin/data-pengguna', [AdminController::class, 'dataPengguna'])->name('admin.data-pengguna');
 Route::post('/admin/pengguna/update', [AdminController::class, 'updatePengguna'])->name('admin.pengguna.update');
+Route::post('/admin/pengguna/approve/{id}', [AdminController::class, 'approvePenggunaReset'])->name('admin.pengguna.approve');
 Route::post('/admin/pengguna/delete/{id}', [AdminController::class, 'deletePengguna'])->name('admin.pengguna.delete');
 
 // Data Ulasan Routes

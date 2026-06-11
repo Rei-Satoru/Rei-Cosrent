@@ -175,7 +175,7 @@
                                 <label for="password" class="form-label fw-semibold">Password</label>
                                 <div class="password-wrapper">
                                     <input type="password" class="form-control" id="password" name="password" placeholder="Masukkan password" required style="padding-right: 40px;">
-                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
+                                    <button type="button" class="password-toggle" data-target="password" aria-label="Toggle password visibility" onclick="togglePassword(this)">
                                         <i class="bi bi-eye" id="password-icon"></i>
                                     </button>
                                 </div>
@@ -218,19 +218,18 @@
         });
     });
     
-    // Toggle password visibility
-    function togglePassword(fieldId) {
-        const field = document.getElementById(fieldId);
-        const icon = document.getElementById(fieldId + '-icon');
-        
+    // Toggle password visibility (button -> target input)
+    function togglePassword(button) {
+        const targetId = button.getAttribute('data-target');
+        const field = document.getElementById(targetId);
+        const icon = button.querySelector('i') || document.getElementById(targetId + '-icon');
+        if (!field) return;
         if (field.type === 'password') {
             field.type = 'text';
-            icon.classList.remove('bi-eye');
-            icon.classList.add('bi-eye-slash');
+            if (icon) { icon.classList.remove('bi-eye'); icon.classList.add('bi-eye-slash'); }
         } else {
             field.type = 'password';
-            icon.classList.remove('bi-eye-slash');
-            icon.classList.add('bi-eye');
+            if (icon) { icon.classList.remove('bi-eye-slash'); icon.classList.add('bi-eye'); }
         }
     }
 </script>

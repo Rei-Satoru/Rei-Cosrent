@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
 class PasswordResetController extends Controller
@@ -20,7 +22,19 @@ class PasswordResetController extends Controller
             return redirect()->route('home');
         }
 
-        return view('auth.forgot-password');
+        $email = $request->query('email', old('email'));
+        $approved = false;
+
+        if ($email) {
+            $user = User::where('email', $email)->first();
+            $approved = $user && Schema::hasColumn('users', 'password_reset_requested_at') && Schema::hasColumn('users', 'password_reset_approved_at') &&
+                $user->password_reset_requested_at && $user->password_reset_approved_at;
+        }
+
+        return view('auth.forgot-password', [
+            'email' => $email,
+            'approved' => $approved,
+        ]);
     }
 
     public function sendResetLink(Request $request)
@@ -29,14 +43,23 @@ class PasswordResetController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        $status = Password::sendResetLink($request->only('email'));
+        $user = User::where('email', $request->input('email'))->first();
+        if ($user && Schema::hasColumn('users', 'password_reset_requested_at')) {
+            if ($user->password_reset_approved_at) {
+                return view('auth.forgot-password', [
+                    'email' => $request->input('email'),
+                    'approved' => true,
+                ]);
+            }
 
-        if ($status === Password::RESET_LINK_SENT) {
-            return back()->with('status', __($status));
+            $user->password_reset_requested_at = now();
+            if (Schema::hasColumn('users', 'password_reset_approved_at')) {
+                $user->password_reset_approved_at = null;
+            }
+            $user->save();
         }
 
-        // Prevent email enumeration: always respond with a generic success message.
-        return back()->with('status', 'Jika email terdaftar, link reset akan dikirim ke email tersebut.');
+        return back()->with('status', 'Permintaan reset berhasil dikirim. Tunggu persetujuan admin.');
     }
 
     public function resetForm(Request $request, string $token)
@@ -80,5 +103,31 @@ class PasswordResetController extends Controller
         return $status === Password::PASSWORD_RESET
             ? redirect()->route('login')->with('success', 'Password berhasil direset. Silakan login.')
             : back()->withErrors(['email' => __($status)])->withInput($request->only('email'));
+    }
+
+    public function resetApproved(Request $request)
+    {
+        $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
+        ], [
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal 8 karakter.',
+        ]);
+
+        $user = User::where('email', $request->input('email'))->first();
+        if (!$user || !Schema::hasColumn('users', 'password_reset_requested_at') || !Schema::hasColumn('users', 'password_reset_approved_at') ||
+            !$user->password_reset_requested_at || !$user->password_reset_approved_at) {
+            return back()->withErrors(['email' => 'Permintaan reset password belum disetujui atau tidak ditemukan.']);
+        }
+
+        $user->forceFill([
+            'password' => Hash::make($request->input('password')),
+            'remember_token' => Str::random(60),
+            'password_reset_requested_at' => null,
+            'password_reset_approved_at' => null,
+        ])->save();
+
+        return redirect()->route('login')->with('success', 'Password berhasil direset. Silakan login.');
     }
 }

@@ -8,7 +8,7 @@
         background: var(--bs-body-bg);
         color: var(--bs-body-color);
         border: 1px solid rgba(148, 163, 184, 0.18);
-        border-radius: 1rem;
+        border-radius: 0;
         overflow: hidden;
     }
 
@@ -27,6 +27,16 @@
         vertical-align: middle;
     }
 
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
     .orders-table tbody tr:hover td {
         background: rgba(37, 99, 235, 0.04);
     }
@@ -43,6 +53,11 @@
     [data-bs-theme="dark"] .orders-table tbody td {
         background: rgba(15, 23, 42, 0.96);
         border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
     }
 
     [data-bs-theme="dark"] .orders-table tbody tr:hover td {
@@ -86,7 +101,7 @@
                 <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
+                            <th>No</th>
                             <th>Nama Kostum</th>
                             <th class="d-none d-md-table-cell">Pesanan Dibuat</th>
                             <th class="d-none d-md-table-cell">Pesanan Diupdate</th>

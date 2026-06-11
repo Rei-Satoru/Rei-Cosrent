@@ -73,48 +73,33 @@
 @endsection
 
 @section('content')
-<!-- Header -->
-<header class="py-4 text-center">
+<section class="py-4">
     <div class="container">
-        <h1 class="fw-bolder page-title mb-3">Data Pesanan</h1>
-        <p class="text-muted">Kelola pesanan pengguna dan ubah statusnya.</p>
-    </div>
-</header>
-
-<!-- Konten -->
-<section class="container py-4">
-    <div class="card shadow-sm">
-        <div class="card-body">
-
-            <!-- Tombol di atas tabel -->
-            <div class="d-flex justify-content-start mb-3 flex-wrap gap-2">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
+            <div>
+                <h2 class="fw-bold mb-0">Data Pesanan</h2>
+                <p class="text-muted mb-0 small">Kelola pesanan pengguna dan ubah statusnya.</p>
+            </div>
+            <div class="d-grid d-sm-block">
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>
+        </div>
 
-            <!-- Success Alert -->
-            @if(session('success'))
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle"></i> {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show" role="alert">{{ session('success') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+        @endif
 
-            <!-- Error Alert -->
-            @if(session('error'))
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-circle"></i> {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                </div>
-            @endif
-
-            @if($pesanan->count() > 0)
-                <div class="table-responsive">
-                    <table class="table table-bordered table-striped align-middle text-center">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
+        @if($pesanan->count() > 0)
+            <div class="table-responsive">
+                <table class="table table-hover align-middle orders-table">
+                    <thead>
+                        <tr style="background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);">
+                            <th style="width: 50px; color: var(--bs-body-color);">No</th>
                                     <th>Nama Kostum</th>
                                     <th class="d-none d-md-table-cell">Pesanan Dibuat</th>
                                     <th class="d-none d-md-table-cell">Pesanan Diupdate</th>

@@ -69,7 +69,7 @@ class AuthController extends Controller
                     return redirect()->route($backRoute)->with('error', 'Password admin belum disetel. Hubungi pengelola.');
                 }
             } catch (\Exception $e) {
-                \Log::warning('Could not read admin password from profile_contacts: ' . $e->getMessage());
+                \Log::warning('Could not read admin password from admin table: ' . $e->getMessage());
                 return redirect()->route($backRoute)->with('error', 'Gagal memeriksa password admin.');
             }
 
@@ -97,12 +97,13 @@ class AuthController extends Controller
                         $profile->password = Hash::make($password);
                         $profile->save();
                     } catch (\Illuminate\Database\QueryException $e) {
-                        \Log::warning('Failed upgrading admin password hash (profile_contacts.password too short?): ' . $e->getMessage());
+                        \Log::warning('Failed upgrading admin password hash (admin.password too short?): ' . $e->getMessage());
                     }
                 }
                 session([
                     'admin_logged_in' => true,
-                    'admin_name' => $admin_username
+                    'admin_name' => $admin_username,
+                    'admin_profile_photo' => $profile->photo ?? null
                 ]);
                 return redirect()->route('admin.profile')->with('success', 'Selamat datang, Admin!');
             } else {

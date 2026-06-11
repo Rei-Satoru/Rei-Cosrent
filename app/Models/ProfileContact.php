@@ -9,7 +9,7 @@ class ProfileContact extends Model
 {
     use HasFactory;
 
-    protected $table = 'profile_contacts';
+    protected $table = 'admin';
     public $timestamps = false;
 
     protected $fillable = [
@@ -19,6 +19,7 @@ class ProfileContact extends Model
         'vision',
         'address',
         'phone',
+        'instagram',
         'email',
         'password',
         // Payment fields
