@@ -421,7 +421,7 @@ table td {
                                                 </div>
                                                 
                                                 <div class="mb-3">
-                                                    <label class="form-label">Ganti Gambar</label>
+                                                    <label class="form-label">Ganti Gambar (Opsional)</label>
                                                     <input type="file" name="gambar" class="form-control" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.tiff,.ico">
                                                     <small class="text-muted">Kosongkan jika tidak mengganti gambar. Semua format gambar didukung (JPG, PNG, GIF, WEBP, SVG, BMP, dll)</small>
                                                 </div>

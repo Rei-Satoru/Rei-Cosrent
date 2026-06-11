@@ -770,6 +770,12 @@ class AdminController extends Controller
             'phone' => 'nullable|string|max:20',
             'email' => 'required|email|max:255',
             'instagram' => 'nullable|string|max:100',
+            'nomor_ewallet' => 'nullable|string|max:100',
+            'nomor_bank' => 'nullable|string|max:100',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'qris' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'remove_photo' => 'nullable|in:0,1',
+            'remove_qris' => 'nullable|in:0,1',
         ]);
 
         try {
@@ -778,8 +784,51 @@ class AdminController extends Controller
                 $profile = new ProfileContact();
             }
 
-            $profile->fill($validated);
+            // Update text fields
+            $profile->name = $validated['name'];
+            $profile->title = $validated['title'] ?? $profile->title;
+            $profile->vision = $validated['vision'] ?? $profile->vision;
+            $profile->address = $validated['address'] ?? $profile->address;
+            $profile->phone = $validated['phone'] ?? $profile->phone;
+            $profile->email = $validated['email'];
+            $profile->instagram = $validated['instagram'] ?? $profile->instagram;
+            $profile->nomor_ewallet = $validated['nomor_ewallet'] ?? $profile->nomor_ewallet;
+            $profile->nomor_bank = $validated['nomor_bank'] ?? $profile->nomor_bank;
+
+            // Handle photo upload/deletion
+            if ($request->input('remove_photo') == '1') {
+                // Delete photo if requested
+                if ($profile->photo && Storage::disk('public')->exists($profile->photo)) {
+                    Storage::disk('public')->delete($profile->photo);
+                }
+                $profile->photo = '';
+            } elseif ($request->hasFile('photo')) {
+                // Upload new photo
+                if ($profile->photo && Storage::disk('public')->exists($profile->photo)) {
+                    Storage::disk('public')->delete($profile->photo);
+                }
+                $profile->photo = $request->file('photo')->store('profile_contact', 'public');
+            }
+
+            // Handle QRIS upload/deletion
+            if ($request->input('remove_qris') == '1') {
+                // Delete QRIS if requested
+                if ($profile->qris && Storage::disk('public')->exists($profile->qris)) {
+                    Storage::disk('public')->delete($profile->qris);
+                }
+                $profile->qris = '';
+            } elseif ($request->hasFile('qris')) {
+                // Upload new QRIS
+                if ($profile->qris && Storage::disk('public')->exists($profile->qris)) {
+                    Storage::disk('public')->delete($profile->qris);
+                }
+                $profile->qris = $request->file('qris')->store('profile_contact', 'public');
+            }
+
             $profile->save();
+
+            // Flush session input agar form menampilkan data fresh dari database
+            $request->session()->forget('_old_input');
 
             return redirect()->route('admin.profile-contact')->with('success', 'Profil berhasil diperbarui.');
         } catch (\Exception $e) {
@@ -827,7 +876,7 @@ class AdminController extends Controller
             $profile = ProfileContact::first();
             if ($profile && $profile->photo && Storage::disk('public')->exists($profile->photo)) {
                 Storage::disk('public')->delete($profile->photo);
-                $profile->photo = null;
+                $profile->photo = '';
                 $profile->save();
             }
 
@@ -844,7 +893,7 @@ class AdminController extends Controller
         }
 
         $request->validate([
-            'qris_image' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'qris' => 'required|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
         try {
@@ -853,9 +902,12 @@ class AdminController extends Controller
                 $profile = new ProfileContact();
             }
 
-            if ($request->hasFile('qris_image')) {
-                // Note: You may need to add qris_image column to profile_contacts table
-                // This is a placeholder implementation
+            if ($request->hasFile('qris')) {
+                if ($profile->qris && Storage::disk('public')->exists($profile->qris)) {
+                    Storage::disk('public')->delete($profile->qris);
+                }
+                $profile->qris = $request->file('qris')->store('profile_contact', 'public');
+                $profile->save();
             }
 
             return redirect()->route('admin.profile-contact')->with('success', 'QRIS berhasil diperbarui.');
@@ -871,7 +923,13 @@ class AdminController extends Controller
         }
 
         try {
-            // Placeholder implementation
+            $profile = ProfileContact::first();
+            if ($profile && $profile->qris && Storage::disk('public')->exists($profile->qris)) {
+                Storage::disk('public')->delete($profile->qris);
+                $profile->qris = '';
+                $profile->save();
+            }
+
             return redirect()->route('admin.profile-contact')->with('success', 'QRIS berhasil dihapus.');
         } catch (\Exception $e) {
             return redirect()->route('admin.profile-contact')->with('error', 'Gagal menghapus QRIS: ' . $e->getMessage());
@@ -1077,8 +1135,22 @@ class AdminController extends Controller
 
         $dendas = Denda::orderBy('created_at', 'desc')->get();
 
+        // Provide recent unique formulir names so the Add/Edit modals can auto-fill nama/nama_kostum
+        $formulir = [];
+        try {
+            $formulir = \App\Models\Formulir::select('nama', 'nama_kostum')
+                ->whereNotNull('nama')
+                ->distinct()
+                ->orderBy('nama')
+                ->get();
+        } catch (\Exception $e) {
+            // fail silently; view will handle empty list
+            $formulir = [];
+        }
+
         return view('admin.data-denda', [
             'dendas' => $dendas,
+            'formulir' => $formulir,
         ]);
     }
 

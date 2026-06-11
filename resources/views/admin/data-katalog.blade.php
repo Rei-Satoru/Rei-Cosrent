@@ -255,7 +255,7 @@
                                                     <textarea name="description" class="form-control" rows="3" required>{{ $item->description }}</textarea>
                                                 </div>
                                                 <div class="mb-3">
-                                                    <label class="form-label">Gambar (opsional)</label>
+                                                    <label class="form-label">Gambar Katalog (Rasio 1:1)</label>
                                                     <input type="file" name="image" class="form-control" accept="image/*">
                                                     @if(!empty($item->image))
                                                         <small class="text-muted">Gambar saat ini: {{ basename($item->image) }}</small>
@@ -334,7 +334,7 @@
                         <textarea name="description" class="form-control" rows="3" placeholder="Deskripsi singkat katalog" required></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Gambar</label>
+                        <label class="form-label">Gambar Katalog (Rasio 1:1)</label>
                         <input type="file" name="image" class="form-control" accept="image/*" required>
                     </div>
                 </div>

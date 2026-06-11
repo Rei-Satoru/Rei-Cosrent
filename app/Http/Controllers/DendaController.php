@@ -47,6 +47,11 @@ class DendaController extends Controller
 
             // Ensure fields exist so MySQL strict mode doesn't fail when columns have no default
             $data['bukti_pembayaran'] = '';
+            // Provide safe defaults for optional fields that might be missing from validated input
+            $data['keterangan'] = $validated['keterangan'] ?? '';
+            $data['jenis_denda'] = $validated['jenis_denda'] ?? '';
+            $data['jumlah_denda'] = isset($validated['jumlah_denda']) ? $validated['jumlah_denda'] : 0;
+            $data['status'] = $validated['status'] ?? 'Belum Lunas';
 
             for ($i = 1; $i <= 5; $i++) {
                 $field = 'bukti_foto_' . $i;
@@ -98,6 +103,11 @@ class DendaController extends Controller
 
         try {
             $data = $validated;
+            // Preserve existing values when update payload omits optional fields
+            $data['keterangan'] = $validated['keterangan'] ?? $denda->keterangan ?? '';
+            $data['jenis_denda'] = $validated['jenis_denda'] ?? $denda->jenis_denda ?? '';
+            $data['jumlah_denda'] = isset($validated['jumlah_denda']) ? $validated['jumlah_denda'] : ($denda->jumlah_denda ?? 0);
+            $data['status'] = $validated['status'] ?? $denda->status ?? 'Belum Lunas';
 
             for ($i = 1; $i <= 5; $i++) {
                 $field = 'bukti_foto_' . $i;

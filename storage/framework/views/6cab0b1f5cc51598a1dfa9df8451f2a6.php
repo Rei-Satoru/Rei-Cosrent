@@ -139,12 +139,6 @@
         transition: border-color 0.15s ease, box-shadow 0.15s ease;
     }
 
-    .modal-header-surface {
-        background: var(--bs-body-bg);
-        color: var(--bs-body-color);
-        border-bottom: 1px solid var(--bs-border-color);
-    }
-
     @media (max-width: 575.98px) {
         .preview-info-table td {
             padding: 0.25rem 0.25rem;
@@ -543,7 +537,7 @@ unset($__errorArgs, $__bag); ?>
                             </div>
 
                             <div class="d-flex mt-3">
-                                <button type="button" class="btn btn-primary" onclick="document.getElementById('profileForm').submit();">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Simpan Perubahan
                                 </button>
                             </div>

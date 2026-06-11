@@ -56,8 +56,7 @@
 
     /* Catalog cards: rounded, soft shadow, gradient border */
     .ak-catalog .card.category-card { border-radius:22px; overflow:visible; background: var(--ak-card-bg); border: 1px solid var(--ak-card-border); box-shadow: var(--ak-card-shadow); color: var(--ak-secondary-text); }
-    .ak-catalog .card.category-card img { border-radius:16px; height:200px; object-fit:cover; }
-    .ak-catalog .card-body h5 { color: var(--ak-secondary-text) !important; font-weight:700; }
+    .ak-catalog .card.category-card img { border-radius:16px; width: 100%; aspect-ratio: 1 / 1; object-fit:cover; }    .ak-catalog .card-body h5 { color: var(--ak-secondary-text) !important; font-weight:700; }
     .ak-catalog .card-body p { color: var(--ak-secondary-text) !important; }
     .ak-catalog .alert,
     .ak-catalog .alert * { color: var(--ak-secondary-text) !important; }
@@ -148,9 +147,9 @@
                                         }
                                     ?>
                                     <?php if($catImg): ?>
-                                        <img src="<?php echo e($catImg); ?>" class="w-100" alt="<?php echo e($kategori->name); ?>">
+                                    <img src="<?php echo e($catImg); ?>" class="w-100" style="aspect-ratio: 1/1; object-fit: cover; border-radius: 6px;" alt="<?php echo e($kategori->name); ?>">
                                     <?php else: ?>
-                                        <div class="w-100 d-flex align-items-center justify-content-center" style="height:140px;background:#f5f5f5;border-radius:6px;">
+                                        <div class="w-100 d-flex align-items-center justify-content-center" style="aspect-ratio: 1/1; background:#f5f5f5; border-radius:6px;">
                                             <i class="bi bi-image" style="font-size:28px;color:#9aa0a6;"></i>
                                         </div>
                                     <?php endif; ?>

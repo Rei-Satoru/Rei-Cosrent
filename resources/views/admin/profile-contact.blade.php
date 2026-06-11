@@ -401,7 +401,7 @@
                             </div>
 
                             <div class="d-flex mt-3">
-                                <button type="button" class="btn btn-primary" onclick="document.getElementById('profileForm').submit();">
+                                <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Simpan Perubahan
                                 </button>
                             </div>

@@ -94,7 +94,10 @@
                 <h2 class="fw-bold mb-0">Data Denda & Kerusakan</h2>
                 <p class="text-muted mb-0 small">Kelola denda dan laporan kerusakan kostum.</p>
             </div>
-            <div class="d-grid d-sm-block">
+            <div class="d-flex gap-2">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                    <i class="bi bi-plus-lg"></i> Tambah
+                </button>
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
