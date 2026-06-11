@@ -30,6 +30,7 @@ class Formulir extends Model
         'selfie_kartu_identitas',
         'pernyataan',
         'status',
+        'ongkir',
         'keterangan',
     ];
 
@@ -37,6 +38,7 @@ class Formulir extends Model
         'tanggal_pemakaian' => 'date',
         'tanggal_pengembalian' => 'date',
         'total_harga' => 'decimal:2',
+        'ongkir' => 'decimal:2',
     ];
 
     // No user relation anymore; email is stored directly on the order

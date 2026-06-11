@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\RajaOngkirController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\PembayaranController;
 use App\Http\Controllers\UlasanController;
@@ -146,4 +147,10 @@ Route::delete('/ulasan/{formulirId}/delete-image/{imageNumber}', [UlasanControll
 
 // Public: Lihat ulasan per kostum
 Route::get('/lihat-ulasan/{id_kostum}', [UlasanController::class, 'lihatUlasanKostum'])->name('lihat-ulasan');
+
+// RajaOngkir proxy endpoints (AJAX)
+Route::get('/rajaongkir/provinces', [RajaOngkirController::class, 'provinces'])->name('rajaongkir.provinces');
+Route::get('/rajaongkir/cities', [RajaOngkirController::class, 'cities'])->name('rajaongkir.cities');
+Route::post('/rajaongkir/cost', [RajaOngkirController::class, 'cost'])->name('rajaongkir.cost');
+Route::get('/rajaongkir/shipping-cost', [RajaOngkirController::class, 'shippingCost'])->name('rajaongkir.shipping-cost');
 

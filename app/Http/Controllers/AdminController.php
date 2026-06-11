@@ -772,6 +772,9 @@ class AdminController extends Controller
             'instagram' => 'nullable|string|max:100',
             'nomor_ewallet' => 'nullable|string|max:100',
             'nomor_bank' => 'nullable|string|max:100',
+            'origin_province_id' => 'nullable|numeric',
+            'origin_city_id' => 'nullable|numeric',
+            'origin_postal_code' => 'nullable|string|max:20',
             'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'qris' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_photo' => 'nullable|in:0,1',
@@ -794,6 +797,9 @@ class AdminController extends Controller
             $profile->instagram = $validated['instagram'] ?? $profile->instagram;
             $profile->nomor_ewallet = $validated['nomor_ewallet'] ?? $profile->nomor_ewallet;
             $profile->nomor_bank = $validated['nomor_bank'] ?? $profile->nomor_bank;
+            $profile->origin_province_id = $validated['origin_province_id'] ?? $profile->origin_province_id;
+            $profile->origin_city_id = $validated['origin_city_id'] ?? $profile->origin_city_id;
+            $profile->origin_postal_code = $validated['origin_postal_code'] ?? $profile->origin_postal_code;
 
             // Handle photo upload/deletion
             if ($request->input('remove_photo') == '1') {

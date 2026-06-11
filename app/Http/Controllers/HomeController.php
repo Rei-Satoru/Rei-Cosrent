@@ -346,7 +346,7 @@ class HomeController extends Controller
         ]);
     }
 
-    public function submitFormulirPenyewaan(Request $request)
+    public function submitFormulirPenyewaan(Request $request, \App\Services\RajaOngkirService $raja)
     {
         $request->validate([
             'nama' => 'required|string|max:100',
@@ -357,7 +357,7 @@ class HomeController extends Controller
             'nama_kostum' => 'required|string|max:100',
             'tanggal_pemakaian' => 'required|date',
             'tanggal_pengembalian' => 'required|date|after_or_equal:tanggal_pemakaian',
-            'total_harga' => 'required|numeric|min:0',
+            'total_harga' => 'nullable|numeric|min:0',
             'metode_pembayaran' => 'required|string|max:50',
             'kartu_identitas' => 'required|string|max:50',
             'foto_kartu_identitas' => 'required|image|mimes:jpg,jpeg,png,webp|max:5120',
@@ -376,7 +376,6 @@ class HomeController extends Controller
             'tanggal_pengembalian.required' => 'Tanggal pengembalian wajib diisi.',
             'tanggal_pengembalian.date' => 'Format tanggal pengembalian tidak valid.',
             'tanggal_pengembalian.after_or_equal' => 'Tanggal pengembalian harus sama atau setelah tanggal pemakaian.',
-            'total_harga.required' => 'Total harga wajib diisi.',
             'total_harga.numeric' => 'Total harga harus berupa angka.',
             'total_harga.min' => 'Total harga tidak boleh negatif.',
             'metode_pembayaran.required' => 'Metode pembayaran wajib dipilih.',
@@ -404,6 +403,60 @@ class HomeController extends Controller
                 $selfiePath = $request->file('selfie_kartu_identitas')->store('formulir_selfie', 'public');
             }
 
+            // Compute ongkir server-side using RajaOngkirService
+            // Use admin's origin city as destination (alamat user dan admin sudah sesuai)
+            $originCity = env('RAJAONGKIR_ORIGIN_CITY_ID');
+            $weight = 1000; // default weight in grams (1kg)
+            $ongkir = 0;
+            
+            $admin = \App\Models\ProfileContact::first();
+            $originCity = env('RAJAONGKIR_ORIGIN_CITY_ID');
+            if (!$originCity && $admin) {
+                $originCity = $admin->origin_city_id;
+            }
+            if (!$originCity && $admin && $admin->address) {
+                $originCity = $raja->findCityIdFromAddress($admin->address);
+            }
+
+            $destinationCityId = $raja->findCityIdFromAddress($request->input('alamat'));
+            if ($originCity && $destinationCityId && env('RAJAONGKIR_API_KEY')) {
+                try {
+                    $costResp = $raja->cost($originCity, $destinationCityId, $weight);
+                    if ($costResp && isset($costResp['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value'])) {
+                        $ongkir = $costResp['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value'];
+                    } else {
+                        $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                        \Log::warning('RajaOngkir fallback estimate used', [
+                            'originCity' => $originCity,
+                            'destinationCity' => $destinationCityId,
+                            'alamat' => $request->input('alamat'),
+                            'admin_address' => $admin?->address,
+                            'ongkir' => $ongkir,
+                        ]);
+                    }
+                } catch (\Throwable $e) {
+                    \Log::warning('RajaOngkir cost failed: ' . $e->getMessage());
+                    $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                }
+            } else {
+                $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                if (!env('RAJAONGKIR_API_KEY')) {
+                    \Log::info('RajaOngkir API key missing, using local fallback estimate', [
+                        'originCity' => $originCity,
+                        'destination' => $request->input('alamat'),
+                    ]);
+                } else {
+                    \Log::warning('RajaOngkir origin/destination lookup failed, using local fallback estimate', [
+                        'originCity' => $originCity,
+                        'destinationCity' => $destinationCityId,
+                        'alamat' => $request->input('alamat'),
+                    ]);
+                }
+            }
+
+            $hargaSewa = $request->input('harga_sewa', 0);
+            $computedTotal = (float)$hargaSewa + (float)$ongkir;
+
             Formulir::create([
                 'nama' => $request->input('nama'),
                 'alamat' => $request->input('alamat'),
@@ -412,7 +465,8 @@ class HomeController extends Controller
                 'nama_kostum' => $request->input('nama_kostum'),
                 'tanggal_pemakaian' => $request->input('tanggal_pemakaian'),
                 'tanggal_pengembalian' => $request->input('tanggal_pengembalian'),
-                'total_harga' => $request->input('total_harga'),
+                'total_harga' => $computedTotal,
+                'ongkir' => $ongkir,
                 'metode_pembayaran' => $request->input('metode_pembayaran'),
                 'kartu_identitas' => $request->input('kartu_identitas'),
                 'foto_kartu_identitas' => $fotoKartuPath,

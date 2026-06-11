@@ -26,12 +26,13 @@ class ProfileContact extends Model
         'nomor_ewallet',
         'nomor_bank',
         'qris',
+        // Origin for RajaOngkir
+        'origin_province_id',
+        'origin_city_id',
+        'origin_postal_code',
     ];
 
-    protected function casts(): array
-    {
-        return [
-            'password' => 'hashed',
-        ];
-    }
+    protected $hidden = [
+        'password',
+    ];
 }

@@ -158,10 +158,9 @@
                         <label class="form-label required-label">Nomor Telepon Pihak Kedua (Orang Tua/Wali/Tetangga/DLL)</label>
                         <input type="text" name="nomor_telepon_2" class="form-control" value="<?php echo e(old('nomor_telepon_2')); ?>" required placeholder="Contoh: 08xxx - Orang Tua" autocomplete="off">
                     </div>
-                    <div class="col-12">
-                        <label class="form-label required-label">Alamat Lengkap</label>
-                        <textarea name="alamat" class="form-control" rows="3" required placeholder="Masukkan alamat pengambilan/penerimaan dengan lengkap" autocomplete="off"><?php echo e(old('alamat', session('user_logged_in') ? (App\Models\User::find(session('user_id'))->alamat ?? '') : '')); ?></textarea>
-                    </div>
+                    <?php if(session('user_logged_in')): ?>
+                        <input type="hidden" id="user_address" value="<?php echo e(App\Models\User::find(session('user_id'))->alamat ?? ''); ?>">
+                    <?php endif; ?>
                 </div>
             </div>
 
@@ -181,9 +180,17 @@
                         <label class="form-label required-label">Tanggal Pengembalian</label>
                         <input type="date" name="tanggal_pengembalian" class="form-control" value="<?php echo e(old('tanggal_pengembalian')); ?>" required>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-6">
+                        <label class="form-label required-label">Harga Sewa</label>
+                        <input type="number" name="harga_sewa" id="harga_sewa" class="form-control" value="<?php echo e(old('harga_sewa', $kostum->harga_sewa)); ?>" readonly>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label required-label">Ongkir</label>
+                        <input type="number" name="ongkir" id="ongkir" class="form-control" value="<?php echo e(old('ongkir', 0)); ?>" readonly>
+                    </div>
+                    <div class="col-md-12">
                         <label class="form-label required-label">Total Harga (Termasuk Ongkir)</label>
-                        <input type="number" name="total_harga" class="form-control" value="<?php echo e(old('total_harga')); ?>" required min="0" step="0.01" placeholder="Masukkan total harga">
+                        <input type="number" name="total_harga" id="total_harga" class="form-control" value="<?php echo e(old('total_harga')); ?>" required min="0" step="0.01" readonly>
                     </div>
                     <div class="col-md-12">
                         <label class="form-label required-label">Metode Pembayaran</label>
@@ -404,6 +411,42 @@ Apabila Saya Melanggar maka:
                 this.classList.remove('is-invalid');
             }
         });
+    });
+
+    // Update total ketika harga berubah (fallback untuk display)
+    document.addEventListener('DOMContentLoaded', function () {
+        const hargaInput = document.getElementById('harga_sewa');
+        const ongkirInput = document.getElementById('ongkir');
+        const totalInput = document.getElementById('total_harga');
+
+        function updateTotal() {
+            const harga = parseFloat(hargaInput.value) || 0;
+            const ongkir = parseFloat(ongkirInput.value) || 0;
+            totalInput.value = harga + ongkir;
+        }
+
+        hargaInput.addEventListener('change', updateTotal);
+        ongkirInput.addEventListener('change', updateTotal);
+        updateTotal();
+
+        // Fetch ongkir from user's profile address on page load
+        const userAddressInput = document.getElementById('user_address');
+        if (userAddressInput) {
+            const userAddress = userAddressInput.value.trim();
+            if (userAddress) {
+                fetch('<?php echo e(route('rajaongkir.shipping-cost')); ?>?address=' + encodeURIComponent(userAddress))
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data && typeof data.ongkir !== 'undefined') {
+                            ongkirInput.value = data.ongkir;
+                            updateTotal();
+                        }
+                    })
+                    .catch(err => {
+                        console.error('Gagal mengambil ongkir:', err);
+                    });
+            }
+        }
     });
 </script>
 <?php $__env->stopSection(); ?>

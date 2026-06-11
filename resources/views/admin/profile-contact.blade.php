@@ -339,6 +339,30 @@
                                 @enderror
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_province_id" class="form-label fw-semibold">Origin Province ID</label>
+                                    <input type="number" class="form-control @error('origin_province_id') is-invalid @enderror" id="origin_province_id" name="origin_province_id" value="{{ old('origin_province_id', $profile->origin_province_id ?? '') }}" placeholder="ex: 12">
+                                    @error('origin_province_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_city_id" class="form-label fw-semibold">Origin City ID</label>
+                                    <input type="number" class="form-control @error('origin_city_id') is-invalid @enderror" id="origin_city_id" name="origin_city_id" value="{{ old('origin_city_id', $profile->origin_city_id ?? '') }}" placeholder="ex: 3307">
+                                    @error('origin_city_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_postal_code" class="form-label fw-semibold">Origin Postal Code</label>
+                                    <input type="text" class="form-control @error('origin_postal_code') is-invalid @enderror" id="origin_postal_code" name="origin_postal_code" value="{{ old('origin_postal_code', $profile->origin_postal_code ?? '') }}" placeholder="ex: 43165">
+                                    @error('origin_postal_code')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="phone" class="form-label fw-semibold">Telepon</label>
                                 <input type="text" class="form-control @error('phone') is-invalid @enderror" id="phone" name="phone" value="{{ old('phone', $profile->phone ?? '') }}" required>

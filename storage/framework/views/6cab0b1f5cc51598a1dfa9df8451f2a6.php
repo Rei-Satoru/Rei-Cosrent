@@ -405,6 +405,72 @@ endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
 
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_province_id" class="form-label fw-semibold">Origin Province ID</label>
+                                    <input type="number" class="form-control <?php $__errorArgs = ['origin_province_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="origin_province_id" name="origin_province_id" value="<?php echo e(old('origin_province_id', $profile->origin_province_id ?? '')); ?>" placeholder="ex: 12">
+                                    <?php $__errorArgs = ['origin_province_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_city_id" class="form-label fw-semibold">Origin City ID</label>
+                                    <input type="number" class="form-control <?php $__errorArgs = ['origin_city_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="origin_city_id" name="origin_city_id" value="<?php echo e(old('origin_city_id', $profile->origin_city_id ?? '')); ?>" placeholder="ex: 3307">
+                                    <?php $__errorArgs = ['origin_city_id'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="origin_postal_code" class="form-label fw-semibold">Origin Postal Code</label>
+                                    <input type="text" class="form-control <?php $__errorArgs = ['origin_postal_code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="origin_postal_code" name="origin_postal_code" value="<?php echo e(old('origin_postal_code', $profile->origin_postal_code ?? '')); ?>" placeholder="ex: 43165">
+                                    <?php $__errorArgs = ['origin_postal_code'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                        <div class="invalid-feedback"><?php echo e($message); ?></div>
+                                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                </div>
+                            </div>
+
                             <div class="mb-3">
                                 <label for="phone" class="form-label fw-semibold">Telepon</label>
                                 <input type="text" class="form-control <?php $__errorArgs = ['phone'];
