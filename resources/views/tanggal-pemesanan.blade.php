@@ -121,7 +121,6 @@
         <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-4">
             <div>
                 <h2 class="fw-bold mb-0">Data Tanggal Booking</h2>
-                <p class="text-muted mb-0">Referensi jadwal dari file XLSX &#64;rei_cosrent</p>
             </div>
             @if($isAdmin)
                 <div class="d-grid d-sm-block w-100" style="max-width: 220px;">

@@ -267,6 +267,12 @@
                                         <td class="value-col"><?php echo e($user->email); ?></td>
                                     </tr>
                                     <tr>
+                                        <td class="icon-col"><i class="bi bi-envelope"></i></td>
+                                        <td class="label-col">Instagram</td>
+                                        <td class="colon-col">:</td>
+                                        <td class="value-col"><?php echo e($user->instagram ?: '-'); ?></td>
+                                    </tr>
+                                    <tr>
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
                                         <td class="label-col">Alamat</td>
                                         <td class="colon-col">:</td>
@@ -404,6 +410,29 @@ $message = $__bag->first($__errorArgs[0]); ?>
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="instagram" class="form-label fw-semibold">Instagram</label>
+                                <input type="text" class="form-control <?php $__errorArgs = ['instagram'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>" id="instagram" name="instagram" value="<?php echo e(old('instagram', $user->instagram)); ?>" placeholder="Opsional" maxlength="50">
+                                <?php $__errorArgs = ['instagram'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                                    <div class="invalid-feedback d-block"><?php echo e($message); ?></div>
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
+                                <small class="text-muted">Masukkan username Instagram tanpa @.</small>
                             </div>
 
                             <div class="mb-3">

@@ -24,6 +24,7 @@ class User extends Authenticatable
         'alamat',
         'nomor_telepon',
         'jenis_kelamin',
+        'instagram',
         'password',
         'gambar_profil',
         'google_id',

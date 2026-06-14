@@ -262,6 +262,12 @@
                                         <td class="value-col">{{ $user->email }}</td>
                                     </tr>
                                     <tr>
+                                        <td class="icon-col"><i class="bi bi-envelope"></i></td>
+                                        <td class="label-col">Instagram</td>
+                                        <td class="colon-col">:</td>
+                                        <td class="value-col">{{ $user->instagram ?: '-' }}</td>
+                                    </tr>
+                                    <tr>
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
                                         <td class="label-col">Alamat</td>
                                         <td class="colon-col">:</td>
@@ -350,6 +356,15 @@
                                 @error('email')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="instagram" class="form-label fw-semibold">Instagram</label>
+                                <input type="text" class="form-control @error('instagram') is-invalid @enderror" id="instagram" name="instagram" value="{{ old('instagram', $user->instagram) }}" placeholder="Opsional" maxlength="50">
+                                @error('instagram')
+                                    <div class="invalid-feedback d-block">{{ $message }}</div>
+                                @enderror
+                                <small class="text-muted">Masukkan username Instagram tanpa @.</small>
                             </div>
 
                             <div class="mb-3">

@@ -218,10 +218,10 @@ class HomeController extends Controller
             'username' => 'required|string|max:255|lowercase|no_spaces|unique:users,username,' . $user->id,
             'nick_name' => 'nullable|string|max:255',
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
+            'instagram' => 'nullable|string|max:50',
             'alamat' => 'nullable|string|max:1000',
             'nomor_telepon' => 'nullable|regex:/^08[0-9]{8,13}$/',
             'jenis_kelamin' => 'nullable|in:Pria,Wanita',
-            'password' => 'nullable|string|min:8|confirmed',
             'gambar_profil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_photo' => 'nullable|boolean',
         ], [
@@ -233,8 +233,7 @@ class HomeController extends Controller
             'email.email' => 'Format email tidak valid.',
             'email.unique' => 'Email sudah terdaftar.',
             'alamat.max' => 'Alamat terlalu panjang (maksimal 1000 karakter).',
-            'password.min' => 'Password minimal 8 karakter.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'instagram.max' => 'Instagram maksimal 50 karakter.',
             'gambar_profil.image' => 'File harus berupa gambar.',
             'gambar_profil.mimes' => 'Format gambar harus jpg, jpeg, png, atau webp.',
             'gambar_profil.max' => 'Ukuran gambar maksimal 2MB.',
@@ -254,9 +253,8 @@ class HomeController extends Controller
             $user->nomor_telepon = $request->input('nomor_telepon');
             $user->jenis_kelamin = $request->input('jenis_kelamin');
 
-            if (!empty($request->input('password'))) {
-                $user->password = Hash::make($request->input('password'));
-            }
+            // Instagram (optional)
+            $user->instagram = $request->input('instagram');
 
             $shouldRemovePhoto = $request->boolean('remove_photo');
 

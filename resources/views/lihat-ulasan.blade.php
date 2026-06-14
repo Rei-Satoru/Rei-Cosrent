@@ -23,8 +23,8 @@
     <div class="container">
         <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-4">
             <h2 class="fw-bold mb-0">Lihat Ulasan</h2>
-            <div class="d-grid d-sm-block w-100" style="max-width: 320px;">
-                <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary">
+            <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
+                <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary w-100">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>

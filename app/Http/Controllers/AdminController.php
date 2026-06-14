@@ -19,6 +19,7 @@ use Illuminate\Http\JsonResponse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
@@ -341,6 +342,8 @@ class AdminController extends Controller
             'id' => 'required|integer|exists:users,id',
             'username' => 'required|string|max:255|unique:users,username,' . $request->input('id'),
             'nick_name' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:50',
+            'password' => 'nullable|string|min:8|confirmed',
             'email' => 'required|email|max:255|unique:users,email,' . $request->input('id'),
             'jenis_kelamin' => 'nullable|in:Pria,Wanita',
         ]);
@@ -349,8 +352,21 @@ class AdminController extends Controller
             $user = User::findOrFail($validated['id']);
             $user->username = $validated['username'];
             $user->nick_name = $validated['nick_name'];
+            $user->instagram = $validated['instagram'] ?? null;
             $user->email = $validated['email'];
             $user->jenis_kelamin = $validated['jenis_kelamin'];
+
+            // Allow admin to set password only when user requested reset
+            if (!empty($validated['password'])) {
+                if (!$user->password_reset_requested_at) {
+                    return redirect()->route('admin.data-pengguna')->with('error', 'Pengguna tidak meminta reset password.');
+                }
+                $user->password = Hash::make($validated['password']);
+                $user->remember_token = Str::random(60);
+                // Clear reset flags after admin sets password
+                $user->password_reset_requested_at = null;
+                $user->password_reset_approved_at = null;
+            }
             $user->save();
 
             return redirect()->route('admin.data-pengguna')->with('success', 'Pengguna berhasil diperbarui.');

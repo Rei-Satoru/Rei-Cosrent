@@ -130,6 +130,7 @@
                                     <th>Username</th>
                                     <th class="d-none d-md-table-cell">Nick Name</th>
                                     <th>Email</th>
+                                    <th class="d-none d-md-table-cell">Instagram</th>
                                     <th class="d-none d-md-table-cell">Alamat</th>
                                     <th class="d-none d-md-table-cell">Nomor Telepon</th>
                                     <th class="d-none d-md-table-cell">Jenis Kelamin</th>
@@ -145,6 +146,7 @@
                                         <td>{{ $user->username }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->nick_name }}</td>
                                         <td>{{ $user->email }}</td>
+                                        <td class="d-none d-md-table-cell">{{ $user->instagram ?: '-' }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->alamat }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->nomor_telepon }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->jenis_kelamin }}</td>
@@ -208,6 +210,10 @@
                                                                         <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
                                                                     </div>
                                                                     <div class="col-12">
+                                                                        <label class="form-label fw-semibold">Instagram</label>
+                                                                        <input type="text" name="instagram" class="form-control" value="{{ old('instagram', $user->instagram) }}" maxlength="50" placeholder="Opsional">
+                                                                    </div>
+                                                                    <div class="col-12">
                                                                         <label class="form-label fw-semibold">Nomor Telepon</label>
                                                                         <input type="text" name="nomor_telepon" class="form-control" value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
                                                                     </div>
@@ -237,6 +243,21 @@
                                                                                     <i class="bi bi-check-circle"></i> Setujui Permintaan Reset
                                                                                 </button>
                                                                             </form>
+                                                                        </div>
+                                                                    @endif
+                                                                    @if($user->password_reset_requested_at)
+                                                                        <div class="col-12">
+                                                                            <hr>
+                                                                            <label class="form-label fw-semibold">Reset Password (oleh Admin)</label>
+                                                                            <div class="row g-2">
+                                                                                <div class="col-md-6">
+                                                                                    <input type="password" name="password" class="form-control" placeholder="Password baru (min 8)">
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi password">
+                                                                                </div>
+                                                                            </div>
+                                                                            <small class="text-muted">Hanya isi jika Anda ingin menetapkan password baru untuk pengguna yang meminta reset.</small>
                                                                         </div>
                                                                     @endif
                                                                     <div class="col-12">
