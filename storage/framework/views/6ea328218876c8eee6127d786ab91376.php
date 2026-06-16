@@ -3,7 +3,83 @@
 <?php $__env->startSection('title', 'Data Kostum - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
+/* === Kostum Filter (samakan dengan warna card-body) === */
+.rc-kostum-card {
+    --rc-kostum-tone: rgba(37, 99, 235, 0.06);
+    --rc-kostum-border: rgba(37, 99, 235, 0.12);
+    --rc-kostum-border-strong: rgba(37, 99, 235, 0.25);
+    --rc-kostum-text: var(--bs-body-color);
+}
+
+.rc-kostum-card .rc-kostum-filter-control,
+.rc-kostum-card .rc-kostum-filter-control.form-select {
+    background-color: rgba(255, 255, 255, 0.35);
+    border: 1px solid var(--rc-kostum-border);
+    color: var(--rc-kostum-text);
+    box-shadow: none;
+}
+
+/* select juga untuk default bootstrap focus-ring */
+.rc-kostum-card .form-select:focus,
+.rc-kostum-card .form-control:focus,
+.rc-kostum-card .rc-kostum-filter-control:focus {
+    border-color: var(--rc-kostum-border-strong);
+    background-color: rgba(255, 255, 255, 0.55);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15);
+    color: var(--rc-kostum-text);
+}
+
+.rc-kostum-card .rc-kostum-filter-control:hover {
+    border-color: rgba(37, 99, 235, 0.20);
+}
+
+.rc-kostum-card .rc-kostum-filter-control::placeholder {
+    color: rgba(108, 122, 137, 0.9);
+}
+
+/* Samakan tombol Cari dengan tone card */
+.rc-kostum-card .btn-rc-kostum {
+    background-color: rgba(37, 99, 235, 0.10) !important;
+    border: 1px solid rgba(37, 99, 235, 0.18) !important;
+    color: var(--rc-kostum-text) !important;
+}
+.rc-kostum-card .btn-rc-kostum:hover {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border-color: rgba(37, 99, 235, 0.28) !important;
+}
+
+.rc-kostum-card .btn-rc-kostum:focus {
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.15) !important;
+}
+
+/* Dark theme */
+[data-bs-theme="dark"] .rc-kostum-card .rc-kostum-filter-control,
+[data-bs-theme="dark"] .rc-kostum-card .rc-kostum-filter-control.form-select {
+    background-color: rgba(2, 6, 23, 0.25);
+    color: var(--bs-body-color);
+    border-color: rgba(37, 99, 235, 0.25);
+}
+
+[data-bs-theme="dark"] .rc-kostum-card .rc-kostum-filter-control:focus,
+[data-bs-theme="dark"] .rc-kostum-card .form-control:focus,
+[data-bs-theme="dark"] .rc-kostum-card .form-select:focus {
+    background-color: rgba(2, 6, 23, 0.35);
+    border-color: rgba(37, 99, 235, 0.45);
+    box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+}
+
+[data-bs-theme="dark"] .rc-kostum-card .btn-rc-kostum {
+    background-color: rgba(37, 99, 235, 0.16) !important;
+    border: 1px solid rgba(37, 99, 235, 0.28) !important;
+    color: var(--bs-body-color) !important;
+}
+
+[data-bs-theme="dark"] .rc-kostum-card .btn-rc-kostum:hover {
+    background-color: rgba(37, 99, 235, 0.22) !important;
+    border-color: rgba(37, 99, 235, 0.38) !important;
+}
+
+/* === table styles existing === */
 table th {
     background-color: var(--bs-primary);
     color: white;
@@ -110,6 +186,29 @@ table td {
         transform: scale(1.02);
     }
 
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
+
     footer {
         transition: background-color 1000ms;
     }
@@ -125,7 +224,7 @@ table td {
     .rupiah-format::before {
         content: \"Rp\";
     }
-</style>
+
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -160,58 +259,8 @@ table td {
             </div>
         <?php endif; ?>
 
-        <div class="card shadow-sm mb-4" style="background-color: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.12);">
-            <div class="card-body">
-                    <div class="col-md-3">
-                        <input type="text" name="search" class="form-control" placeholder="Cari nama, brand, kategori..." value="<?php echo e($search ?? ''); ?>">
-                    </div>
-                    <div class="col-md-2">
-                        <select name="kategori" class="form-select">
-                            <option value="">Semua Kategori</option>
-                            <?php $__currentLoopData = $kategori; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <option value="<?php echo e($kat); ?>" <?php echo e(($filter_kategori ?? '') === $kat ? 'selected' : ''); ?>><?php echo e(ucfirst($kat)); ?></option>
-                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                        </select>
-                    </div>
-                    <div class="col-md-2">
-                        <select name="jenis_kelamin" class="form-select">
-                                <option value="">Semua Jenis Kelamin</option>
-                                <option value="Pria" <?php echo e(($filter_jenis_kelamin ?? '') === 'Pria' ? 'selected' : ''); ?>>Pria</option>
-                                <option value="Wanita" <?php echo e(($filter_jenis_kelamin ?? '') === 'Wanita' ? 'selected' : ''); ?>>Wanita</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="sort" class="form-select">
-                                <option value="id_asc" <?php echo e(($sort ?? '') === 'id_asc' ? 'selected' : ''); ?>>Terbaru</option>
-                                <option value="nama_asc" <?php echo e(($sort ?? '') === 'nama_asc' ? 'selected' : ''); ?>>A - Z</option>
-                                <option value="nama_desc" <?php echo e(($sort ?? '') === 'nama_desc' ? 'selected' : ''); ?>>Z - A</option>
-                                <option value="harga_asc" <?php echo e(($sort ?? '') === 'harga_asc' ? 'selected' : ''); ?>>Harga Termurah</option>
-                                <option value="harga_desc" <?php echo e(($sort ?? '') === 'harga_desc' ? 'selected' : ''); ?>>Harga Termahal</option>
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <select name="ukuran" class="form-select">
-                                <option value="">Semua Ukuran</option>
-                                <?php $__currentLoopData = $ukuran; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $uk): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                    <option value="<?php echo e($uk); ?>" <?php echo e(($filter_ukuran ?? '') === $uk ? 'selected' : ''); ?>><?php echo e($uk); ?></option>
-                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                            </select>
-                        </div>
-                        <div class="col-md-1">
-                            <button type="submit" class="btn btn-primary w-100">
-                                <i class="bi bi-search"></i> Cari
-                            </button>
-                        </div>
-                    </form>
-                    <?php if($search || $filter_kategori || $filter_jenis_kelamin || $filter_ukuran || ($sort && $sort !== 'id_asc')): ?>
-                        <div class="mt-2">
-                            <a href="<?php echo e(route('admin.data-kostum')); ?>" class="btn btn-sm btn-secondary">
-                                <i class="bi bi-x-circle"></i> Reset Filter
-                            </a>
-                        </div>
-                    <?php endif; ?>
-                </div>
-            </div>
+        <div class="card shadow-sm mb-4 rc-kostum-card" style="background-color: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.12);">
+            
 
 
             <!-- Validation Errors -->
@@ -318,7 +367,7 @@ table td {
                             <div class="modal fade" id="detailModal<?php echo e($item->id_kostum); ?>" tabindex="-1">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                        <div class="modal-header bg-success text-white">
+                                        <div class="modal-header bg-primary text-white">
                                             <h5 class="modal-title">Detail: <?php echo e($item->nama_kostum); ?></h5>
                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                         </div>
@@ -421,7 +470,7 @@ table td {
                                                 </div>
                                                 
                                                 <div class="mb-3">
-                                                    <label class="form-label">Ganti Gambar</label>
+                                                    <label class="form-label">Ganti Gambar (Opsional)</label>
                                                     <input type="file" name="gambar" class="form-control" accept="image/*,.jpg,.jpeg,.png,.gif,.webp,.svg,.bmp,.tiff,.ico">
                                                     <small class="text-muted">Kosongkan jika tidak mengganti gambar. Semua format gambar didukung (JPG, PNG, GIF, WEBP, SVG, BMP, dll)</small>
                                                 </div>
@@ -503,9 +552,9 @@ table td {
 <div class="modal fade" id="adminKostumImagePreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="adminKostumImagePreviewTitle">Gambar Kostum</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="adminKostumImagePreviewImg" src="" alt="Preview Gambar Kostum" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">

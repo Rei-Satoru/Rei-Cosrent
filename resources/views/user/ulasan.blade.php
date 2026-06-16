@@ -25,9 +25,9 @@
             <div class="col-lg-8 mx-auto">
                 <div class="card shadow-sm">
                     <div class="card-header bg-primary text-white">
-                        <h5 class="mb-0"><i class="bi bi-star-fill"></i> Ulasan untuk Pesanan #{{ $formulir->id }}</h5>
+<h5 class="mb-0"><i class="bi bi-star-fill"></i> Edit Ulasan untuk Pesanan</h5>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" style="background-color: #0f172af5;">
 
                         <form method="POST" action="{{ $ulasan ? route('user.ulasan.update', $formulir->id) : route('user.ulasan.store', $formulir->id) }}" enctype="multipart/form-data">
                             @csrf
@@ -48,9 +48,9 @@
                                 @enderror
                             </div>
 
-                            <div class="mb-4">
+                    <div class="mb-4">
                                 <label for="review" class="form-label fw-bold">Ulasan Anda</label>
-                                <textarea class="form-control @error('review') is-invalid @enderror"
+                                <textarea class="form-control @error('review') is-invalid @enderror" style="background-color: #0f172af5; color: inherit;"
                                           id="review"
                                           name="review"
                                           rows="5"
@@ -66,7 +66,7 @@
                                     @for($i = 1; $i <= 5; $i++)
                                         <div class="col-md-6">
                                             <div class="card h-100">
-                                                <div class="card-body text-center">
+                                                <div class="card-body text-center" style="background-color: #0f172af5;">
                                                     @if($ulasan && $ulasan->{'gambar_' . $i})
                                                         <div class="position-relative mb-2">
                                                             <img src="{{ asset('storage/' . $ulasan->{'gambar_' . $i}) }}"

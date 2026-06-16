@@ -265,7 +265,7 @@
                                         <td class="icon-col"><i class="bi bi-envelope"></i></td>
                                         <td class="label-col">Instagram</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->instagram ?: '-' }}</td>
+                                        <td class="value-col">{{ trim((string) session('user_instagram')) ?: $user->instagram ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
@@ -360,7 +360,14 @@
 
                             <div class="mb-3">
                                 <label for="instagram" class="form-label fw-semibold">Instagram</label>
-                                <input type="text" class="form-control @error('instagram') is-invalid @enderror" id="instagram" name="instagram" value="{{ old('instagram', $user->instagram) }}" placeholder="Opsional" maxlength="50">
+                                    <input type="text"
+                                        class="form-control @error('instagram') is-invalid @enderror"
+                                        id="instagram"
+                                        name="instagram"
+                                        value="{{ old('instagram', trim((string) session('user_instagram')) ?: $user->instagram) }}"
+                                        placeholder="Opsional"
+                                        maxlength="50"
+                                        autocomplete="off">
                                 @error('instagram')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
@@ -401,37 +408,12 @@
 
                             <hr class="my-4">
 
-                            <h6 class="fw-bold mb-3 text-primary">Ubah Password (Opsional)</h6>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label fw-semibold">Password Baru</label>
-                                <div class="password-wrapper">
-                                    <input type="password" class="form-control @error('password') is-invalid @enderror" id="password" name="password" placeholder="Biarkan kosong jika tidak ingin mengubah" style="padding-right: 40px;">
-                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                                        <i class="bi bi-eye" id="password-icon"></i>
-                                    </button>
-                                </div>
-                                @error('password')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                                <small class="text-muted">Minimal 8 karakter</small>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Password Baru</label>
-                                <div class="password-wrapper">
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password baru" style="padding-right: 40px;">
-                                    <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
-                                        <i class="bi bi-eye" id="password_confirmation-icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-
                             <div class="d-flex gap-2 flex-wrap">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Simpan Perubahan
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -645,6 +627,22 @@
                 if (!confirm('TERAKHIR KALI: Apakah Anda BENAR-BENAR yakin ingin menghapus akun ini? Tindakan ini TIDAK DAPAT dibatalkan!')) {
                     e.preventDefault();
                 }
+            });
+        }
+
+        // Instagram input UX: strip leading @ on blur and normalize while typing
+        const instagramInput = document.getElementById('instagram');
+        if (instagramInput) {
+            instagramInput.addEventListener('input', function () {
+                // allow typing but remove any accidental leading spaces
+                if (this.value && this.value.startsWith(' ')) {
+                    this.value = this.value.trimStart();
+                }
+            });
+            instagramInput.addEventListener('blur', function () {
+                if (!this.value) return;
+                // remove leading @ characters and surrounding whitespace
+                this.value = this.value.replace(/^@+/, '').trim();
             });
         }
     });

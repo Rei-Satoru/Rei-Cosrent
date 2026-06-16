@@ -3,7 +3,6 @@
 <?php $__env->startSection('title', 'Kelola Data Ulasan - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -37,7 +36,8 @@
         background: var(--bs-body-bg);
         color: var(--bs-body-color);
         border-color: rgba(148, 163, 184, 0.14);
-        vertical-align: top;
+        vertical-align: middle;
+        font-size: 0.95rem;
     }
 
     .orders-table thead th,
@@ -77,6 +77,16 @@
         background: rgba(59, 130, 246, 0.14);
     }
 
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .table-responsive { overflow-x: auto; }
+
     .balasan-textarea {
         min-height: 110px;
     }
@@ -88,7 +98,29 @@
         border-radius: 0;
         border: 0;
     }
-</style>
+
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -115,15 +147,15 @@
 
         <?php if(isset($ulasanList) && $ulasanList->count() > 0): ?>
             <div class="table-responsive">
-                <table class=\"table table-hover align-middle orders-table text-center\">
+                <table class="table table-hover align-middle orders-table">
                     <thead>
-                        <tr style=\"background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);\">
-                            <th style=\"width: 50px; color: var(--bs-body-color);\">No</th>
-                            <th style=\"color: var(--bs-body-color);\">Pesanan</th>
-                            <th style=\"width: 120px; color: var(--bs-body-color);\">Rating</th>
-                            <th style=\"color: var(--bs-body-color);\">Ulasan</th>
-                            <th class=\"d-none d-md-table-cell\" style=\"width: 160px; color: var(--bs-body-color);\">Gambar</th>
-                            <th class=\"d-none d-md-table-cell\" style=\"width: 360px; color: var(--bs-body-color);\">Balasan Admin</th>
+                        <tr>
+                            <th style="width: 50px;">No</th>
+                            <th>Pesanan</th>
+                            <th style="width: 120px;">Rating</th>
+                            <th>Ulasan</th>
+                            <th class="d-none d-md-table-cell" style="width: 160px;">Gambar</th>
+                            <th class="d-none d-md-table-cell" style="width: 360px;">Balasan Admin</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -167,9 +199,9 @@
                                             <div class="modal fade" id="ulasanImagesModal<?php echo e($u->id); ?>" tabindex="-1" aria-hidden="true">
                                                 <div class="modal-dialog modal-dialog-centered modal-lg">
                                                     <div class="modal-content">
-                                                        <div class="modal-header modal-header-surface">
+                                                        <div class="modal-header bg-primary text-white">
                                                             <h5 class="modal-title">Gambar Ulasan</h5>
-                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
                                                         <div class="modal-body">
                                                             <div class="row g-3">
@@ -189,9 +221,6 @@
                                                                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                             </div>
                                                             <div class="text-muted mt-2" style="font-size:0.85rem;">Klik gambar untuk membuka ukuran penuh.</div>
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -228,9 +257,9 @@
 <div class="modal fade" id="ulasanAdminImagePreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-xl">
         <div class="modal-content">
-            <div class="modal-header modal-header-surface">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="ulasanAdminImagePreviewTitle">Gambar Ulasan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="ulasanAdminImagePreviewImg" src="" alt="Preview" class="img-fluid rounded">

@@ -3,14 +3,89 @@
 <?php $__env->startSection('title', 'Data Pengembalian - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
     .page-title {
         color: #0056b3;
+        transition: color 0s ease;
     }
 
     [data-bs-theme="dark"] .page-title {
         color: #a855f7;
     }
+
+    [data-bs-theme="light"] .page-title {
+        color: #0056b3;
+    }
+
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
+    }
+
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+        font-size: 0.95rem;
+    }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .table-responsive { overflow-x: auto; }
 
     .thumb {
         width: 76px;
@@ -27,17 +102,28 @@
         padding: 0.35rem 0.7rem;
     }
 
-    .table th {
-        background-color: var(--bs-primary);
-        color: #fff;
-        text-align: center;
-        vertical-align: middle;
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
     }
 
-    .table td {
-        vertical-align: middle;
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
     }
-</style>
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -142,9 +228,9 @@
                                     <div class="modal fade" id="imgModal-<?php echo e($item->id); ?>-<?php echo e($index); ?>" tabindex="-1" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered modal-lg">
                                             <div class="modal-content">
-                                                <div class="modal-header modal-header-surface">
+                                                <div class="modal-header bg-primary text-white">
                                                     <h5 class="modal-title">Bukti Pengembalian #<?php echo e($index + 1); ?></h5>
-                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                                 </div>
                                                 <div class="modal-body text-center">
                                                     <img src="<?php echo e(asset('storage/' . $bukti)); ?>" alt="Bukti Pengembalian" class="img-fluid rounded">
@@ -157,9 +243,9 @@
                                 <div class="modal fade" id="verifyModal-<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
                                     <div class="modal-dialog modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header modal-header-surface">
+                                            <div class="modal-header bg-primary text-white">
                                                 <h5 class="modal-title">Verifikasi Pengembalian <?php echo e($kostumName); ?></h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                             </div>
                                             <form method="POST" action="<?php echo e(route('admin.pengembalian.verifikasi', $item->id)); ?>">
                                                 <?php echo csrf_field(); ?>

@@ -3,7 +3,6 @@
 <?php $__env->startSection('title', 'Data Tanggal Booking - Admin'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
     :root {
         --booking-card-bg: #f8fbff;
         --booking-card-border: rgba(37, 99, 235, 0.12);
@@ -150,7 +149,6 @@
     .booking-table-wrap {
         overflow-x: auto;
     }
-</style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -159,7 +157,7 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
                 <h2 class="fw-bold mb-0">Data Tanggal Booking</h2>
-                <p class="text-muted mb-0 small">Referensi jadwal dari file XLSX @rei_cosrent</p>
+
             </div>
             <div class="d-grid d-sm-block">
                 <a href="<?php echo e(route('admin.profile')); ?>" class="btn btn-outline-primary"><i class="bi bi-arrow-left"></i> Kembali</a>
@@ -197,8 +195,8 @@
             </div>
         </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
+        <div class="card shadow-sm mb-4" style="border-color: rgba(15, 23, 42, 0.06);">
+            <div class="card-header py-3" style="background-color: #0f172af5;">
                 <h5 class="fw-bold mb-0"><?php echo e(DateTime::createFromFormat('!m', $selectedMonth)->format('F')); ?> <?php echo e($selectedYear); ?></h5>
             </div>
             <div class="card-body p-0">

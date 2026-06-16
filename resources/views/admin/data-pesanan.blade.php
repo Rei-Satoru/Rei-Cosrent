@@ -3,25 +3,6 @@
 @section('title', 'Data Pesanan - Rei Cosrent')
 
 @section('styles')
-<style>
-    table th {
-        background-color: var(--bs-primary);
-        color: white;
-        text-align: center;
-        font-size: 1.0rem;
-    }
-
-    table td {
-        font-size: 0.95rem;
-    }
-
-    .action-buttons {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: wrap;
-    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -35,17 +16,76 @@
         color: #0056b3;
     }
 
-    footer {
-        transition: background-color 1000ms;
+    .orders-table {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid rgba(148, 163, 184, 0.18);
+        border-radius: 0;
+        overflow: hidden;
     }
 
-    body[data-bs-theme="light"] footer {
-        background-color: #0d6efd !important;
+    .orders-table thead th {
+        background: rgba(37, 99, 235, 0.08);
+        color: var(--bs-body-color);
+        border-bottom: 1px solid rgba(148, 163, 184, 0.22);
+        font-weight: 700;
+        white-space: nowrap;
     }
 
-    body[data-bs-theme="dark"] footer {
-        background-color: #8a2be2 !important;
+    .orders-table tbody td {
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border-color: rgba(148, 163, 184, 0.14);
+        vertical-align: middle;
+        font-size: 0.95rem;
     }
+
+    .orders-table thead th,
+    .orders-table tbody td {
+        border-right: 1px solid rgba(148, 163, 184, 0.14);
+    }
+
+    .orders-table thead th:last-child,
+    .orders-table tbody td:last-child {
+        border-right: 0;
+    }
+
+    .orders-table tbody tr:hover td {
+        background: rgba(37, 99, 235, 0.04);
+    }
+
+    [data-bs-theme="dark"] .orders-table {
+        border-color: rgba(148, 163, 184, 0.24);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th {
+        background: rgba(59, 130, 246, 0.16);
+        border-bottom-color: rgba(148, 163, 184, 0.22);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody td {
+        background: rgba(15, 23, 42, 0.96);
+        border-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table thead th,
+    [data-bs-theme="dark"] .orders-table tbody td {
+        border-right-color: rgba(148, 163, 184, 0.16);
+    }
+
+    [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+        background: rgba(59, 130, 246, 0.14);
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .table-responsive { overflow-x: auto; }
 
     .bukti-thumb {
         width: 72px;
@@ -69,7 +109,29 @@
     .identitas-thumb:hover {
         transform: scale(1.01);
     }
-</style>
+
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
 @endsection
 
 @section('content')
@@ -227,11 +289,11 @@
                             <div class="modal fade" id="pesananDetail{{ $item->id }}" tabindex="-1" aria-labelledby="pesananDetailLabel{{ $item->id }}" aria-hidden="true">
                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                     <div class="modal-content">
-                                                <div class="modal-header modal-header-surface">
+                                            <div class="modal-header bg-primary text-white">
                                             <h5 class="modal-title" id="pesananDetailLabel{{ $item->id }}">
                                                 <i class="bi bi-card-list"></i> Detail Pesanan
                                             </h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                         </div>
                                         <div class="modal-body">
                                             <div class="row g-3">
@@ -245,7 +307,7 @@
                                                     
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="mb-2"><strong>Nama:</strong><br>{{ $item->nama }}</div>
+                                                    <div class="mb-2"><strong>Nama:</strong><br>{{ $item->buyer_display_name ?? $item->nama }}</div>
                                                     <div class="mb-2"><strong>Nomor Telepon:</strong><br>{{ $item->nomor_telepon ?? '-' }}</div>
                                                     <div class="mb-2"><strong>Nomor Telepon 2:</strong><br>{{ $item->nomor_telepon_2 ?? '-' }}</div>
                                                     <div class="mb-2"><strong>Alamat:</strong><br>{{ $item->alamat ?? '-' }}</div>
@@ -277,10 +339,7 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-                                        </div>
+                                        </div>                                    
                                     </div>
                                 </div>
                             </div>
@@ -288,9 +347,9 @@
                                 <div class="modal fade" id="adminBuktiModal-{{ $item->id }}" tabindex="-1" aria-labelledby="adminBuktiLabel-{{ $item->id }}" aria-hidden="true">
                                     <div class="modal-dialog modal-lg modal-dialog-centered">
                                         <div class="modal-content">
-                                            <div class="modal-header modal-header-surface">
+                                            <div class="modal-header bg-primary text-white">
                                                 <h5 class="modal-title" id="adminBuktiLabel-{{ $item->id }}">Bukti Pembayaran</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                             </div>
                                             <div class="modal-body">
                                                 @php
@@ -327,10 +386,7 @@
                                                 @else
                                                     <div class="alert alert-secondary">Belum ada bukti pembayaran untuk pesanan ini.</div>
                                                 @endif
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                            </div>
+                                            </div>                                           
                                         </div>
                                     </div>
                                 </div>
@@ -352,9 +408,9 @@
 <div class="modal fade" id="adminIdentitasPreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header modal-header-surface">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="adminIdentitasPreviewTitle">Preview</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <embed id="adminIdentitasPreviewEmbed" src="" type="application/pdf" width="100%" height="600px" class="d-none" />

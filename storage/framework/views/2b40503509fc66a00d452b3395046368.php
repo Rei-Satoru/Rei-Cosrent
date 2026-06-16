@@ -6,6 +6,8 @@
 
     :root {
         --catalog-title-color: #0f172a;
+        --brand-domisili-color: #000;
+
         --catalog-card-bg: #f8fbff;
         --catalog-card-border: rgba(37, 99, 235, 0.12);
         --catalog-text: #0b0b0b;
@@ -19,6 +21,7 @@
 
     [data-bs-theme="dark"] {
         --catalog-title-color: #ffffff;
+        --brand-domisili-color: #fff;
         --catalog-card-bg: #0f172a;
         --catalog-card-border: rgba(96, 165, 250, 0.16);
         --catalog-text: #ffffff;
@@ -56,6 +59,13 @@
     [data-bs-theme="light"] .costume-modal .modal-body .text-body-secondary {
         color: var(--catalog-modal-muted) !important;
     }
+
+    /* Custom colors requested by admin */
+    .jk-pria { color: #2563eb !important; }
+    .jk-wanita { color: #ec4899 !important; }
+    .kostum-price { color: #16a34a !important; font-weight: 700; }
+    .kostum-brand, .kostum-domisili { color: var(--brand-domisili-color) !important; }
+    .costume-modal .modal-body .label-col { color: var(--catalog-modal-muted) !important; }
 
     [data-bs-theme="light"] .costume-modal .modal-footer {
         background: var(--catalog-modal-bg) !important;
@@ -264,6 +274,34 @@
                 </div>
                 <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
                     <a href="<?php echo e(route('home')); ?>#kategori" class="btn btn-outline-primary w-100"><i class="bi bi-arrow-left"></i> Kembali</a>
+                <!-- Modal: Admin blocked from filling form -->
+                <div class="modal fade" id="adminBlockModal" tabindex="-1" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content" style="background-color: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border: 1px solid var(--catalog-modal-border) !important;">
+                            <div class="modal-header" style="background: var(--catalog-modal-header-bg) !important; color: var(--catalog-modal-text) !important; border-bottom: 1px solid var(--catalog-modal-border) !important;">
+                                <h5 class="modal-title" style="color: var(--catalog-modal-text) !important;">Aksi Terbatas</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" style="color: var(--catalog-modal-text) !important;">
+                                            <div class="mb-3">Anda masuk sebagai <strong>admin</strong>. Untuk mencegah konflik data, <strong>hanya akun pelanggan</strong> yang dapat mengisi formulir penyewaan. Jika ingin memesan, silakan gunakan akun pelanggan.</div>
+                                            <div class="table-responsive">
+                                                <table class="table table-borderless table-sm mb-0">
+                                                    <tbody>
+                                                        <tr><th scope="row" style="width:140px;">Nama Kostum</th><td id="adminBlockName">-</td></tr>
+                                                        <tr><th scope="row">Brand</th><td id="adminBlockBrand">-</td></tr>
+                                                        <tr><th scope="row">Harga</th><td id="adminBlockPrice">-</td></tr>
+                                                        <tr><th scope="row">Domisili</th><td id="adminBlockDomisili">-</td></tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                            <div class="mt-3"><small class="text-muted">Jika ini adalah percobaan admin untuk mengisi formulir, pertimbangkan membuat akun pelanggan atau menggunakan akun pelanggan untuk memverifikasi alur pemesanan.</small></div>
+                                        </div>
+                            <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 </div>
             </div>
             <?php if(!$catalog): ?>
@@ -335,6 +373,9 @@
                     <?php endif; ?>
                 <?php else: ?>
                     <div class="row g-3 row-cols-2 row-cols-md-4 row-cols-lg-5">
+                        <?php
+                            $isAdmin = auth()->check() && ((isset(auth()->user()->is_admin) && auth()->user()->is_admin) || (isset(auth()->user()->role) && auth()->user()->role === 'admin'));
+                        ?>
                         <?php $__currentLoopData = $kostum; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $k): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <div class="col">
                             <a href="#" class="card costume-card rounded-xl h-100 border-0 shadow-sm d-block text-decoration-none text-reset" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo e($k->id_kostum); ?>">
@@ -376,7 +417,7 @@
                                             return $aR === $bR ? strcasecmp($aKey,$bKey) : ($aR <=> $bR);
                                         });
                                     ?>
-                                    <div class="d-flex align-items-center mt-1 gap-2 flex-wrap">
+                                    <div class="d-flex align-items-center mt-1 gap-2 flex-wrap" style="color: inherit;">
                                         <div class="d-flex gap-1 flex-wrap">
                                             <?php $__currentLoopData = $sizes; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $size): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php if($size !== ''): ?>
@@ -387,17 +428,16 @@
                                         <?php if(!empty($k->jenis_kelamin)): ?>
                                             <?php ($jk = strtolower($k->jenis_kelamin)); ?>
                                             <?php ($jkIcon = $jk === 'pria' ? 'bi-gender-male' : ($jk === 'wanita' ? 'bi-gender-female' : 'bi-gender-ambiguous')); ?>
-                                            <span class="text-secondary" style="font-size:0.75rem;white-space:nowrap;"><i class="bi <?php echo e($jkIcon); ?>"></i> <?php echo e($k->jenis_kelamin); ?></span>
+                                            <span class="jenis-kelamin jk-<?php echo e($jk); ?>" style="font-size:0.75rem;white-space:nowrap;"><i class="bi <?php echo e($jkIcon); ?>"></i> <?php echo e($k->jenis_kelamin); ?></span>
                                         <?php endif; ?>
                                     </div>
-                                    <p class="mb-2 mt-2" style="font-size:0.8rem;color:#4ade80;">
-                                        <strong>Rp <?php echo e(number_format((float)$k->harga_sewa, 0, ',', '.')); ?></strong> / <?php echo e($k->durasi_penyewaan); ?>
-
+                                    <p class="mb-2 mt-2 kostum-price" style="font-size:0.8rem;">
+                                        <strong class="kostum-price">Rp <?php echo e(number_format((float)$k->harga_sewa, 0, ',', '.')); ?></strong> / <span class="kostum-price"><?php echo e($k->durasi_penyewaan); ?></span>
                                     </p>
-                                    <p class="mb-1 text-secondary" style="font-size:0.75rem;"><i class="bi bi-tag"></i> <?php echo e($k->brand ?: '-'); ?></p>
+                                    <p class="mb-1 kostum-brand" style="font-size:0.75rem; font-weight: 600;"><i class="bi bi-tag"></i> <?php echo e($k->brand ?: '-'); ?></p>
                                     
                                     <?php if(!empty($k->domisili)): ?>
-                                        <p class="mb-1 text-secondary mt-1" style="font-size:0.75rem;"><i class="bi bi-geo-alt-fill"></i> <?php echo e($k->domisili); ?></p>
+                                        <p class="mb-1 kostum-domisili" style="font-size:0.75rem;"><i class="bi bi-geo-alt-fill"></i> <?php echo e($k->domisili); ?></p>
                                     <?php endif; ?>
                                 </div>
                             </a>
@@ -447,9 +487,21 @@
                                             <i class="bi bi-calendar3"></i> Lihat Tanggal
                                         </a>
                                         <?php if(session('user_logged_in') || auth()->check()): ?>
-                                            <a href="<?php echo e(route('formulir.penyewaan', ['id_kostum' => $k->id_kostum])); ?>" class="btn btn-success">
-                                                <i class="bi bi-clipboard-check"></i> Isi Formulir Penyewaan
-                                            </a>
+                                            <?php if($isAdmin): ?>
+                                                <button type="button" class="btn btn-success btn-admin-block" data-bs-toggle="modal" data-bs-target="#adminBlockModal"
+                                                    data-kostum-id="<?php echo e($k->id_kostum); ?>"
+                                                    data-kostum-name="<?php echo e($k->nama_kostum); ?>"
+                                                    data-kostum-brand="<?php echo e($k->brand ?: '-'); ?>"
+                                                    data-kostum-price="Rp <?php echo e(number_format((float)$k->harga_sewa, 0, ',', '.')); ?>"
+                                                    data-kostum-domisili="<?php echo e($k->domisili ?: '-'); ?>"
+                                                >
+                                                    <i class="bi bi-clipboard-check"></i> Isi Formulir Penyewaan
+                                                </button>
+                                            <?php else: ?>
+                                                <a href="<?php echo e(route('formulir.penyewaan', ['id_kostum' => $k->id_kostum])); ?>" class="btn btn-success">
+                                                    <i class="bi bi-clipboard-check"></i> Isi Formulir Penyewaan
+                                                </a>
+                                            <?php endif; ?>
                                         <?php else: ?>
                                             <button type="button" class="btn btn-success btn-guest-isi" data-login-url="<?php echo e(route('login')); ?>" data-bs-toggle="modal" data-bs-target="#guestLoginModal">
                                                 <i class="bi bi-clipboard-check"></i> Isi Formulir Penyewaan
@@ -495,6 +547,27 @@
                 var loginBtn = document.getElementById('guestLoginModalLoginBtn');
                 if (loginBtn) loginBtn.setAttribute('href', loginUrl);
             });
+            
+            // Populate adminBlockModal with costume details from the triggering button's data-* attributes
+            var adminBlockModal = document.getElementById('adminBlockModal');
+            if (adminBlockModal) {
+                adminBlockModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    if (!button) return;
+                    var name = button.getAttribute('data-kostum-name') || '-';
+                    var brand = button.getAttribute('data-kostum-brand') || '-';
+                    var price = button.getAttribute('data-kostum-price') || '-';
+                    var domisili = button.getAttribute('data-kostum-domisili') || '-';
+                    var nameEl = adminBlockModal.querySelector('#adminBlockName');
+                    var brandEl = adminBlockModal.querySelector('#adminBlockBrand');
+                    var priceEl = adminBlockModal.querySelector('#adminBlockPrice');
+                    var domEl = adminBlockModal.querySelector('#adminBlockDomisili');
+                    if (nameEl) nameEl.textContent = name;
+                    if (brandEl) brandEl.textContent = brand;
+                    if (priceEl) priceEl.textContent = price;
+                    if (domEl) domEl.textContent = domisili;
+                });
+            }
         });
     </script>
 <?php $__env->stopSection(); ?>

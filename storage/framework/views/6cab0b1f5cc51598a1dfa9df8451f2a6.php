@@ -3,7 +3,6 @@
 <?php $__env->startSection('title', 'Kelola Profil & Kontak - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
     :root {
         --profile-card-bg: #f8fbff;
         --profile-card-border: rgba(37, 99, 235, 0.12);
@@ -153,7 +152,6 @@
             width: 10px;
         }
     }
-</style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>

@@ -197,6 +197,20 @@ class HomeController extends Controller
             return redirect()->route('login')->with('error', 'User tidak ditemukan.');
         }
 
+        // Ensure session copies reflect latest DB values for UI that may rely on them
+        session([
+            'user_name' => $user->username,
+            'user_email' => $user->email,
+            'user_gambar_profil' => $user->gambar_profil,
+            'user_nick_name' => $user->nick_name,
+        ]);
+
+        if (trim((string) $user->instagram) !== '') {
+            session(['user_instagram' => $user->instagram]);
+        } else {
+            session()->forget('user_instagram');
+        }
+
         return view('user.profil', [
             'user' => $user,
         ]);
@@ -220,6 +234,8 @@ class HomeController extends Controller
             'email' => 'required|email|max:255|unique:users,email,' . $user->id,
             'instagram' => 'nullable|string|max:50',
             'alamat' => 'nullable|string|max:1000',
+
+
             'nomor_telepon' => 'nullable|regex:/^08[0-9]{8,13}$/',
             'jenis_kelamin' => 'nullable|in:Pria,Wanita',
             'gambar_profil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
@@ -252,9 +268,16 @@ class HomeController extends Controller
             $user->alamat = $request->input('alamat');
             $user->nomor_telepon = $request->input('nomor_telepon');
             $user->jenis_kelamin = $request->input('jenis_kelamin');
+            // Normalize Instagram handle: trim and remove any leading '@' characters
+            $instagramRaw = trim((string) $request->input('instagram'));
+            $instagramClean = $instagramRaw !== '' ? ltrim($instagramRaw, '@') : null;
+            $user->instagram = $instagramClean;
 
-            // Instagram (optional)
-            $user->instagram = $request->input('instagram');
+            if (trim((string) $user->instagram) !== '') {
+                session(['user_instagram' => $user->instagram]);
+            } else {
+                session()->forget('user_instagram');
+            }
 
             $shouldRemovePhoto = $request->boolean('remove_photo');
 
@@ -276,10 +299,13 @@ class HomeController extends Controller
 
             $user->save();
 
+            // Update session values so the UI shows the freshly saved data immediately
             session([
                 'user_name' => $user->username,
                 'user_email' => $user->email,
                 'user_gambar_profil' => $user->gambar_profil,
+                'user_instagram' => $user->instagram,
+                'user_nick_name' => $user->nick_name,
             ]);
 
             return redirect()->route('user.profile')->with('success', 'Profil berhasil diperbarui!');

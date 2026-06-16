@@ -56,8 +56,15 @@ class Formulir extends Model
 
     public function pengembalian()
     {
+        // Prevent SQL errors when DB schema is out-of-sync (pengembalian.formulir_id missing).
+        // If the column doesn't exist, return an unscoped relation so the page doesn't crash.
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('pengembalian', 'formulir_id')) {
+            return $this->hasOne(\App\Models\Pengembalian::class, 'id');
+        }
+
         return $this->hasOne(\App\Models\Pengembalian::class, 'formulir_id')->latestOfMany();
     }
+
 
     public function getPengembalianSafeAttribute()
     {

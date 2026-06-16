@@ -3,7 +3,6 @@
 @section('title', 'Kelola Data Pengguna - Rei Cosrent')
 
 @section('styles')
-<style>
     .page-title {
     color: #0056b3;
     transition: color 0s ease;
@@ -96,7 +95,29 @@
     .avatar-thumb:hover {
         transform: scale(1.02);
     }
-</style>
+
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
 @endsection
 
 @section('content')
@@ -188,117 +209,28 @@
                                                 <div class="modal-dialog modal-lg modal-dialog-centered">
                                                     <div class="modal-content">
                                                         <div class="modal-header bg-warning text-white">
-                                                            <h5 class="modal-title" id="editUserLabel{{ $user->id }}">Edit Pengguna #{{ $user->id }}</h5>
+                                                            <h5 class="modal-title" id="editUserLabel{{ $user->id }}">Ganti Password Pengguna</h5>
                                                             <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                                         </div>
-                                                        <form method="POST" action="{{ route('admin.pengguna.update') }}" enctype="multipart/form-data" class="user-edit-section text-start" data-user-id="{{ $user->id }}">
+                                                        <form method="POST" action="{{ route('admin.pengguna.update') }}" class="text-start">
                                                             @csrf
                                                             <div class="modal-body">
                                                                 <input type="hidden" name="id" value="{{ $user->id }}">
-                                                                <input type="hidden" name="remove_photo" value="0">
-                                                                <div class="row g-3">
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Username</label>
-                                                                        <input type="text" name="username" class="form-control" value="{{ old('username', $user->username) }}" required>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Nick Name</label>
-                                                                        <input type="text" name="nick_name" class="form-control" value="{{ old('nick_name', $user->nick_name) }}">
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Email</label>
-                                                                        <input type="email" name="email" class="form-control" value="{{ old('email', $user->email) }}" required>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Instagram</label>
-                                                                        <input type="text" name="instagram" class="form-control" value="{{ old('instagram', $user->instagram) }}" maxlength="50" placeholder="Opsional">
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Nomor Telepon</label>
-                                                                        <input type="text" name="nomor_telepon" class="form-control" value="{{ old('nomor_telepon', $user->nomor_telepon) }}">
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <label class="form-label fw-semibold">Alamat</label>
-                                                                        <textarea name="alamat" class="form-control" rows="3">{{ old('alamat', $user->alamat) }}</textarea>
-                                                                    </div>
-                                                                    <div class="col-12">
-                                                                        <div class="alert alert-info mb-3">
-                                                                            <strong>Status reset:</strong>
-                                                                            @if($user->password_reset_approved_at)
-                                                                                <span class="text-info">Permintaan reset password sudah disetujui.</span>
-                                                                                <div class="small text-muted">Pengguna dapat mengisi password baru di halaman Lupa Password.</div>
-                                                                            @elseif($user->password_reset_requested_at)
-                                                                                <span class="text-danger">Permintaan reset password terdeteksi.</span>
-                                                                                <div class="small text-muted">Silakan setujui permintaan ini agar pengguna dapat mengubah password di halaman Lupa Password.</div>
-                                                                            @else
-                                                                                <span class="text-success">Tidak ada permintaan reset.</span>
-                                                                            @endif
-                                                                        </div>
-                                                                    </div>
-                                                                    @if($user->password_reset_requested_at && !$user->password_reset_approved_at)
-                                                                        <div class="col-12">
-                                                                            <form method="POST" action="{{ route('admin.pengguna.approve', $user->id) }}">
-                                                                                @csrf
-                                                                                <button type="submit" class="btn btn-success btn-sm">
-                                                                                    <i class="bi bi-check-circle"></i> Setujui Permintaan Reset
-                                                                                </button>
-                                                                            </form>
-                                                                        </div>
-                                                                    @endif
-                                                                    @if($user->password_reset_requested_at)
-                                                                        <div class="col-12">
-                                                                            <hr>
-                                                                            <label class="form-label fw-semibold">Reset Password (oleh Admin)</label>
-                                                                            <div class="row g-2">
-                                                                                <div class="col-md-6">
-                                                                                    <input type="password" name="password" class="form-control" placeholder="Password baru (min 8)">
-                                                                                </div>
-                                                                                <div class="col-md-6">
-                                                                                    <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi password">
-                                                                                </div>
-                                                                            </div>
-                                                                            <small class="text-muted">Hanya isi jika Anda ingin menetapkan password baru untuk pengguna yang meminta reset.</small>
-                                                                        </div>
-                                                                    @endif
-                                                                    <div class="col-12">
-                                                                        <div class="row g-3 align-items-start">
-                                                                            <div class="col-md-6">
-                                                                                <label class="form-label fw-semibold">Gambar Profil</label>
-                                                                                <div class="d-flex align-items-center gap-3 flex-wrap">
-                                                                                    <img class="user-preview {{ $user->gambar_profil ? '' : 'd-none' }}" src="{{ $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : '' }}" alt="Preview" style="width:140px; height:140px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
-                                                                                    <div class="user-fallback {{ $user->gambar_profil ? 'd-none' : '' }}" style="width:140px; height:140px; display:flex; align-items:center; justify-content:center; border:2px dashed var(--bs-border-color); border-radius:0;">
-                                                                                        <i class="bi bi-person-square" style="font-size: 2.25rem; color: var(--bs-body-color);"></i>
-                                                                                    </div>
-                                                                                    <div class="d-flex flex-column gap-2">
-                                                                                        <button type="button" class="btn btn-outline-primary btn-sm btn-upload-user"><i class="bi bi-upload"></i> Unggah</button>
-                                                                                        <button type="button" class="btn btn-outline-danger btn-sm btn-mark-delete-user" style="{{ $user->gambar_profil ? '' : 'display:none;' }}"><i class="bi bi-trash"></i> Hapus</button>
-                                                                                        <span class="delete-photo-note text-danger small" style="display:none;">Foto akan dihapus setelah disimpan.</span>
-                                                                                    </div>
-                                                                                </div>
-                                                                                <input type="file" name="gambar_profil" class="d-none" accept="image/*">
-                                                                            </div>
-                                                                            <div class="col-md-6">
-                                                                                <label class="form-label fw-semibold">Jenis Kelamin</label>
-                                                                                <div class="d-flex align-items-center gap-3">
-                                                                                    <div class="form-check">
-                                                                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jkPria{{ $user->id }}" value="Pria" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Pria' ? 'checked' : '' }}>
-                                                                                        <label class="form-check-label" for="jkPria{{ $user->id }}">Pria</label>
-                                                                                    </div>
-                                                                                    <div class="form-check">
-                                                                                        <input class="form-check-input" type="radio" name="jenis_kelamin" id="jkWanita{{ $user->id }}" value="Wanita" {{ old('jenis_kelamin', $user->jenis_kelamin) == 'Wanita' ? 'checked' : '' }}>
-                                                                                        <label class="form-check-label" for="jkWanita{{ $user->id }}">Wanita</label>
-                                                                                    </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                            <div class="modal-footer">
-                                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                                                <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Simpan Perubahan</button>
-                                                            </div>
-                                                        </form>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Password Baru</label>
+                                                        <input type="password" name="password" class="form-control" placeholder="Password baru (min 8)" required>
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label fw-semibold">Konfirmasi Password</label>
+                                                        <input type="password" name="password_confirmation" class="form-control" placeholder="Konfirmasi password" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                    <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Simpan Password</button>
+                                                </div>
+                                            </form>
                                                     </div>
                                                 </div>
                                             </div>
@@ -318,9 +250,9 @@
 <div class="modal fade" id="adminUserAvatarPreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="adminUserAvatarPreviewTitle">Gambar Profil</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="adminUserAvatarPreviewImg" src="" alt="Preview Gambar Profil" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">

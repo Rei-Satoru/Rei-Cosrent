@@ -25,6 +25,7 @@ class User extends Authenticatable
         'nomor_telepon',
         'jenis_kelamin',
         'instagram',
+        'Instagram',
         'password',
         'gambar_profil',
         'google_id',
@@ -32,6 +33,26 @@ class User extends Authenticatable
         'password_reset_requested_at',
         'password_reset_approved_at',
     ];
+
+    /**
+     * Accessor for Instagram attribute to support uppercase DB column name.
+     */
+    public function getInstagramAttribute($value)
+    {
+        if ($value !== null) {
+            return $value;
+        }
+
+        return $this->attributes['Instagram'] ?? null;
+    }
+
+    /**
+     * Mutator for Instagram attribute to support uppercase DB column name.
+     */
+    public function setInstagramAttribute($value)
+    {
+        $this->attributes['Instagram'] = $value;
+    }
 
     /**
      * The attributes that should be hidden for serialization.

@@ -20,15 +20,52 @@
     }
 
     [data-bs-theme="dark"] .form-section h4 {
-        color: #a855f7;
-        border-bottom-color: #a855f7;
+        color: #2563eb;
+        border-bottom-color: #2563eb;
+    }
+
+    /* Light: garis heading ikut warna instruksi */
+    .form-section h4 {
+        color: #2563eb !important;
+        border-bottom-color: #2563eb !important;
     }
 
     .kostum-info {
-        background: var(--bs-secondary-bg);
+        background-color: #0f172af5 !important;
+        background: #0f172af5 !important;
         padding: 1rem;
         border-radius: 0.5rem;
         margin-bottom: 1rem;
+        border: 1px solid rgba(37, 99, 235, 0.15);
+    }
+
+    /* Input form control */
+    .form-control,
+    textarea.form-control {
+        background-color: #0f172af5 !important;
+        border-color: rgba(37, 99, 235, 0.35) !important;
+        color: #2563eb !important;
+    }
+
+    .form-control::placeholder {
+        color: rgba(37, 99, 235, 0.8) !important;
+    }
+
+    /* Text warna informasi */
+    .form-section,
+    .form-section h4,
+    .form-section label,
+    .form-section .form-check-label,
+    .form-section .alert,
+    .form-section .alert p,
+    .form-section .small,
+    .form-section strong {
+        color: #2563eb !important;
+    }
+
+    /* Pernyataan isi */
+    .form-section .alert-info p {
+        color: #2563eb !important;
     }
 
     .required-label::after {
@@ -43,8 +80,8 @@
     <div class="container">
         <div class="d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between gap-2 mb-4">
             <h2 class="fw-bold mb-0">Formulir Penyewaan Kostum</h2>
-            <div class="d-grid d-sm-block w-100" style="max-width: 320px;">
-                <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary">
+            <div class="d-grid d-sm-block w-100" style="max-width: 220px;">
+                <a href="{{ route('katalog.kostum', ['cat' => strtolower($kostum->kategori)]) }}" class="btn btn-outline-primary w-100">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
             </div>
@@ -85,7 +122,7 @@
                         <p class="mb-1"><strong>Kategori:</strong> {{ $kostum->kategori }}</p>
                         <p class="mb-1"><strong>Brand:</strong> {{ $kostum->brand ?: '-' }}</p>
                         <p class="mb-1"><strong>Ukuran:</strong> {{ $kostum->ukuran_kostum }}</p>
-                        <p class="mb-1"><strong>Harga Sewa:</strong> <span class="text-success fw-bold">Rp {{ number_format((float)$kostum->harga_sewa, 0, ',', '.') }}</span> / {{ $kostum->durasi_penyewaan }}</p>
+                        <p class="mb-1"><strong>Harga Sewa:</strong> <span class="fw-bold">Rp {{ number_format((float)$kostum->harga_sewa, 0, ',', '.') }}</span> / {{ $kostum->durasi_penyewaan }}</p>
                         <p class="mb-1"><strong>Domisili:</strong> {{ $kostum->domisili ?: '-' }}</p>
                     </div>
                 </div>

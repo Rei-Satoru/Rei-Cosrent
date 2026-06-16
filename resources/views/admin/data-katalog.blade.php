@@ -3,7 +3,6 @@
 @section('title', 'Data Katalog - Rei Cosrent')
 
 @section('styles')
-    <style>
 
         .action-buttons {
             display: flex;
@@ -85,6 +84,51 @@
             background: rgba(59, 130, 246, 0.14);
         }
 
+        .modal-content .modal-header {
+            background-color: #0d6efd !important;
+            color: #ffffff !important;
+        }
+
+        .modal-content .modal-body,
+        .modal-content .modal-footer,
+        .modal-content form {
+            background-color: #0f172af5 !important;
+        }
+
+        /* Ensure form controls inside modals use the same dark surface */
+        .modal-content .modal-body .form-control,
+        .modal-content .modal-body .form-select,
+        .modal-content .modal-body textarea,
+        .modal-content .modal-body input,
+        .modal-content .modal-body select,
+        .modal-content .modal-body .form-check,
+        .modal-content .modal-body .form-check-input,
+        .modal-content .modal-body .form-floating > .form-control,
+        .modal-content .modal-body .form-control:focus,
+        .modal-content .modal-body textarea:focus,
+        .modal-content .modal-body input:focus,
+        .modal-content .modal-body .form-select:focus,
+        .modal-content .modal-body .form-control[readonly],
+        .modal-content .modal-body .form-control[disabled] {
+            background-color: #0f172af5 !important;
+            color: var(--bs-body-color) !important;
+            border-color: rgba(148, 163, 184, 0.12) !important;
+            box-shadow: none !important;
+        }
+
+        .modal-content .modal-body ::placeholder {
+            color: rgba(148, 163, 184, 0.6) !important;
+        }
+
+        [data-bs-theme="dark"] .orders-table thead th,
+        [data-bs-theme="dark"] .orders-table tbody td {
+            border-right-color: rgba(148, 163, 184, 0.16);
+        }
+
+        [data-bs-theme="dark"] .orders-table tbody tr:hover td {
+            background: rgba(59, 130, 246, 0.14);
+        }
+
         .table img {
             max-width: 80px;
             height: auto;
@@ -110,7 +154,6 @@
         body[data-bs-theme="dark"] footer {
             background-color: #8a2be2 !important;
         }
-    </style>
 @endsection
 
 @section('content')
@@ -134,42 +177,6 @@
         @if(session('error'))
             <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
         @endif
-
-        <!-- Pencarian dan Sortir -->
-        <div class="card shadow-sm mb-4">
-            <div class="card-body">
-                <form method="GET" action="{{ route('admin.data-katalog') }}" class="row g-3 align-items-end">
-                    <div class="col-md-4">
-                        <input type="text" name="search" class="form-control" placeholder="Cari nama atau deskripsi..." value="{{ $search ?? '' }}">
-                    </div>
-                    <div class="col-md-3">
-                        <select name="kategori" class="form-select">
-                            <option value="">Semua Kategori</option>
-                            @foreach(($kategori_options ?? []) as $kat)
-                                <option value="{{ $kat }}" {{ ($filter_kategori ?? '') === $kat ? 'selected' : '' }}>{{ $kat }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <select name="sort" class="form-select">
-                            <option value="id_desc" {{ ($sort ?? '') === 'id_desc' ? 'selected' : '' }}>Terbaru</option>
-                            <option value="name_asc" {{ ($sort ?? '') === 'name_asc' ? 'selected' : '' }}>Nama A - Z</option>
-                            <option value="name_desc" {{ ($sort ?? '') === 'name_desc' ? 'selected' : '' }}>Nama Z - A</option>
-                        </select>
-                    </div>
-                    <div class="col-md-2 d-grid">
-                        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Cari</button>
-                    </div>
-                </form>
-                @if($search || $filter_kategori || ($sort && $sort !== 'id_desc'))
-                    <div class="mt-2">
-                        <a href="{{ route('admin.data-katalog') }}" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-x-circle"></i> Reset Pencarian
-                        </a>
-                    </div>
-                @endif
-            </div>
-        </div>
 
         @if($katalog->count() > 0)
             <div class="table-responsive">
@@ -299,9 +306,9 @@
 <div class="modal fade" id="adminKatalogImagePreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title" id="adminKatalogImagePreviewTitle">Gambar Katalog</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
                 <img id="adminKatalogImagePreviewImg" src="" alt="Preview Gambar Katalog" class="img-fluid rounded" style="max-height: 75vh; object-fit: contain;">

@@ -3,7 +3,6 @@
 <?php $__env->startSection('title', 'Dashboard Admin - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
-<style>
     :root {
         --admin-card-bg: #f8fbff;
         --admin-card-border: rgba(37, 99, 235, 0.12);
@@ -402,6 +401,15 @@
         color: var(--admin-main-text);
     }
 
+    /* Keep specific dashboard numeric displays using theme text (black/white depending on mode) */
+    #totalOverallRevenue,
+    #periodRevenueTotal,
+    #periodOrdersTotal,
+    #totalOverallOrders,
+    #totalOverallDenda {
+        color: var(--admin-sub-text) !important;
+    }
+
     .data-card-label {
         font-size: 0.875rem;
         color: var(--brand-blue) !important;
@@ -564,7 +572,6 @@
     [data-bs-theme="dark"] .hero-profile-summary {
         background: rgba(255, 255, 255, 0.08);
     }
-</style>
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>

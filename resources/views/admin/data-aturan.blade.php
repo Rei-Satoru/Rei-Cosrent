@@ -3,7 +3,6 @@
 @section('title', 'Data Aturan - Rei Cosrent')
 
 @section('styles')
-<style>
     table th {
         background-color: var(--bs-primary);
         color: white;
@@ -93,7 +92,44 @@
     [data-bs-theme="dark"] .orders-table tbody tr:hover td {
         background: rgba(59, 130, 246, 0.14);
     }
-</style>
+
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
+    .modal-content .modal-body .form-control:focus,
+    .modal-content .modal-body textarea:focus,
+    .modal-content .modal-body input:focus,
+    .modal-content .modal-body .form-select:focus,
+    .modal-content .modal-body .form-control[readonly],
+    .modal-content .modal-body .form-control[disabled] {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+        box-shadow: none !important;
+    }
+
+    .modal-content .modal-body ::placeholder {
+        color: rgba(148, 163, 184, 0.6) !important;
+    }
 @endsection
 
 @section('content')
@@ -123,19 +159,23 @@
                 <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
-                            <th style="width: 30px; padding: 8px 4px;">No</th>
-                            <th style="width: 35%;\">Larangan & Denda</th>
+                            <th style="width: 25%;\">Syarat & Ketentuan</th>
+                            <th style="width: 25%;\">Larangan & Denda</th>
                             <th class="d-none d-md-table-cell" style="width: 10%;\">Dibuat</th>
                             <th class="d-none d-md-table-cell" style="width: 10%;\">Diubah</th>
-                            <th style="width: 10%;\">Aksi</th>
+                            <th style="width: 15%;\">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($aturan as $item)
                         <tr>
-                            <td class="fw-semibold\">{{ $loop->iteration }}</td>
                             <td>
-                                <div style="max-height: 150px; overflow-y: auto;\">
+                                <div style="max-height: 120px; overflow-y: auto; font-size: 0.95rem;">
+                                    {!! nl2br(e($item->syarat_ketentuan)) !!}
+                                </div>
+                            </td>
+                            <td>
+                                <div style="max-height: 120px; overflow-y: auto; font-size: 0.95rem;">
                                     {!! nl2br(e($item->larangan_dan_denda)) !!}
                                 </div>
                             </td>

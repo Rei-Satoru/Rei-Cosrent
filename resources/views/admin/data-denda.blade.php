@@ -3,7 +3,6 @@
 @section('title', 'Data Denda & Kerusakan - Rei Cosrent')
 
 @section('styles')
-<style>
     table th { background-color: var(--bs-primary); color: #fff; text-align: center; }
     .action-buttons { display:flex; gap:8px; justify-content:center; }
     .thumb { max-width:100px; max-height:80px; object-fit:cover; }
@@ -62,6 +61,44 @@
         border-color: rgba(148, 163, 184, 0.24);
     }
 
+    .modal-content .modal-header {
+        background-color: #0d6efd !important;
+        color: #ffffff !important;
+    }
+
+    .modal-content .modal-body,
+    .modal-content .modal-footer,
+    .modal-content form {
+        background-color: #0f172af5 !important;
+    }
+
+    .modal-content .modal-body .form-control,
+    .modal-content .modal-body .form-select,
+    .modal-content .modal-body textarea,
+    .modal-content .modal-body input,
+    .modal-content .modal-body select,
+    .modal-content .modal-body .form-check,
+    .modal-content .modal-body .form-check-input,
+    .modal-content .modal-body .form-floating > .form-control {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+    }
+    .modal-content .modal-body .form-control:focus,
+    .modal-content .modal-body textarea:focus,
+    .modal-content .modal-body input:focus,
+    .modal-content .modal-body .form-select:focus,
+    .modal-content .modal-body .form-control[readonly],
+    .modal-content .modal-body .form-control[disabled] {
+        background-color: #0f172af5 !important;
+        color: var(--bs-body-color) !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+        box-shadow: none !important;
+    }
+
+    .modal-content .modal-body ::placeholder {
+        color: rgba(148, 163, 184, 0.6) !important;
+    }
+
     [data-bs-theme="dark"] .orders-table thead th {
         background: rgba(59, 130, 246, 0.16);
         border-bottom-color: rgba(148, 163, 184, 0.22);
@@ -83,7 +120,6 @@
 
     [data-bs-theme="dark"] .page-title { color: #a855f7; }
     [data-bs-theme="light"] .page-title { color: #0056b3; }
-</style>
 @endsection
 
 @section('content')
@@ -230,11 +266,11 @@
                         <div class="modal fade" id="dendaDetailModal-{{ $item->id }}" tabindex="-1" aria-labelledby="dendaDetailLabel-{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title" id="dendaDetailLabel-{{ $item->id }}">
                                             <i class="bi bi-card-list"></i> Detail Denda
                                         </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="row g-3">
@@ -277,9 +313,6 @@
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -288,9 +321,9 @@
                         <div class="modal fade" id="adminDendaBuktiModal-{{ $item->id }}" tabindex="-1" aria-labelledby="adminDendaBuktiLabel-{{ $item->id }}" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title" id="adminDendaBuktiLabel-{{ $item->id }}">Bukti Pembayaran</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
                                     <div class="modal-body">
                                         @php
@@ -328,9 +361,6 @@
                                             <div class="alert alert-secondary">Belum ada bukti pembayaran untuk denda ini.</div>
                                         @endif
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -339,9 +369,9 @@
                         <div class="modal fade" id="editModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-lg">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title">Edit Denda</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="{{ route('admin.denda.update', $item->id) }}" enctype="multipart/form-data">
                                         @csrf
@@ -432,9 +462,9 @@
                         <div class="modal fade" id="deleteModal{{ $item->id }}" tabindex="-1" aria-hidden="true">
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header bg-primary text-white">
                                         <h5 class="modal-title">Hapus Data</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                                     </div>
                                     <form method="POST" action="{{ route('admin.denda.destroy', $item->id) }}">
                                         @csrf
@@ -467,9 +497,9 @@
     <div class="modal fade" id="dendaBuktiFotoPreviewModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-xl">
             <div class="modal-content">
-                <div class="modal-header modal-header-surface">
+                <div class="modal-header bg-primary text-white">
                     <h5 class="modal-title">Bukti Foto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body text-center">
                     <img id="dendaBuktiFotoPreviewImg" src="" alt="Preview" class="img-fluid rounded">
@@ -482,9 +512,9 @@
 <div class="modal fade" id="addModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <div class="modal-header modal-header-surface">
+            <div class="modal-header bg-primary text-white">
                 <h5 class="modal-title">Tambah Data Denda / Kerusakan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
             </div>
             <form method="POST" action="{{ route('admin.denda.store') }}" enctype="multipart/form-data">
                 @csrf

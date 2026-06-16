@@ -134,7 +134,8 @@ class AuthController extends Controller
                 'user_id' => $user->id,
                 'user_name' => $user->username,
                 'user_email' => $user->email,
-                'user_gambar_profil' => $user->gambar_profil
+                'user_gambar_profil' => $user->gambar_profil,
+                'user_instagram' => trim((string) $user->instagram) !== '' ? $user->instagram : null,
             ]);
 
             return redirect()->route('home')->with('success', 'Selamat datang, ' . ($user->nick_name ?: $user->username) . '!');

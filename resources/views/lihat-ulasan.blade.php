@@ -1,5 +1,7 @@
 @extends('layouts.main')
 
+
+
 @section('title', 'Lihat Ulasan - ' . ($kostum->nama_kostum ?? 'Kostum'))
 
 @section('styles')
@@ -9,8 +11,17 @@
         color: var(--bs-body-color);
     }
 
+    .ulasan-card-body {
+        background-color: #f8fbff;
+    }
+
+    [data-bs-theme="dark"] .ulasan-card-body {
+        background-color: #0f172af5;
+    }
+
+
     [data-bs-theme="dark"] .ulasan-card-header {
-        background-color: #212529;
+        background-color: #132645;
         color: #fff;
     }
 
@@ -45,8 +56,11 @@
         @endif
 
         <div class="card shadow-sm mb-4">
-            <div class="card-body">
+            <div class="card-body ulasan-card-body">
+
+
                 <div class="d-flex flex-column flex-md-row gap-3 align-items-start align-items-md-center justify-content-between">
+
                     <div>
                         <div class="text-muted">Kostum</div>
                         <div class="fw-bold fs-5">{{ $kostum->nama_kostum }}</div>
@@ -100,8 +114,9 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="card-body">
+                            <div class="card-body ulasan-card-body">
                                 @if(!empty($u->review))
+
                                     <p class="mb-3">{{ $u->review }}</p>
                                 @else
                                     <p class="text-muted mb-3">(Tidak ada teks ulasan)</p>

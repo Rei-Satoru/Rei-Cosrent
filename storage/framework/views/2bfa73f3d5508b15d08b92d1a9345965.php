@@ -270,7 +270,7 @@
                                         <td class="icon-col"><i class="bi bi-envelope"></i></td>
                                         <td class="label-col">Instagram</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col"><?php echo e($user->instagram ?: '-'); ?></td>
+                                        <td class="value-col"><?php echo e(trim((string) session('user_instagram')) ?: $user->instagram ?: '-'); ?></td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
@@ -414,14 +414,21 @@ unset($__errorArgs, $__bag); ?>
 
                             <div class="mb-3">
                                 <label for="instagram" class="form-label fw-semibold">Instagram</label>
-                                <input type="text" class="form-control <?php $__errorArgs = ['instagram'];
+                                    <input type="text"
+                                        class="form-control <?php $__errorArgs = ['instagram'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
 if (isset($message)) { $__messageOriginal = $message; }
 $message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
 if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
-unset($__errorArgs, $__bag); ?>" id="instagram" name="instagram" value="<?php echo e(old('instagram', $user->instagram)); ?>" placeholder="Opsional" maxlength="50">
+unset($__errorArgs, $__bag); ?>"
+                                        id="instagram"
+                                        name="instagram"
+                                        value="<?php echo e(old('instagram', trim((string) session('user_instagram')) ?: $user->instagram)); ?>"
+                                        placeholder="Opsional"
+                                        maxlength="50"
+                                        autocomplete="off">
                                 <?php $__errorArgs = ['instagram'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -504,51 +511,12 @@ unset($__errorArgs, $__bag); ?>
 
                             <hr class="my-4">
 
-                            <h6 class="fw-bold mb-3 text-primary">Ubah Password (Opsional)</h6>
-
-                            <div class="mb-3">
-                                <label for="password" class="form-label fw-semibold">Password Baru</label>
-                                <div class="password-wrapper">
-                                    <input type="password" class="form-control <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?> is-invalid <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>" id="password" name="password" placeholder="Biarkan kosong jika tidak ingin mengubah" style="padding-right: 40px;">
-                                    <button type="button" class="password-toggle" onclick="togglePassword('password')">
-                                        <i class="bi bi-eye" id="password-icon"></i>
-                                    </button>
-                                </div>
-                                <?php $__errorArgs = ['password'];
-$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
-if ($__bag->has($__errorArgs[0])) :
-if (isset($message)) { $__messageOriginal = $message; }
-$message = $__bag->first($__errorArgs[0]); ?>
-                                    <div class="invalid-feedback"><?php echo e($message); ?></div>
-                                <?php unset($message);
-if (isset($__messageOriginal)) { $message = $__messageOriginal; }
-endif;
-unset($__errorArgs, $__bag); ?>
-                                <small class="text-muted">Minimal 8 karakter</small>
-                            </div>
-
-                            <div class="mb-4">
-                                <label for="password_confirmation" class="form-label fw-semibold">Konfirmasi Password Baru</label>
-                                <div class="password-wrapper">
-                                    <input type="password" class="form-control" id="password_confirmation" name="password_confirmation" placeholder="Ketik ulang password baru" style="padding-right: 40px;">
-                                    <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
-                                        <i class="bi bi-eye" id="password_confirmation-icon"></i>
-                                    </button>
-                                </div>
-                            </div>
-
                             <div class="d-flex gap-2 flex-wrap">
                                 <button type="submit" class="btn btn-primary">
                                     <i class="bi bi-check-circle"></i> Simpan Perubahan
                                 </button>
                             </div>
+
                         </form>
                     </div>
                 </div>
@@ -762,6 +730,22 @@ unset($__errorArgs, $__bag); ?>
                 if (!confirm('TERAKHIR KALI: Apakah Anda BENAR-BENAR yakin ingin menghapus akun ini? Tindakan ini TIDAK DAPAT dibatalkan!')) {
                     e.preventDefault();
                 }
+            });
+        }
+
+        // Instagram input UX: strip leading @ on blur and normalize while typing
+        const instagramInput = document.getElementById('instagram');
+        if (instagramInput) {
+            instagramInput.addEventListener('input', function () {
+                // allow typing but remove any accidental leading spaces
+                if (this.value && this.value.startsWith(' ')) {
+                    this.value = this.value.trimStart();
+                }
+            });
+            instagramInput.addEventListener('blur', function () {
+                if (!this.value) return;
+                // remove leading @ characters and surrounding whitespace
+                this.value = this.value.replace(/^@+/, '').trim();
             });
         }
     });
