@@ -1,5 +1,0 @@
-
-   INFO  Running migrations.  
-
-  2026_05_25_000000_add_status_to_pengembalian_table ................................................... 100.14ms DONE
-

@@ -310,7 +310,7 @@
                                                     
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="mb-2"><strong>Nama:</strong><br><?php echo e($item->buyer_display_name ?? $item->nama); ?></div>
+                                                    <div class="mb-2"><strong>Nama:</strong><br><?php echo e($item->nama); ?></div>
                                                     <div class="mb-2"><strong>Nomor Telepon:</strong><br><?php echo e($item->nomor_telepon ?? '-'); ?></div>
                                                     <div class="mb-2"><strong>Nomor Telepon 2:</strong><br><?php echo e($item->nomor_telepon_2 ?? '-'); ?></div>
                                                     <div class="mb-2"><strong>Alamat:</strong><br><?php echo e($item->alamat ?? '-'); ?></div>

@@ -1,5 +1,0 @@
-
-   INFO  Running migrations.  
-
-  2026_05_25_000001_extend_status_length_on_formulir_table ............................................. 105.95ms DONE
-
