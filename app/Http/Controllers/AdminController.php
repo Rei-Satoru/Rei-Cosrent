@@ -338,34 +338,57 @@ class AdminController extends Controller
             return redirect()->route('admin.login');
         }
 
-        $validated = $request->validate([
+        $rules = [
             'id' => 'required|integer|exists:users,id',
-            'username' => 'required|string|max:255|unique:users,username,' . $request->input('id'),
-            'nick_name' => 'nullable|string|max:255',
-            'instagram' => 'nullable|string|max:50',
-            'password' => 'nullable|string|min:8|confirmed',
-            'email' => 'required|email|max:255|unique:users,email,' . $request->input('id'),
-            'jenis_kelamin' => 'nullable|in:Pria,Wanita',
-        ]);
+        ];
+
+        if ($request->filled('username')) {
+            $rules['username'] = 'required|string|max:255|unique:users,username,' . $request->input('id');
+        }
+
+        if ($request->filled('email')) {
+            $rules['email'] = 'required|email|max:255|unique:users,email,' . $request->input('id');
+        }
+
+        if ($request->filled('password')) {
+            $rules['password'] = 'required|string|min:8|confirmed';
+        }
+
+        if ($request->has('nick_name')) {
+            $rules['nick_name'] = 'nullable|string|max:255';
+        }
+
+        if ($request->has('instagram')) {
+            $rules['instagram'] = 'nullable|string|max:50';
+        }
+
+        if ($request->has('jenis_kelamin')) {
+            $rules['jenis_kelamin'] = 'nullable|in:Pria,Wanita';
+        }
+
+        $validated = $request->validate($rules);
 
         try {
             $user = User::findOrFail($validated['id']);
-            $user->username = $validated['username'];
-            $user->nick_name = $validated['nick_name'];
-            $user->instagram = $validated['instagram'] ?? null;
-            $user->email = $validated['email'];
-            $user->jenis_kelamin = $validated['jenis_kelamin'];
+            if (array_key_exists('username', $validated)) {
+                $user->username = $validated['username'];
+            }
+            if (array_key_exists('nick_name', $validated)) {
+                $user->nick_name = $validated['nick_name'];
+            }
+            if (array_key_exists('instagram', $validated)) {
+                $user->instagram = $validated['instagram'] ?? null;
+            }
+            if (array_key_exists('email', $validated)) {
+                $user->email = $validated['email'];
+            }
+            if (array_key_exists('jenis_kelamin', $validated)) {
+                $user->jenis_kelamin = $validated['jenis_kelamin'];
+            }
 
-            // Allow admin to set password only when user requested reset
             if (!empty($validated['password'])) {
-                if (!$user->password_reset_requested_at) {
-                    return redirect()->route('admin.data-pengguna')->with('error', 'Pengguna tidak meminta reset password.');
-                }
                 $user->password = Hash::make($validated['password']);
                 $user->remember_token = Str::random(60);
-                // Clear reset flags after admin sets password
-                $user->password_reset_requested_at = null;
-                $user->password_reset_approved_at = null;
             }
             $user->save();
 
@@ -1058,10 +1081,7 @@ class AdminController extends Controller
 
         $pesanan = $pesananQuery->orderBy('created_at', 'desc')->paginate(20);
 
-        $statusOptions = Formulir::distinct()->orderBy('status')->pluck('status')->toArray();
-        if (empty($statusOptions)) {
-            $statusOptions = ['proses', 'disetujui', 'ditolak', 'selesai'];
-        }
+        $statusOptions = ['proses', 'revisi', 'diterima', 'selesai'];
 
         return view('admin.data-pesanan', [
             'pesanan' => $pesanan,
@@ -1078,12 +1098,16 @@ class AdminController extends Controller
         }
 
         $validated = $request->validate([
-            'status' => 'required|string|max:50',
+            'status' => 'required|string|in:proses,revisi,diterima,selesai',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
         try {
             $pesanan = Formulir::findOrFail($id);
             $pesanan->status = $validated['status'];
+            if (array_key_exists('keterangan', $validated)) {
+                $pesanan->keterangan = $validated['keterangan'];
+            }
             $pesanan->save();
 
             return redirect()->route('admin.data-pesanan')->with('success', 'Status pesanan berhasil diperbarui.');
@@ -1114,9 +1138,37 @@ class AdminController extends Controller
             return redirect()->route('admin.login');
         }
 
-        $pengembalianList = Pengembalian::with('formulir')
-            ->orderBy('created_at', 'desc')
-            ->get();
+        // Gunakan raw query untuk ambil dari pengembalian dengan join ke formulir
+        // Jika kolom formulir_id tidak ada, ambil semua kombinasi
+        $pengembalianRaw = Pengembalian::orderBy('created_at', 'desc')->get();
+        
+        // Ambil semua formulir
+        $formulirAll = Formulir::get();
+        
+        // Build data pengembalian dengan informasi formulir
+        $pengembalianList = $pengembalianRaw->map(function($pengembalian) use ($formulirAll) {
+            // Prioritas: relasi formulir > formulir terbaru > fallback ke '-'
+            
+            // Cek apakah ada relasi
+            if ($pengembalian->relationLoaded('formulir') && $pengembalian->formulir) {
+                $formulir = $pengembalian->formulir;
+            } else {
+                // Ambil formulir terbaru yang dibuat
+                $formulir = $formulirAll->sortByDesc('created_at')->first();
+            }
+            
+            if ($formulir) {
+                $pengembalian->display_nama = $formulir->nama ?? '-';
+                $pengembalian->display_email = $formulir->email;
+                $pengembalian->display_kostum = $formulir->nama_kostum ?? '-';
+            } else {
+                $pengembalian->display_nama = '-';
+                $pengembalian->display_email = null;
+                $pengembalian->display_kostum = '-';
+            }
+            
+            return $pengembalian;
+        });
 
         $pendingCount = Pengembalian::where('status', 'proses')->count();
 

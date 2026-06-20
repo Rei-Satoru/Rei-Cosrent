@@ -179,13 +179,13 @@
                 </div>
                 <form method="GET" class="d-flex gap-2 align-items-center">
                     <label class="visually-hidden">Tahun</label>
-                    <select name="year" class="form-select form-select-sm">
+                    <select name="year" class="form-select form-select-sm" style="background-color: #94a3b829;">
                         @foreach($years as $y)
                             <option value="{{ $y }}" {{ $y == $selectedYear ? 'selected' : '' }}>{{ $y }}</option>
                         @endforeach
                     </select>
                     <label class="visually-hidden">Bulan</label>
-                    <select name="month" class="form-select form-select-sm">
+                    <select name="month" class="form-select form-select-sm" style="background-color: #94a3b829;">
                         @foreach(range(1,12) as $m)
                             <option value="{{ $m }}" {{ $m == $selectedMonth ? 'selected' : '' }}>{{ DateTime::createFromFormat('!m', $m)->format('F') }}</option>
                         @endforeach

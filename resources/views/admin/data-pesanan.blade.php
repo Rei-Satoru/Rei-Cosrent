@@ -157,8 +157,34 @@
         @endif
 
         @if($pesanan->count() > 0)
+            <div class="card mb-3" style="background-color: #0f172af5; border: none;">
+                <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
+                        <div class="input-group" style="background-color: #94a3b829; border-radius: 0.75rem; border: 1px solid rgba(148,163,184,0.35);">
+                            <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                            <input id="search-admin-pesanan" type="search" class="form-control border-0 bg-transparent" placeholder="Cari nama kostum, status, catatan, pembayaran..." aria-label="Cari pesanan">
+                        </div>
+                        <select id="sort-admin-pesanan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
+                            <option value="">Urutkan data pesanan</option>
+                            <option value="1:string:asc">Nama Kostum A–Z</option>
+                            <option value="1:string:desc">Nama Kostum Z–A</option>
+                            <option value="4:date:asc">Tanggal Pakai Terawal</option>
+                            <option value="4:date:desc">Tanggal Pakai Terbaru</option>
+                            <option value="5:date:asc">Tanggal Kembali Terawal</option>
+                            <option value="5:date:desc">Tanggal Kembali Terbaru</option>
+                            <option value="6:currency:asc">Total Harga Terendah</option>
+                            <option value="6:currency:desc">Total Harga Tertinggi</option>
+                            <option value="7:string:asc">Status A–Z</option>
+                            <option value="7:string:desc">Status Z–A</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 text-md-end">
+                        <button id="reset-admin-pesanan" type="button" class="btn btn-light w-100">Reset Pencarian</button>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle orders-table">
+                <table id="adminPesananTable" class="table table-hover align-middle orders-table">
                     <thead>
                         <tr style="background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);">
                             <th style="width: 50px; color: var(--bs-body-color);">No</th>
@@ -210,6 +236,7 @@
                                         <input type="text"
                                                id="keterangan-{{ $item->id }}"
                                                class="form-control form-control-sm keterangan-input"
+                                               style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);"
                                                placeholder="Tambahkan keterangan"
                                                value="{{ $item->keterangan }}"
                                                data-hidden="hidden-keterangan-{{ $item->id }}"
@@ -263,7 +290,7 @@
                                             <form id="updateForm-{{ $item->id }}" action="{{ route('admin.pesanan.update-status', $item->id) }}" method="POST" class="d-flex gap-2 align-items-center">
                                                 @csrf
                                                 <input type="hidden" name="keterangan" id="hidden-keterangan-{{ $item->id }}" value="{{ $item->keterangan }}">
-                                                <select name="status" class="form-select form-select-sm w-100 w-md-auto">
+                                                <select name="status" class="form-select form-select-sm w-100 w-md-auto" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
                                                     @foreach($statusOptions as $status)
                                                         <option value="{{ $status }}" {{ $item->status === $status ? 'selected' : '' }}>
                                                             {{ ucfirst($status) }}
@@ -525,5 +552,89 @@
             }
         }
     });
-</script>
-@endsection
+</script><script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function normalizeText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function parseDateValue(value) {
+            const text = String(value || '').trim();
+            if (!text) return 0;
+            const parsed = Date.parse(text);
+            if (!Number.isNaN(parsed)) return parsed;
+            const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+            const parts = text.replace(/,/g, '').split(/\s+/);
+            if (parts.length >= 3) {
+                const day = parseInt(parts[0], 10);
+                const month = months[parts[1].slice(0,3).toLowerCase()] ?? 0;
+                const year = parseInt(parts[2], 10);
+                if (!Number.isNaN(day) && !Number.isNaN(year)) {
+                    return new Date(year, month, day).getTime();
+                }
+            }
+            return 0;
+        }
+
+        function parseCurrencyValue(value) {
+            const text = String(value || '');
+            const digits = text.replace(/[^\d.-]/g, '');
+            const parsed = parseFloat(digits);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function compareValues(a, b, type, direction) {
+            let result = 0;
+            if (type === 'date') {
+                result = parseDateValue(a) - parseDateValue(b);
+            } else if (type === 'currency' || type === 'numeric') {
+                result = parseCurrencyValue(a) - parseCurrencyValue(b);
+            } else {
+                result = normalizeText(a).localeCompare(normalizeText(b), undefined, { numeric: true, sensitivity: 'base' });
+            }
+            return direction === 'desc' ? -result : result;
+        }
+
+        function initAdminTableSearchSort(tableId, searchId, sortId, resetId) {
+            const table = document.getElementById(tableId);
+            const searchInput = document.getElementById(searchId);
+            const sortSelect = document.getElementById(sortId);
+            const resetButton = resetId ? document.getElementById(resetId) : null;
+            if (!table || !searchInput || !sortSelect) return;
+
+            const tbody = table.tBodies[0];
+            if (!tbody) return;
+            const rows = Array.from(tbody.rows);
+
+            function updateRows() {
+                const query = normalizeText(searchInput.value);
+                const [colIndex, type, direction] = sortSelect.value.split(':');
+                let filtered = rows.filter(row => normalizeText(row.textContent).includes(query));
+                if (colIndex !== undefined && colIndex !== '' && type && direction) {
+                    const index = parseInt(colIndex, 10);
+                    filtered.sort((a, b) => compareValues(
+                        a.cells[index]?.textContent || '',
+                        b.cells[index]?.textContent || '',
+                        type,
+                        direction
+                    ));
+                }
+                tbody.innerHTML = '';
+                filtered.forEach(row => tbody.appendChild(row));
+            }
+
+            searchInput.addEventListener('input', updateRows);
+            sortSelect.addEventListener('change', updateRows);
+            if (resetButton) {
+                resetButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    sortSelect.value = '';
+                    updateRows();
+                });
+            }
+            updateRows();
+        }
+
+        initAdminTableSearchSort('adminPesananTable','search-admin-pesanan','sort-admin-pesanan','reset-admin-pesanan');
+    });
+</script>@endsection

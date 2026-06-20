@@ -125,8 +125,8 @@
     <div class="container">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
-                <h2 class="fw-bold mb-0">Kelola Data Pengguna</h2>
-                <p class="text-muted mb-0 small">Edit atau hapus akun pengguna</p>
+                <h2 class="fw-bold mb-0">Data Pengguna</h2>
+                <p class="text-muted mb-0 small">Edit password atau hapus akun pengguna</p>
             </div>
             <div class="d-grid d-sm-block">
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
@@ -143,8 +143,32 @@
         @endif
 
         @if(isset($users) && $users->count() > 0)
+            <div class="card mb-3" style="background-color: #0f172af5; border: none;">
+                <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
+                        <div class="input-group" style="background-color: #94a3b829; border-radius: 0.75rem; border: 1px solid rgba(148,163,184,0.35);">
+                            <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                            <input id="search-admin-users" type="search" class="form-control border-0 bg-transparent" placeholder="Cari username, email, nama, Instagram, alamat, status..." aria-label="Cari pengguna">
+                        </div>
+                        <select id="sort-admin-users" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
+                            <option value="">Urutkan data pengguna</option>
+                            <option value="1:string:asc">Username A–Z</option>
+                            <option value="1:string:desc">Username Z–A</option>
+                            <option value="2:string:asc">Nick Name A–Z</option>
+                            <option value="2:string:desc">Nick Name Z–A</option>
+                            <option value="3:string:asc">Email A–Z</option>
+                            <option value="3:string:desc">Email Z–A</option>
+                            <option value="7:string:asc">Jenis Kelamin A–Z</option>
+                            <option value="7:string:desc">Jenis Kelamin Z–A</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3 text-md-end">
+                        <button id="reset-admin-users" type="button" class="btn btn-light w-100">Reset Pencarian</button>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle orders-table">
+                <table id="adminUsersTable" class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
                             <th style="width: 50px;">No</th>
@@ -217,7 +241,7 @@
                                                             <div class="modal-body">
                                                                 <input type="hidden" name="id" value="{{ $user->id }}">
 
-                                                    <div class="mb-3">
+                                                        <div class="mb-3">
                                                         <label class="form-label fw-semibold">Password Baru</label>
                                                         <input type="password" name="password" class="form-control" placeholder="Password baru (min 8)" required>
                                                     </div>
@@ -340,6 +364,92 @@
                 if (img) img.src = '';
             });
         }
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function normalizeText(value) {
+            return String(value || '').trim().toLowerCase();
+        }
+
+        function parseDateValue(value) {
+            const text = String(value || '').trim();
+            if (!text) return 0;
+            const parsed = Date.parse(text);
+            if (!Number.isNaN(parsed)) return parsed;
+            const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+            const parts = text.replace(/,/g, '').split(/\s+/);
+            if (parts.length >= 3) {
+                const day = parseInt(parts[0], 10);
+                const month = months[parts[1].slice(0,3).toLowerCase()] ?? 0;
+                const year = parseInt(parts[2], 10);
+                if (!Number.isNaN(day) && !Number.isNaN(year)) {
+                    return new Date(year, month, day).getTime();
+                }
+            }
+            return 0;
+        }
+
+        function parseCurrencyValue(value) {
+            const text = String(value || '');
+            const digits = text.replace(/[^\d.-]/g, '');
+            const parsed = parseFloat(digits);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function compareValues(a, b, type, direction) {
+            let result = 0;
+            if (type === 'date') {
+                result = parseDateValue(a) - parseDateValue(b);
+            } else if (type === 'currency' || type === 'numeric') {
+                result = parseCurrencyValue(a) - parseCurrencyValue(b);
+            } else {
+                result = normalizeText(a).localeCompare(normalizeText(b), undefined, { numeric: true, sensitivity: 'base' });
+            }
+            return direction === 'desc' ? -result : result;
+        }
+
+        function initAdminTableSearchSort(tableId, searchId, sortId, resetId) {
+            const table = document.getElementById(tableId);
+            const searchInput = document.getElementById(searchId);
+            const sortSelect = document.getElementById(sortId);
+            const resetButton = resetId ? document.getElementById(resetId) : null;
+            if (!table || !searchInput || !sortSelect) return;
+
+            const tbody = table.tBodies[0];
+            if (!tbody) return;
+            const rows = Array.from(tbody.rows);
+
+            function updateRows() {
+                const query = normalizeText(searchInput.value);
+                const [colIndex, type, direction] = sortSelect.value.split(':');
+                let filtered = rows.filter(row => normalizeText(row.textContent).includes(query));
+                if (colIndex !== undefined && colIndex !== '' && type && direction) {
+                    const index = parseInt(colIndex, 10);
+                    filtered.sort((a, b) => compareValues(
+                        a.cells[index]?.textContent || '',
+                        b.cells[index]?.textContent || '',
+                        type,
+                        direction
+                    ));
+                }
+                tbody.innerHTML = '';
+                filtered.forEach(row => tbody.appendChild(row));
+            }
+
+            searchInput.addEventListener('input', updateRows);
+            sortSelect.addEventListener('change', updateRows);
+            if (resetButton) {
+                resetButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    sortSelect.value = '';
+                    updateRows();
+                });
+            }
+            updateRows();
+        }
+
+        initAdminTableSearchSort('adminUsersTable','search-admin-users','sort-admin-users','reset-admin-users');
     });
 </script>
 @endsection

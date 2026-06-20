@@ -23,7 +23,7 @@ class RajaOngkirService
         3320 => 1,  // Tasikmalaya = tier 1 (medium)
         3321 => 1,  // Ciamis = tier 1 (medium)
         
-        // DKI Jakarta & Jabodetabek
+        // DKI Jakarta
         154 => 2,   // Jakarta Timur = tier 2 (jauh)
         155 => 2,   // Jakarta Pusat = tier 2 (jauh)
         156 => 2,   // Jakarta Barat = tier 2 (jauh)

@@ -152,30 +152,55 @@
             <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ session('error') }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
         @endif
 
-        @if($pengembalianList->isEmpty())
-            <div class="alert alert-info mb-0">Belum ada data pengembalian dari user.</div>
-        @else
+        <div class="card mb-3" style="background-color: #0f172af5; border: none;">
+            <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
+                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
+                    <div class="input-group" style="background-color: #94a3b829; border-radius: 0.75rem; border: 1px solid rgba(148,163,184,0.35);">
+                        <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
+                        <input id="search-admin-pengembalian" type="search" class="form-control border-0 bg-transparent" placeholder="Cari user, kostum, status, catatan..." aria-label="Cari pengembalian">
+                    </div>
+                    <select id="sort-admin-pengembalian" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
+                        <option value="">Urutkan data pengembalian</option>
+                        <option value="1:string:asc">User A–Z</option>
+                        <option value="1:string:desc">User Z–A</option>
+                        <option value="2:string:asc">Kostum A–Z</option>
+                        <option value="2:string:desc">Kostum Z–A</option>
+                        <option value="4:string:asc">Status A–Z</option>
+                        <option value="4:string:desc">Status Z–A</option>
+                        <option value="5:string:asc">Catatan User A–Z</option>
+                        <option value="5:string:desc">Catatan User Z–A</option>
+                        <option value="6:string:asc">Catatan Admin A–Z</option>
+                        <option value="6:string:desc">Catatan Admin Z–A</option>
+                        <option value="7:date:asc">Diajukan Terawal</option>
+                        <option value="7:date:desc">Diajukan Terbaru</option>
+                    </select>
+                </div>
+                    <div class="col-md-3 text-md-end">
+                        <button id="reset-admin-pengembalian" type="button" class="btn btn-light w-100">Reset Pencarian</button>
+                    </div>
+                </div>
+            </div>
             <div class="table-responsive">
-                <table class="table table-hover align-middle orders-table text-center">
+                <table id="adminPengembalianTable" class="table table-hover align-middle orders-table">
                     <thead>
                         <tr style="background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);">
                             <th style="width: 50px; color: var(--bs-body-color);">No</th>
-                            <th style="color: var(--bs-body-color);">User</th>
-                            <th style="color: var(--bs-body-color);">Kostum</th>
-                            <th style="color: var(--bs-body-color);">Bukti</th>
-                            <th style="color: var(--bs-body-color);">Status</th>
-                            <th style="color: var(--bs-body-color);">Catatan User</th>
-                            <th style="color: var(--bs-body-color);">Catatan Admin</th>
-                            <th style="color: var(--bs-body-color);">Diajukan</th>
-                            <th style="color: var(--bs-body-color);">Aksi</th>
-                        </thead>
-                        <tbody>
-                            @foreach($pengembalianList as $index => $item)
+                            <th>Pengguna</th>
+                            <th>Kostum</th>
+                            <th>Bukti</th>
+                            <th>Status</th>
+                            <th>Catatan User</th>
+                            <th>Catatan Admin</th>
+                            <th>Diajukan</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach($pengembalianList as $index => $item)
                                 @php
-                                    $order = $item->formulir;
-                                    $userName = data_get($order, 'nama', '-');
-                                    $userEmail = data_get($order, 'email');
-                                    $kostumName = data_get($order, 'nama_kostum', '-');
+                                    $userName = $item->display_nama ?? '-';
+                                    $userEmail = $item->display_email;
+                                    $kostumName = $item->display_kostum ?? '-';
                                     $catatanAdmin = $item->catatan_admin ?: '-';
                                     $buktiList = collect([$item->gambar1, $item->gambar2, $item->gambar3])->filter();
                                     $statusMap = [
@@ -284,8 +309,95 @@
                         </tbody>
                     </table>
                 </div>
-            @endif
         </div>
     </div>
 </section>
+
+@section('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        function normalizeText(text) {
+            return String(text || '').trim().toLowerCase();
+        }
+
+        function parseDateValue(value) {
+            const text = String(value || '').trim();
+            if (!text) return 0;
+            const parsed = Date.parse(text);
+            if (!Number.isNaN(parsed)) return parsed;
+            const months = {jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
+            const parts = text.replace(/,/g, '').split(/\s+/);
+            if (parts.length >= 3) {
+                const day = parseInt(parts[0], 10);
+                const month = months[parts[1].slice(0,3).toLowerCase()] ?? 0;
+                const year = parseInt(parts[2], 10);
+                if (!Number.isNaN(day) && !Number.isNaN(year)) {
+                    return new Date(year, month, day).getTime();
+                }
+            }
+            return 0;
+        }
+
+        function parseCurrencyValue(value) {
+            const text = String(value || '');
+            const digits = text.replace(/[^\d.-]/g, '');
+            const parsed = parseFloat(digits);
+            return Number.isNaN(parsed) ? 0 : parsed;
+        }
+
+        function compareValues(a, b, type, direction) {
+            let result = 0;
+            if (type === 'date') {
+                result = parseDateValue(a) - parseDateValue(b);
+            } else if (type === 'currency' || type === 'numeric') {
+                result = parseCurrencyValue(a) - parseCurrencyValue(b);
+            } else {
+                result = normalizeText(a).localeCompare(normalizeText(b), undefined, { numeric: true, sensitivity: 'base' });
+            }
+            return direction === 'desc' ? -result : result;
+        }
+
+        function initAdminTableSearchSort(tableId, searchId, sortId, resetId) {
+            const table = document.getElementById(tableId);
+            const searchInput = document.getElementById(searchId);
+            const sortSelect = document.getElementById(sortId);
+            const resetButton = resetId ? document.getElementById(resetId) : null;
+            if (!table || !searchInput || !sortSelect) return;
+
+            const tbody = table.tBodies[0];
+            if (!tbody) return;
+            const rows = Array.from(tbody.rows);
+
+            function updateRows() {
+                const query = normalizeText(searchInput.value);
+                const [colIndex, type, direction] = sortSelect.value.split(':');
+                let filtered = rows.filter(row => normalizeText(row.textContent).includes(query));
+                if (colIndex !== undefined && colIndex !== '' && type && direction) {
+                    const index = parseInt(colIndex, 10);
+                    filtered.sort((a, b) => compareValues(
+                        a.cells[index]?.textContent || '',
+                        b.cells[index]?.textContent || '',
+                        type,
+                        direction
+                    ));
+                }
+                tbody.innerHTML = '';
+                filtered.forEach(row => tbody.appendChild(row));
+            }
+
+            searchInput.addEventListener('input', updateRows);
+            sortSelect.addEventListener('change', updateRows);
+            if (resetButton) {
+                resetButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    sortSelect.value = '';
+                    updateRows();
+                });
+            }
+            updateRows();
+        }
+
+        initAdminTableSearchSort('adminPengembalianTable','search-admin-pengembalian','sort-admin-pengembalian','reset-admin-pengembalian');
+    });
+</script>
 @endsection
