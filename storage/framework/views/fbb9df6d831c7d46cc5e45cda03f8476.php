@@ -622,7 +622,7 @@
                             <i class="bi bi-arrow-left me-2"></i> Kembali
                         </a>
                         <a href="<?php echo e(route('admin.profile-contact')); ?>" class="btn btn-sm btn-secondary quick-action-btn w-100 text-start">
-                            <i class="bi bi-pencil-square me-2"></i> Edit Profil
+                            <i class="bi bi-pencil-square me-2"></i> Profil Admin
                         </a>
                         <a href="<?php echo e(route('admin.logout')); ?>" class="btn btn-sm btn-secondary quick-action-btn w-100 text-start">
                             <i class="bi bi-box-arrow-right me-2"></i> Logout

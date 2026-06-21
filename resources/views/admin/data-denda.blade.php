@@ -3,6 +3,25 @@
 @section('title', 'Data Denda & Kerusakan - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
     table th { background-color: var(--bs-primary); color: #fff; text-align: center; }
     .action-buttons { display:flex; gap:8px; justify-content:center; }
     .thumb { max-width:100px; max-height:80px; object-fit:cover; }
@@ -193,7 +212,7 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">No</th>
-                            <th>Nama</th>
+                            <th>Nama Pengguna</th>
                             <th>Nama Kostum</th>
                             <th>Jenis Denda</th>
                             <th class="d-none d-md-table-cell">Keterangan</th>

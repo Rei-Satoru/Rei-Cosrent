@@ -1,8 +1,30 @@
 
 
-<?php $__env->startSection('title', 'Kelola Data Ulasan - Rei Cosrent'); ?>
+<?php $__env->startSection('title', 'Data Ulasan - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -130,7 +152,7 @@
     <div class="container">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
-                <h2 class="fw-bold mb-0">Kelola Data Ulasan</h2>
+                <h2 class="fw-bold mb-0">Data Ulasan</h2>
                 <p class="text-muted mb-0 small">Admin dapat membalas ulasan berdasarkan ID pesanan (Formulir)</p>
             </div>
             <div class="d-grid d-sm-block">
@@ -154,7 +176,7 @@
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                         <input id="search-admin-ulasan" type="search" class="form-control border-0 bg-transparent" placeholder="Cari pesanan, pengguna, ulasan, rating..." aria-label="Cari ulasan">
                     </div>
-                    <select id="sort-admin-ulasan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
+                    <select id="sort-admin-ulasan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
                         <option value="">Urutkan data ulasan</option>
                         <option value="1:string:asc">Pesanan A–Z</option>
                         <option value="1:string:desc">Pesanan Z–A</option>

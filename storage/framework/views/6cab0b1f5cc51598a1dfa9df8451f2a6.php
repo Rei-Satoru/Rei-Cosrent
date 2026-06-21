@@ -405,7 +405,7 @@ unset($__errorArgs, $__bag); ?>
 
                             <div class="row">
                                 <div class="col-md-4 mb-3">
-                                    <label for="origin_province_id" class="form-label fw-semibold">Origin Province ID</label>
+                                    <label for="origin_province_id" class="form-label fw-semibold">ID Provinsi</label>
                                     <input type="number" class="form-control <?php $__errorArgs = ['origin_province_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -426,7 +426,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="origin_city_id" class="form-label fw-semibold">Origin City ID</label>
+                                    <label for="origin_city_id" class="form-label fw-semibold">ID Kota</label>
                                     <input type="number" class="form-control <?php $__errorArgs = ['origin_city_id'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -447,7 +447,7 @@ endif;
 unset($__errorArgs, $__bag); ?>
                                 </div>
                                 <div class="col-md-4 mb-3">
-                                    <label for="origin_postal_code" class="form-label fw-semibold">Origin Postal Code</label>
+                                    <label for="origin_postal_code" class="form-label fw-semibold">Kode Pos</label>
                                     <input type="text" class="form-control <?php $__errorArgs = ['origin_postal_code'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :

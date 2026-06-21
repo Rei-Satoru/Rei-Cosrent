@@ -3,6 +3,30 @@
 @section('title', 'Data Pesanan - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"],
+    input[type="search"],
+    .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -334,7 +358,7 @@
                                                     
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="mb-2"><strong>Nama:</strong><br>{{ $item->nama }}</div>
+                                                    <div class="mb-2"><strong>Nama Pengguna:</strong><br>{{ $item->nama }}</div>
                                                     <div class="mb-2"><strong>Nomor Telepon:</strong><br>{{ $item->nomor_telepon ?? '-' }}</div>
                                                     <div class="mb-2"><strong>Nomor Telepon 2:</strong><br>{{ $item->nomor_telepon_2 ?? '-' }}</div>
                                                     <div class="mb-2"><strong>Alamat:</strong><br>{{ $item->alamat ?? '-' }}</div>

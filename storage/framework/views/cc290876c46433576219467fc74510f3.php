@@ -3,6 +3,30 @@
 <?php $__env->startSection('title', 'Data Pesanan - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"],
+    input[type="search"],
+    .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -164,7 +188,7 @@
                             <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                             <input id="search-admin-pesanan" type="search" class="form-control border-0 bg-transparent" placeholder="Cari nama kostum, status, catatan, pembayaran..." aria-label="Cari pesanan">
                         </div>
-                        <select id="sort-admin-pesanan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
+                        <select id="sort-admin-pesanan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
                             <option value="">Urutkan data pesanan</option>
                             <option value="1:string:asc">Nama Kostum A–Z</option>
                             <option value="1:string:desc">Nama Kostum Z–A</option>
@@ -337,7 +361,7 @@
                                                     
                                                 </div>
                                                 <div class="col-md-6">
-                                                    <div class="mb-2"><strong>Nama:</strong><br><?php echo e($item->nama); ?></div>
+                                                    <div class="mb-2"><strong>Nama Pengguna:</strong><br><?php echo e($item->nama); ?></div>
                                                     <div class="mb-2"><strong>Nomor Telepon:</strong><br><?php echo e($item->nomor_telepon ?? '-'); ?></div>
                                                     <div class="mb-2"><strong>Nomor Telepon 2:</strong><br><?php echo e($item->nomor_telepon_2 ?? '-'); ?></div>
                                                     <div class="mb-2"><strong>Alamat:</strong><br><?php echo e($item->alamat ?? '-'); ?></div>

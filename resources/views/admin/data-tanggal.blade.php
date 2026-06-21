@@ -1,8 +1,30 @@
 @extends('layouts.main')
 
-@section('title', 'Data Tanggal Booking - Admin')
+@section('title', 'Data Tanggal Booking - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     :root {
         --booking-card-bg: #f8fbff;
         --booking-card-border: rgba(37, 99, 235, 0.12);

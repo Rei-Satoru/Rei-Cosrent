@@ -1,8 +1,30 @@
 @extends('layouts.main')
 
-@section('title', 'Kelola Data Pengguna - Rei Cosrent')
+@section('title', 'Data Pengguna - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
     color: #0056b3;
     transition: color 0s ease;
@@ -96,6 +118,49 @@
         transform: scale(1.02);
     }
 
+    .ellipsis-cell {
+        max-width: 220px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    .detail-user-table {
+        width: 100%;
+        border-collapse: collapse;
+        color: var(--bs-body-color);
+    }
+
+    .detail-user-table th,
+    .detail-user-table td {
+        padding: 0.75rem 0.5rem;
+        border-bottom: 1px solid rgba(148, 163, 184, 0.18);
+        vertical-align: top;
+        color: var(--bs-body-color);
+        background-color: #0f172af5;
+    }
+
+    .detail-user-table th {
+        width: 180px;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+
+    .detail-user-table td {
+        word-break: break-word;
+    }
+
+    .detail-user-table tr:last-child th,
+    .detail-user-table tr:last-child td {
+        border-bottom: 0;
+    }
+
+    .detail-user-hr {
+        border: 0;
+        border-top: 1px solid rgba(148, 163, 184, 0.22);
+        margin: 1.5rem 0;
+    }
+
     .modal-content .modal-header {
         background-color: #0d6efd !important;
         color: #ffffff !important;
@@ -154,8 +219,8 @@
                             <option value="">Urutkan data pengguna</option>
                             <option value="1:string:asc">Username A–Z</option>
                             <option value="1:string:desc">Username Z–A</option>
-                            <option value="2:string:asc">Nick Name A–Z</option>
-                            <option value="2:string:desc">Nick Name Z–A</option>
+                            <option value="2:string:asc">Nama Lengkap A–Z</option>
+                            <option value="2:string:desc">Nama Lengkap Z–A</option>
                             <option value="3:string:asc">Email A–Z</option>
                             <option value="3:string:desc">Email Z–A</option>
                             <option value="7:string:asc">Jenis Kelamin A–Z</option>
@@ -172,15 +237,13 @@
                     <thead>
                         <tr>
                             <th style="width: 50px;">No</th>
-                                    <th>Username</th>
-                                    <th class="d-none d-md-table-cell">Nick Name</th>
+                                    <th>Nama Pengguna</th>
+                                    <th class="d-none d-md-table-cell">Nama Lengkap</th>
                                     <th>Email</th>
                                     <th class="d-none d-md-table-cell">Instagram</th>
                                     <th class="d-none d-md-table-cell">Alamat</th>
                                     <th class="d-none d-md-table-cell">Nomor Telepon</th>
                                     <th class="d-none d-md-table-cell">Jenis Kelamin</th>
-                                    <th class="d-none d-md-table-cell">Status Password</th>
-                                    <th class="d-none d-md-table-cell">Gambar Profil</th>
                                     <th style="width: 220px;">Aksi</th>
                                 </tr>
                             </thead>
@@ -192,34 +255,17 @@
                                         <td class="d-none d-md-table-cell">{{ $user->nick_name }}</td>
                                         <td>{{ $user->email }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->instagram ?: '-' }}</td>
-                                        <td class="d-none d-md-table-cell">{{ $user->alamat }}</td>
+                                        <td class="d-none d-md-table-cell ellipsis-cell">{{ $user->alamat ?: '-' }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->nomor_telepon }}</td>
                                         <td class="d-none d-md-table-cell">{{ $user->jenis_kelamin }}</td>
-                                        <td class="d-none d-md-table-cell">
-                                            @if($user->password_reset_approved_at)
-                                                <span class="badge bg-info text-dark">Disetujui</span>
-                                                <div class="small text-muted">{{ $user->password_reset_approved_at->format('d M Y H:i') }}</div>
-                                            @elseif($user->password_reset_requested_at)
-                                                <span class="badge bg-danger">Meminta Reset</span>
-                                                <div class="small text-muted">{{ $user->password_reset_requested_at->format('d M Y H:i') }}</div>
-                                            @else
-                                                <span class="badge bg-success">Normal</span>
-                                            @endif
-                                        </td>
-                                        <td class="d-none d-md-table-cell">
-                                            @php
-                                                $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
-                                            @endphp
-                                            @if($avatarPath)
-                                                <button type="button" class="btn p-0 border-0 bg-transparent js-user-avatar-preview" data-avatar-src="{{ $avatarPath }}" data-avatar-title="Gambar Profil: {{ $user->username }}" aria-label="Lihat gambar profil {{ $user->username }}">
-                                                    <img src="{{ $avatarPath }}" alt="Avatar" class="avatar-thumb" style="width:72px; height:72px; object-fit:cover; border:1px solid var(--bs-border-color); border-radius:0;">
-                                                </button>
-                                            @else
-                                                <i class="bi bi-person-square" style="font-size: 2rem; color: var(--bs-body-color);"></i>
-                                            @endif
-                                        </td>
+                                        @php
+                                            $avatarPath = $user->gambar_profil ? asset('storage/' . $user->gambar_profil) : null;
+                                        @endphp
                                         <td>
                                             <div class="action-buttons">
+                                                <button class="btn btn-info btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#detailUserModal{{ $user->id }}">
+                                                    <i class="bi bi-person-lines-fill"></i> Detail
+                                                </button>
                                                 <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="modal" data-bs-target="#editUserModal{{ $user->id }}">
                                                     <i class="bi bi-pencil"></i> Edit
                                                 </button>
@@ -255,6 +301,76 @@
                                                     <button type="submit" class="btn btn-warning"><i class="bi bi-save"></i> Simpan Password</button>
                                                 </div>
                                             </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="modal fade" id="detailUserModal{{ $user->id }}" tabindex="-1" aria-labelledby="detailUserLabel{{ $user->id }}" aria-hidden="true">
+                                                <div class="modal-dialog modal-lg modal-dialog-centered">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header bg-primary text-white">
+                                                            <h5 class="modal-title" id="detailUserLabel{{ $user->id }}">Detail Pengguna</h5>
+                                                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <div class="row g-4">
+                                                                <div class="col-md-4 text-center">
+                                                                    @if($avatarPath)
+                                                                        <img src="{{ $avatarPath }}" alt="Avatar {{ $user->username }}" class="img-fluid rounded mb-3" style="max-height: 220px; object-fit: cover; border: 1px solid var(--bs-border-color);">
+                                                                    @else
+                                                                        <div class="d-flex align-items-center justify-content-center bg-secondary bg-opacity-10 rounded mb-3" style="height: 220px;">
+                                                                            <i class="bi bi-person-circle" style="font-size: 4rem; color: var(--bs-body-color);"></i>
+                                                                        </div>
+                                                                    @endif
+                                                                </div>
+                                                                <div class="col-md-8">
+                                                                    <table class="table detail-user-table mb-0">
+                                                                        <tbody>
+                                                                            <tr>
+                                                                                <th style="width: 160px;">Username</th>
+                                                                                <td>{{ $user->username }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Nama Lengkap</th>
+                                                                                <td>{{ $user->nick_name ?: '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Email</th>
+                                                                                <td>{{ $user->email }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Instagram</th>
+                                                                                <td>{{ $user->instagram ?: '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Alamat</th>
+                                                                                <td>{{ $user->alamat ?: '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Nomor Telepon</th>
+                                                                                <td>{{ $user->nomor_telepon ?: '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Jenis Kelamin</th>
+                                                                                <td>{{ $user->jenis_kelamin ?: '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Dibuat</th>
+                                                                                <td>{{ $user->created_at ? $user->created_at->format('d M Y H:i') : '-' }}</td>
+                                                                            </tr>
+                                                                            <tr>
+                                                                                <th>Diupdate</th>
+                                                                                <td>{{ $user->updated_at ? $user->updated_at->format('d M Y H:i') : '-' }}</td>
+                                                                            </tr>
+                                                                        </tbody>
+                                                                    </table>
+                                                                </div>
+                                                            </div>
+                                                            <hr class="detail-user-hr">
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
+                                                        </div>
                                                     </div>
                                                 </div>
                                             </div>

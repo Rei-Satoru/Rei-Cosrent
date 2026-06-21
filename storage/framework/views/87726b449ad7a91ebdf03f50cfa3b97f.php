@@ -3,6 +3,29 @@
 <?php $__env->startSection('title', 'Data Pengembalian - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
+    /* Admin dropdown colors */
+
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -185,8 +208,8 @@
                     <thead>
                         <tr style="background-color: rgba(37, 99, 235, 0.08); border-bottom: 2px solid rgba(37, 99, 235, 0.15);">
                             <th style="width: 50px; color: var(--bs-body-color);">No</th>
-                            <th>Pengguna</th>
-                            <th>Kostum</th>
+                            <th>Nama Pengguna</th>
+                            <th>Nama Kostum</th>
                             <th>Bukti</th>
                             <th>Status</th>
                             <th>Catatan User</th>

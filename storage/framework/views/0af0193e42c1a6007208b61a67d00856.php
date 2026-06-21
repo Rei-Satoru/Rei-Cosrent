@@ -777,7 +777,7 @@
 
             <div class="row">
                 <div class="col text-center small">
-                    &copy; 2025 Rei Cosrent. Hak Cipta Dilindungi. &middot; Dibuat dengan Bootstrap 5
+                    &copy; 2025 Rei Cosrent. Hak Cipta Dilindungi.
                 </div>
             </div>
         </div>

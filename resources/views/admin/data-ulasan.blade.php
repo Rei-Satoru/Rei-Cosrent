@@ -1,8 +1,30 @@
 @extends('layouts.main')
 
-@section('title', 'Kelola Data Ulasan - Rei Cosrent')
+@section('title', 'Data Ulasan - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    table th {
+        text-align: center;
+    }
     .page-title {
         color: #0056b3;
         transition: color 0s ease;
@@ -130,7 +152,7 @@
     <div class="container">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
-                <h2 class="fw-bold mb-0">Kelola Data Ulasan</h2>
+                <h2 class="fw-bold mb-0">Data Ulasan</h2>
                 <p class="text-muted mb-0 small">Admin dapat membalas ulasan berdasarkan ID pesanan (Formulir)</p>
             </div>
             <div class="d-grid d-sm-block">

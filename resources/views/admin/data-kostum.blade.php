@@ -3,6 +3,25 @@
 @section('title', 'Data Kostum - Rei Cosrent')
 
 @section('styles')
+    /* Admin dropdown colors */
+
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
 /* === Kostum Filter (samakan dengan warna card-body) === */
 .rc-kostum-card {
     --rc-kostum-tone: rgba(37, 99, 235, 0.06);
@@ -319,7 +338,7 @@ table td {
                         <thead>
                             <tr>
                                 <th style="width: 50px;">No</th>
-                                <th>Nama</th>
+                                <th>Nama Kostum</th>
                                 <th>Kategori</th>
                                 <th class="d-none d-md-table-cell">Gambar</th>
                                 <th class="d-none d-md-table-cell">Jenis Kelamin</th>

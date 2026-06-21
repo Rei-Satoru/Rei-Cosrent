@@ -4,6 +4,28 @@
 
 <?php $__env->startSection('styles'); ?>
 
+    /* Admin dropdown colors */
+    .form-select, select, .dropdown-menu {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+    .form-select option, select option {
+        background-color: #0f172af5;
+        color: #dee2e6;
+    }
+
+    /* Admin search input styles */
+    .input-group .form-control[type="search"], input[type="search"], .card-body .input-group input.form-control {
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border-color: rgba(148, 163, 184, 0.12) !important;
+    }
+
+        table th {
+            text-align: center;
+        }
         .action-buttons {
             display: flex;
             justify-content: center;
@@ -190,7 +212,7 @@
                             <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                             <input id="search-admin-katalog" type="search" class="form-control border-0 bg-transparent" placeholder="Cari nama katalog, kategori, deskripsi..." aria-label="Cari katalog">
                         </div>
-                        <select id="sort-admin-katalog" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
+                        <select id="sort-admin-katalog" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
                             <option value="">Urutkan data katalog</option>
                             <option value="1:string:asc">Nama Katalog A–Z</option>
                             <option value="1:string:desc">Nama Katalog Z–A</option>

@@ -149,6 +149,15 @@
         transition: color 0s ease;
     }
 
+    .preview-info-table .vision-text {
+        display: -webkit-box;
+        -webkit-box-orient: vertical;
+        -webkit-line-clamp: 2;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+    }
+
     .profile-page-note {
         color: #000000 !important;
     }
@@ -271,7 +280,7 @@
                                         <td class="icon-col"><i class="bi bi-geo-alt"></i></td>
                                         <td class="label-col">Alamat</td>
                                         <td class="colon-col">:</td>
-                                        <td class="value-col">{{ $user->alamat ?: '-' }}</td>
+                                        <td class="value-col vision-text">{{ $user->alamat ?: '-' }}</td>
                                     </tr>
                                     <tr>
                                         <td class="icon-col"><i class="bi bi-telephone"></i></td>
