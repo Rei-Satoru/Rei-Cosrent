@@ -877,8 +877,8 @@
     .app-sidebar {
         position: fixed;
         left: 0;
-        top: var(--nav-height, 56px);
-        height: calc(100vh - var(--nav-height, 56px));
+        top: var(--nav-height, 72px);
+        height: calc(100vh - var(--nav-height, 72px));
         width: 56px; /* collapsed by default */
         max-width: 85vw;
         background: var(--admin-card-bg);

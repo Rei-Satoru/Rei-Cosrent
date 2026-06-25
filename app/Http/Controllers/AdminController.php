@@ -1138,37 +1138,84 @@ class AdminController extends Controller
             return redirect()->route('admin.login');
         }
 
-        // Gunakan raw query untuk ambil dari pengembalian dengan join ke formulir
-        // Jika kolom formulir_id tidak ada, ambil semua kombinasi
-        $pengembalianRaw = Pengembalian::orderBy('created_at', 'desc')->get();
-        
-        // Ambil semua formulir
-        $formulirAll = Formulir::get();
+        // Ambil semua pengembalian dan eager-load formulir jika ada, to avoid relation not loaded
+        $pengembalianRaw = Pengembalian::with('formulir')->orderBy('created_at', 'desc')->get();
+
+        // Ambil semua formulir sekali untuk per-row proximity matching (non-destructive)
+        $formulirAll = Formulir::orderByDesc('created_at')->get();
         
         // Build data pengembalian dengan informasi formulir
-        $pengembalianList = $pengembalianRaw->map(function($pengembalian) use ($formulirAll) {
-            // Prioritas: relasi formulir > formulir terbaru > fallback ke '-'
-            
-            // Cek apakah ada relasi
+        $mapped = $pengembalianRaw->map(function($pengembalian) use ($formulirAll) {
+            // Attach a conservative formulir match per-row (eager-loaded when available).
             if ($pengembalian->relationLoaded('formulir') && $pengembalian->formulir) {
                 $formulir = $pengembalian->formulir;
             } else {
-                // Ambil formulir terbaru yang dibuat
-                $formulir = $formulirAll->sortByDesc('created_at')->first();
+                $formulir = null;
+                try {
+                    if ($formulirAll->isNotEmpty() && $pengembalian->created_at) {
+                        $closest = $formulirAll->sortBy(function ($f) use ($pengembalian) {
+                            return abs(optional($f->created_at)->getTimestamp() - optional($pengembalian->created_at)->getTimestamp());
+                        })->first();
+                        if ($closest) {
+                            $diff = abs(optional($closest->created_at)->getTimestamp() - optional($pengembalian->created_at)->getTimestamp());
+                            if ($diff <= 604800) { // 7 days
+                                $formulir = $closest;
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    $formulir = null;
+                }
             }
-            
+
             if ($formulir) {
                 $pengembalian->display_nama = $formulir->nama ?? '-';
                 $pengembalian->display_email = $formulir->email;
                 $pengembalian->display_kostum = $formulir->nama_kostum ?? '-';
+                $pengembalian->formulir = $formulir;
             } else {
                 $pengembalian->display_nama = '-';
                 $pengembalian->display_email = null;
                 $pengembalian->display_kostum = '-';
             }
-            
+
             return $pengembalian;
         });
+
+        // Deduplicate pengembalian per formulir: prefer non-ditolak or the newest entry
+        try {
+            $grouped = [];
+            $others = collect();
+            foreach ($mapped as $p) {
+                $fid = data_get($p, 'formulir.id');
+                if ($fid) {
+                    if (!isset($grouped[$fid])) {
+                        $grouped[$fid] = $p;
+                    } else {
+                        $existing = $grouped[$fid];
+                        $existingStatus = strtolower((string)($existing->status ?? ''));
+                        $pStatus = strtolower((string)($p->status ?? ''));
+                        if ($existingStatus === 'ditolak' && $pStatus !== 'ditolak') {
+                            $grouped[$fid] = $p;
+                        } elseif ($existingStatus !== 'ditolak' && $pStatus === 'ditolak') {
+                            // keep existing
+                        } else {
+                            $existingTs = optional($existing->created_at)->getTimestamp() ?? 0;
+                            $pTs = optional($p->created_at)->getTimestamp() ?? 0;
+                            if ($pTs > $existingTs) {
+                                $grouped[$fid] = $p;
+                            }
+                        }
+                    }
+                } else {
+                    $others->push($p);
+                }
+            }
+
+            $pengembalianList = collect(array_values($grouped))->merge($others)->sortByDesc('created_at')->values();
+        } catch (\Exception $e) {
+            $pengembalianList = $mapped;
+        }
 
         $pendingCount = Pengembalian::where('status', 'proses')->count();
 
@@ -1183,15 +1230,31 @@ class AdminController extends Controller
         if (!session('admin_logged_in')) {
             return redirect()->route('admin.login');
         }
-
         $validated = $request->validate([
-            'status' => 'required|in:proses,selesai',
+            'aksi' => 'required|in:revisi,setujui',
+            'catatan_admin' => 'nullable|string|max:255',
         ]);
 
         try {
             $pengembalian = Pengembalian::findOrFail($id);
-            $pengembalian->status = $validated['status'];
+
+            // Map form action to pengembalian status
+            $aksi = $validated['aksi'];
+            $newStatus = $aksi === 'setujui' ? 'diterima' : 'ditolak';
+
+            $pengembalian->status = $newStatus;
+            $pengembalian->catatan_admin = trim((string) ($validated['catatan_admin'] ?? '')) ?: null;
             $pengembalian->save();
+
+            // If accepted, mark related formulir as selesai (if linked)
+            if ($newStatus === 'diterima' && $pengembalian->formulir) {
+                try {
+                    $pengembalian->formulir->status = 'selesai';
+                    $pengembalian->formulir->save();
+                } catch (\Exception $e) {
+                    // ignore formulir update failures
+                }
+            }
 
             return redirect()->route('admin.data-pengembalian')->with('success', 'Pengembalian berhasil diverifikasi.');
         } catch (\Exception $e) {

@@ -36,6 +36,7 @@
             --bs-body-bg: var(--app-page-bg);
             --bs-tertiary-bg: var(--app-surface-strong);
             --bs-border-color: var(--app-border);
+            --nav-height: 72px;
         }
 
         [data-bs-theme="dark"] {
@@ -610,28 +611,15 @@
         @yield('styles')
     </style>
     <script>
-        // Apply saved theme immediately before render and suppress transitions on load
+        // Force dark theme immediately and suppress transitions on load
         (function() {
-            const savedMode = localStorage.getItem('themeMode') || 'auto';
             const root = document.documentElement;
-            
-            function getSystemTheme() {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-            
-            let actualTheme;
-            if (savedMode === 'auto') {
-                actualTheme = getSystemTheme();
-            } else {
-                actualTheme = savedMode;
-            }
-            
-            root.setAttribute('data-bs-theme', actualTheme);
+            root.setAttribute('data-bs-theme', 'dark');
             root.classList.add('no-transition');
 
             window.addEventListener('DOMContentLoaded', function () {
                 if (document.body) {
-                    document.body.setAttribute('data-bs-theme', actualTheme);
+                    document.body.setAttribute('data-bs-theme', 'dark');
                     document.body.classList.add('no-transition');
                 }
                 setTimeout(() => {
@@ -642,7 +630,7 @@
         })();
     </script>
 </head>
-<body data-bs-theme="light" class="{{ request()->routeIs('home') ? 'homepage' : '' }}">
+<body data-bs-theme="dark" class="{{ request()->routeIs('home') ? 'homepage' : '' }}">
 
     <!-- Navbar -->
     <nav class="navbar navbar-expand-lg fixed-top shadow-sm ak-navbar" style="background-color: var(--bs-body-bg); width: calc(100% - 17px); right: 0;">
@@ -693,18 +681,7 @@
                 </ul>
 
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0 align-items-center">
-                    <li class="nav-item dropdown ms-lg-2">
-                        <button type="button" class="btn ak-icon-btn" id="themeToggleBtn" aria-label="Toggle theme">
-                            <!-- Sun (shown in dark mode) -->
-                            <svg class="ak-theme-icon ak-theme-sun" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
-                            </svg>
-                            <!-- Moon (shown in light mode) -->
-                            <svg class="ak-theme-icon ak-theme-moon" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20" fill="none">
-                                <path d="M6.24683 7.08492C6.24683 10.7677 9.23232 13.7532 12.9151 13.7532C14.6687 13.7532 16.2641 13.0764 17.4545 11.9697C16.584 15.2727 13.5765 17.7083 10.0001 17.7083C5.74289 17.7083 2.29175 14.2572 2.29175 9.99996C2.29175 6.42356 4.72736 3.41602 8.03036 2.54558C6.92367 3.73594 6.24683 5.33139 6.24683 7.08492Z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-                            </svg>
-                        </button>
-                    </li>
+                    <!-- Theme toggle removed; site is dark-only -->
                     @if(session('admin_logged_in'))
                         <li class="nav-item ms-lg-3">
                             <a class="nav-link fw-semibold d-flex align-items-center gap-2 ak-nav-btn" href="{{ route('admin.profile') }}">
@@ -791,11 +768,32 @@
         document.addEventListener('DOMContentLoaded', function() {
             const nav = document.querySelector('nav.navbar.fixed-top');
             if (!nav) return;
-            const setBodyPadding = () => {
-                document.body.style.paddingTop = nav.offsetHeight + 'px';
+            const root = document.documentElement;
+            const setNavHeight = () => {
+                const navHeight = nav.offsetHeight || 72;
+                root.style.setProperty('--nav-height', navHeight + 'px');
+                document.body.style.paddingTop = navHeight + 'px';
             };
-            setBodyPadding();
-            window.addEventListener('resize', setBodyPadding);
+            setNavHeight();
+            window.addEventListener('resize', setNavHeight);
+
+            const sidebarToggle = document.getElementById('layoutSidebarToggle');
+            const sidebar = document.getElementById('appSidebar');
+            const pageWrapper = document.getElementById('pageWrapper');
+            const footer = document.querySelector('footer');
+
+            if (sidebarToggle && sidebar) {
+                sidebarToggle.addEventListener('click', function () {
+                    const isOpen = sidebar.classList.toggle('open');
+                    if (pageWrapper) {
+                        pageWrapper.classList.toggle('shifted', isOpen);
+                    }
+                    if (footer) {
+                        footer.classList.toggle('shifted', isOpen);
+                    }
+                    sidebarToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+                });
+            }
         });
     </script>
 
@@ -829,136 +827,17 @@
     </script>
     @endif
 
-    <!-- Theme System Script -->
+    <!-- Theme system disabled: force dark-only -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
-            const body = document.body;
-            const themeButtons = document.querySelectorAll('[data-theme]');
-            const themeIndicators = document.querySelectorAll('[data-theme-indicator]');
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            if (document.body) document.body.setAttribute('data-bs-theme', 'dark');
+            // remove any theme toggle control if present
             const themeToggleBtn = document.getElementById('themeToggleBtn');
-
-            // Remove no-transition class after initial render safety window
-            setTimeout(() => {
-                document.documentElement.classList.remove('no-transition');
-                body.classList.remove('no-transition');
-            }, 150);
-
-            function getSystemTheme() {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-            }
-
-            function applyTheme(mode) {
-                let actualTheme;
-                if (mode === 'auto') {
-                    actualTheme = getSystemTheme();
-                } else {
-                    actualTheme = mode;
-                }
-                body.setAttribute('data-bs-theme', actualTheme);
-                document.documentElement.setAttribute('data-bs-theme', actualTheme);
-            }
-
-            function updateIndicators(mode) {
-                themeIndicators.forEach(indicator => {
-                    const indicatorMode = indicator.getAttribute('data-theme-indicator');
-                    if (indicatorMode === mode) {
-                        indicator.classList.remove('d-none');
-                        indicator.closest('.dropdown-item').classList.add('active');
-                    } else {
-                        indicator.classList.add('d-none');
-                        indicator.closest('.dropdown-item').classList.remove('active');
-                    }
-                });
-                // Set CSS var for navbar height and handle sidebar toggle from layout button
-                const nav = document.querySelector('nav.navbar.fixed-top');
-                if (nav) {
-                    document.documentElement.style.setProperty('--nav-height', nav.offsetHeight + 'px');
-                }
-
-                // layout toggle listeners are bound once globally (see after init)
-            }
-
-            function setThemeMode(mode) {
-                localStorage.setItem('themeMode', mode);
-                applyTheme(mode);
-                updateIndicators(mode);
-            }
-
-            // Initialize theme
-            const savedMode = localStorage.getItem('themeMode') || 'auto';
-            setThemeMode(savedMode);
-
-            // AiStarterKit-like theme toggle: single click switches between light/dark
-            if (themeToggleBtn) {
-                themeToggleBtn.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    const currentActual = document.documentElement.getAttribute('data-bs-theme') || body.getAttribute('data-bs-theme') || 'light';
-                    const nextMode = currentActual === 'dark' ? 'light' : 'dark';
-                    setThemeMode(nextMode);
-                });
-            }
-
-            // Bind layout/sidebar toggle once to avoid duplicate listeners on theme changes
-            (function bindLayoutToggleOnce(){
-                if (window.__layoutToggleBound) return;
-                window.__layoutToggleBound = true;
-
-                const layoutToggle = document.getElementById('layoutSidebarToggle');
-                const sidebar = document.getElementById('appSidebar');
-                const wrapper = document.getElementById('pageWrapper');
-                const sidebarClose = document.getElementById('sidebarClose');
-
-                if (layoutToggle) {
-                    layoutToggle.addEventListener('click', function (e) {
-                        if (sidebar) sidebar.classList.toggle('open');
-                        if (wrapper) wrapper.classList.toggle('shifted');
-                        const expanded = layoutToggle.getAttribute('aria-expanded') === 'true' ? 'false' : 'true';
-                        layoutToggle.setAttribute('aria-expanded', expanded);
-                    });
-                    layoutToggle.addEventListener('keydown', function(e) {
-                        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); layoutToggle.click(); }
-                    });
-                }
-
-                if (sidebarClose) {
-                    sidebarClose.addEventListener('click', function () {
-                        if (sidebar) sidebar.classList.remove('open');
-                        if (wrapper) wrapper.classList.remove('shifted');
-                        if (layoutToggle) layoutToggle.setAttribute('aria-expanded', 'false');
-                    });
-                    sidebarClose.addEventListener('keydown', function(e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); sidebarClose.click(); } });
-                }
-
-                // Click outside to close sidebar (use capture=false to avoid interfering with other handlers)
-                document.addEventListener('click', function (e) {
-                    const clickedOnToggle = layoutToggle && layoutToggle.contains(e.target);
-                    const clickedOnSidebar = sidebar && sidebar.contains(e.target);
-                    if (!clickedOnToggle && !clickedOnSidebar) {
-                        if (sidebar && sidebar.classList.contains('open')) {
-                            sidebar.classList.remove('open');
-                            if (wrapper) wrapper.classList.remove('shifted');
-                            if (layoutToggle) layoutToggle.setAttribute('aria-expanded', 'false');
-                        }
-                    }
-                }, false);
-            })();
-
-            // Listen to theme button clicks
-            themeButtons.forEach(button => {
-                button.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const mode = this.getAttribute('data-theme');
-                    setThemeMode(mode);
-                });
-            });
-
-            // Listen to system theme changes when in auto mode
-            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-                const currentMode = localStorage.getItem('themeMode') || 'auto';
-                if (currentMode === 'auto') {
-                    applyTheme('auto');
-                }
-            });
+            if (themeToggleBtn) themeToggleBtn.remove();
+            // ensure no-transition classes are removed after initial load
+            document.documentElement.classList.remove('no-transition');
+            if (document.body) document.body.classList.remove('no-transition');
         });
     </script>
 

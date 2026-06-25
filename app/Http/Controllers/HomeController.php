@@ -375,7 +375,7 @@ class HomeController extends Controller
         $request->validate([
             'nama' => 'required|string|max:100',
             'email' => (session('user_logged_in') ? 'nullable' : 'required') . '|email|max:255',
-            'alamat' => 'required|string',
+            'alamat' => session('user_logged_in') ? 'nullable|string' : 'required|string',
             'nomor_telepon' => 'required|string|max:20',
             'nomor_telepon_2' => 'required|string|max:100',
             'nama_kostum' => 'required|string|max:100',
@@ -442,38 +442,39 @@ class HomeController extends Controller
                 $originCity = $raja->findCityIdFromAddress($admin->address);
             }
 
-            $destinationCityId = $raja->findCityIdFromAddress($request->input('alamat'));
+            $alamatUser = session('user_logged_in') ? (User::find(session('user_id'))->alamat ?? $request->input('alamat')) : $request->input('alamat');
+            $destinationCityId = $raja->findCityIdFromAddress($alamatUser);
             if ($originCity && $destinationCityId && env('RAJAONGKIR_API_KEY')) {
                 try {
                     $costResp = $raja->cost($originCity, $destinationCityId, $weight);
                     if ($costResp && isset($costResp['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value'])) {
                         $ongkir = $costResp['rajaongkir']['results'][0]['costs'][0]['cost'][0]['value'];
                     } else {
-                        $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                        $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $alamatUser, $weight);
                         \Log::warning('RajaOngkir fallback estimate used', [
                             'originCity' => $originCity,
                             'destinationCity' => $destinationCityId,
-                            'alamat' => $request->input('alamat'),
+                            'alamat' => $alamatUser,
                             'admin_address' => $admin?->address,
                             'ongkir' => $ongkir,
                         ]);
                     }
                 } catch (\Throwable $e) {
                     \Log::warning('RajaOngkir cost failed: ' . $e->getMessage());
-                    $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                    $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $alamatUser, $weight);
                 }
             } else {
-                $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $request->input('alamat'), $weight);
+                $ongkir = $raja->estimateShippingCostLocal($admin?->address ?? '', $alamatUser, $weight);
                 if (!env('RAJAONGKIR_API_KEY')) {
                     \Log::info('RajaOngkir API key missing, using local fallback estimate', [
                         'originCity' => $originCity,
-                        'destination' => $request->input('alamat'),
+                        'destination' => $alamatUser,
                     ]);
                 } else {
                     \Log::warning('RajaOngkir origin/destination lookup failed, using local fallback estimate', [
                         'originCity' => $originCity,
                         'destinationCity' => $destinationCityId,
-                        'alamat' => $request->input('alamat'),
+                        'alamat' => $alamatUser,
                     ]);
                 }
             }
@@ -483,7 +484,7 @@ class HomeController extends Controller
 
             Formulir::create([
                 'nama' => $request->input('nama'),
-                'alamat' => $request->input('alamat'),
+                'alamat' => $alamatUser,
                 'nomor_telepon' => $request->input('nomor_telepon'),
                 'nomor_telepon_2' => $request->input('nomor_telepon_2'),
                 'nama_kostum' => $request->input('nama_kostum'),
@@ -569,14 +570,12 @@ class HomeController extends Controller
 
         $request->validate([
             'nama' => 'required|string|max:100',
-            'alamat' => 'required|string',
             'nomor_telepon' => 'required|string|max:20',
             'nomor_telepon_2' => 'required|string|max:100',
             'tanggal_pemakaian' => 'required|date',
             'tanggal_pengembalian' => 'required|date|after_or_equal:tanggal_pemakaian',
-            'total_harga' => 'required|numeric|min:0',
-            'metode_pembayaran' => 'required|string|max:50',
             'kartu_identitas' => 'required|string|max:50',
+            'kartu_identitas_lainnya' => 'nullable|string|max:50',
             'foto_kartu_identitas' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'selfie_kartu_identitas' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
             'pernyataan' => 'required|string',
@@ -607,13 +606,10 @@ class HomeController extends Controller
         }
 
         $order->nama = $request->input('nama');
-        $order->alamat = $request->input('alamat');
         $order->nomor_telepon = $request->input('nomor_telepon');
         $order->nomor_telepon_2 = $request->input('nomor_telepon_2');
         $order->tanggal_pemakaian = $request->input('tanggal_pemakaian');
         $order->tanggal_pengembalian = $request->input('tanggal_pengembalian');
-        $order->total_harga = $request->input('total_harga');
-        $order->metode_pembayaran = $request->input('metode_pembayaran');
         $order->kartu_identitas = $kartuIdentitas;
         $order->pernyataan = $request->input('pernyataan');
         $order->save();
@@ -702,11 +698,52 @@ class HomeController extends Controller
         $profile_contact = ProfileContact::find(1);
         $returnRequests = collect();
 
+        // Build a list of formulir IDs that already have a pengembalian (linked)
+        // or that can be confidently matched to an unlinked pengembalian.
+        $excludedFormulirIds = [];
+        if ($pengembalianHasLinkColumn) {
+            try {
+                // linked pengembalian
+                $linked = Pengembalian::whereNotNull('formulir_id')->pluck('formulir_id')->filter()->unique()->toArray();
+                $excludedFormulirIds = array_merge($excludedFormulirIds, $linked);
+
+                // match unlinked pengembalian to user's formulir by proximity
+                $unlinked = Pengembalian::whereNull('formulir_id')->get();
+                if ($unlinked->isNotEmpty()) {
+                    $userFormulirs = Formulir::where('email', $userEmail)->get();
+                    foreach ($unlinked as $p) {
+                        // find closest formulir by created_at among this user's formulirs
+                        $closest = $userFormulirs->sortBy(function ($f) use ($p) {
+                            return abs(optional($f->created_at)->getTimestamp() - optional($p->created_at)->getTimestamp());
+                        })->first();
+
+                        if ($closest) {
+                            $diff = abs(optional($closest->created_at)->getTimestamp() - optional($p->created_at)->getTimestamp());
+                            if ($diff <= 604800) { // 7 days
+                                $excludedFormulirIds[] = $closest->id;
+                            }
+                        }
+                    }
+                }
+
+                $excludedFormulirIds = array_values(array_unique($excludedFormulirIds));
+            } catch (\Exception $e) {
+                // if anything goes wrong here, default to empty excluded list
+                $excludedFormulirIds = [];
+            }
+        }
+
         // Exclude orders that already have a pengembalian (or were just submitted)
         $recentFormulirId = session('recent_pengembalian_formulir_id');
 
-        $activeOrders = $orders->filter(function ($o) use ($recentFormulirId, $pengembalianHasLinkColumn, $pembayaranHasLinkColumn, $paidOrderIdsFromStorage) {
+        $activeOrders = $orders->filter(function ($o) use ($recentFormulirId, $pengembalianHasLinkColumn, $pembayaranHasLinkColumn, $paidOrderIdsFromStorage, $excludedFormulirIds) {
             if (($o->status ?? null) !== 'diterima') {
+                return false;
+            }
+
+            // If this order has already been matched to a pengembalian (linked or
+            // confidently matched from unlinked records), exclude it from activeOrders
+            if (in_array($o->id, $excludedFormulirIds, true)) {
                 return false;
             }
 
@@ -749,12 +786,52 @@ class HomeController extends Controller
         })->values();
 
         if ($pengembalianHasLinkColumn) {
+            // Load pengembalian that are properly linked to this user's formulir records
             $returnRequests = Pengembalian::with('formulir')
                 ->whereHas('formulir', function ($query) use ($userEmail) {
                     $query->where('email', $userEmail);
                 })
                 ->orderByDesc('created_at')
                 ->get();
+
+            // Also attempt a non-destructive, in-memory match for pengembalian rows
+            // that were created before the `formulir_id` column existed (formulir_id = NULL).
+            // We only attach them if we can find a nearby Formulir belonging to the
+            // current user (same email) within a conservative time window.
+            try {
+                $userFormulirs = Formulir::where('email', $userEmail)->get();
+                if ($userFormulirs->isNotEmpty()) {
+                    $unlinked = Pengembalian::whereNull('formulir_id')
+                        ->orderByDesc('created_at')
+                        ->get();
+
+                    foreach ($unlinked as $p) {
+                        if ($returnRequests->contains('id', $p->id)) {
+                            continue;
+                        }
+
+                        // find closest formulir by created_at timestamp
+                        $closest = $userFormulirs->sortBy(function ($f) use ($p) {
+                            return abs(optional($f->created_at)->getTimestamp() - optional($p->created_at)->getTimestamp());
+                        })->first();
+
+                        if ($closest) {
+                            $diff = abs(optional($closest->created_at)->getTimestamp() - optional($p->created_at)->getTimestamp());
+                            // only accept matches within 7 days (604800 seconds)
+                            if ($diff <= 604800) {
+                                // attach the matched formulir in-memory so the view can render it
+                                $p->formulir = $closest;
+                                $returnRequests->push($p);
+                            }
+                        }
+                    }
+
+                    // keep newest first
+                    $returnRequests = $returnRequests->sortByDesc('created_at')->values();
+                }
+            } catch (\Exception $e) {
+                // fail silently and proceed with linked results only
+            }
 
             // If a recent pengembalian was just created in this session but not linked, include it
             $recentId = session('recent_pengembalian_id');
@@ -768,6 +845,44 @@ class HomeController extends Controller
                     // ignore
                 }
             }
+
+                // Deduplicate returnRequests by formulir id: if multiple pengembalian map to the
+                // same formulir, keep the one that is not 'ditolak' or the newest one.
+                try {
+                    $grouped = [];
+                    $others = collect();
+                    foreach ($returnRequests as $r) {
+                        $fid = data_get($r, 'formulir.id');
+                        if ($fid) {
+                            if (!isset($grouped[$fid])) {
+                                $grouped[$fid] = $r;
+                            } else {
+                                $existing = $grouped[$fid];
+                                $existingStatus = strtolower((string)($existing->status ?? ''));
+                                $rStatus = strtolower((string)($r->status ?? ''));
+                                if ($existingStatus === 'ditolak' && $rStatus !== 'ditolak') {
+                                    $grouped[$fid] = $r;
+                                } elseif ($existingStatus !== 'ditolak' && $rStatus === 'ditolak') {
+                                    // keep existing
+                                } else {
+                                    // pick the newest
+                                    $existingTs = optional($existing->created_at)->getTimestamp() ?? 0;
+                                    $rTs = optional($r->created_at)->getTimestamp() ?? 0;
+                                    if ($rTs > $existingTs) {
+                                        $grouped[$fid] = $r;
+                                    }
+                                }
+                            }
+                        } else {
+                            $others->push($r);
+                        }
+                    }
+
+                    $merged = collect(array_values($grouped))->merge($others)->sortByDesc('created_at')->values();
+                    $returnRequests = $merged;
+                } catch (\Exception $e) {
+                    // ignore dedupe failure and continue with original list
+                }
         }
 
         return view('user.pengembalian-saya', [
@@ -869,6 +984,38 @@ class HomeController extends Controller
 
         if ($pengembalianHasLinkColumn = Schema::hasColumn('pengembalian', 'formulir_id')) {
             $pengembalianData['formulir_id'] = $order->id;
+        }
+
+        // Before creating a new pengembalian, remove any previously rejected pengembalian
+        // that can be confidently associated with this formulir (linked) or by proximity (unlinked within 7 days).
+        if ($pengembalianHasLinkColumn) {
+            try {
+                $start = optional($order->created_at)->copy()->subDays(7) ?: now()->subDays(7);
+                $end = optional($order->created_at)->copy()->addDays(7) ?: now()->addDays(7);
+
+                $candidates = Pengembalian::where('status', 'ditolak')
+                    ->where(function ($q) use ($order, $start, $end) {
+                        $q->where('formulir_id', $order->id)
+                          ->orWhere(function ($q2) use ($start, $end) {
+                              $q2->whereNull('formulir_id')
+                                 ->whereBetween('created_at', [$start, $end]);
+                          });
+                    })->get();
+
+                foreach ($candidates as $c) {
+                    try { $c->delete(); } catch (\Exception $e) { /* ignore individual delete failures */ }
+                }
+            } catch (\Exception $e) {
+                return redirect()->route('user.pengembalian')->with('error', 'Gagal memproses pengajuan ulang: ' . $e->getMessage());
+            }
+
+            // if there's any existing active pengembalian, do not create a duplicate
+            $existingActive = Pengembalian::where('formulir_id', $order->id)
+                ->whereIn('status', ['proses', 'diterima'])
+                ->first();
+            if ($existingActive) {
+                return redirect()->route('user.pengembalian')->with('error', 'Sudah ada pengembalian yang sedang diproses untuk pesanan ini.');
+            }
         }
 
         $created = Pengembalian::create($pengembalianData);

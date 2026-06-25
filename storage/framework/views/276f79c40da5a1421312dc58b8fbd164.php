@@ -92,7 +92,6 @@
                 <table class="table table-hover align-middle orders-table">
                     <thead>
                         <tr>
-                            <th>ID</th>
                             <th>Nama Kostum</th>
                             <th>Jenis Denda</th>
                             <th class="d-none d-md-table-cell">Deskripsi</th>
@@ -105,7 +104,6 @@
                     <tbody>
                         <?php $__currentLoopData = $dendas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $d): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                         <tr>
-                            <td><?php echo e($d->id); ?></td>
                             <td><?php echo e($d->nama_kostum ?? '-'); ?></td>
                             <td><?php echo e($d->jenis_denda ?? '-'); ?></td>
                             <td class="d-none d-md-table-cell"><div style="max-height:120px;overflow:auto"><?php echo nl2br(e($d->keterangan)); ?></div></td>
@@ -166,14 +164,12 @@
                         <div class="modal fade" id="dendaDetailModal-<?php echo e($d->id); ?>" tabindex="-1" aria-labelledby="dendaDetailLabel-<?php echo e($d->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header" style="background-color: #0d6efd; color: #ffffff;">
                                         <h5 class="modal-title" id="dendaDetailLabel-<?php echo e($d->id); ?>">
-                                            <i class="bi bi-card-list"></i> Detail Denda #<?php echo e($d->id); ?>
-
+                                            <i class="bi bi-card-list"></i> Detail Denda
                                         </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="background-color: rgba(15, 23, 42, 0.96); color: #ffffff;">
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama:</strong><br><?php echo e($d->nama ?? '-'); ?></div>
@@ -212,9 +208,6 @@
                                             <?php endif; ?>
                                         </div>
                                     </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
-                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -223,11 +216,10 @@
                         <div class="modal fade" id="buktiModal-<?php echo e($d->id); ?>" tabindex="-1" aria-labelledby="buktiModalLabel-<?php echo e($d->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
-                                        <h5 class="modal-title" id="buktiModalLabel-<?php echo e($d->id); ?>">Bukti Pembayaran - Denda #<?php echo e($d->id); ?></h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="modal-header" style="background-color: #0d6efd; color: #ffffff;">
+                                        <h5 class="modal-title" id="buktiModalLabel-<?php echo e($d->id); ?>">Bukti Pembayaran</h5>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="background-color: rgba(15, 23, 42, 0.96); color: #ffffff;">
                                         <?php
                                             $displayBuktiPath = null;
                                             $displayExt = null;
@@ -249,9 +241,6 @@
                                         <?php else: ?>
                                             <div class="alert alert-secondary">Belum ada bukti pembayaran untuk denda ini.</div>
                                         <?php endif; ?>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                     </div>
                                 </div>
                             </div>

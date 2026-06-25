@@ -156,6 +156,16 @@
         background-color: #0f172af5 !important;
         color: var(--bs-body-color) !important;
     }
+
+    .keterangan-input {
+        width: 100%;
+        min-width: 260px;
+        min-height: 48px;
+        background-color: #0f172af5 !important;
+        color: #dee2e6 !important;
+        border: 1px solid rgba(148,163,184,0.35) !important;
+        padding: 0.55rem 0.75rem !important;
+    }
 <?php $__env->stopSection(); ?>
 
 <?php $__env->startSection('content'); ?>
@@ -262,7 +272,6 @@
                                         <input type="text"
                                                id="keterangan-<?php echo e($item->id); ?>"
                                                class="form-control form-control-sm keterangan-input"
-                                               style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);"
                                                placeholder="Tambahkan keterangan"
                                                value="<?php echo e($item->keterangan); ?>"
                                                data-hidden="hidden-keterangan-<?php echo e($item->id); ?>"

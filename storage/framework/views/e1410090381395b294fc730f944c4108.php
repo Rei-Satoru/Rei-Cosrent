@@ -44,28 +44,46 @@
     textarea.form-control {
         background-color: #0f172af5 !important;
         border-color: rgba(37, 99, 235, 0.35) !important;
-        color: #2563eb !important;
+        color: inherit !important;
     }
 
     .form-control::placeholder {
-        color: rgba(37, 99, 235, 0.8) !important;
+        color: rgba(37, 99, 235, 0.6) !important;
     }
 
-    /* Text warna informasi */
+    /* Section content text colors (keep headings like h2/h4 unchanged)
+       Light mode: dark text; Dark mode: light text */
     .form-section,
-    .form-section h4,
     .form-section label,
     .form-section .form-check-label,
     .form-section .alert,
     .form-section .alert p,
     .form-section .small,
-    .form-section strong {
-        color: #2563eb !important;
+    .form-section strong,
+    .form-section p,
+    .form-section .kostum-info,
+    .form-section .form-control,
+    textarea.form-control {
+        color: #0b0b0b !important;
     }
 
-    /* Pernyataan isi */
+    [data-bs-theme="dark"] .form-section,
+    [data-bs-theme="dark"] .form-section label,
+    [data-bs-theme="dark"] .form-section .form-check-label,
+    [data-bs-theme="dark"] .form-section .alert,
+    [data-bs-theme="dark"] .form-section .alert p,
+    [data-bs-theme="dark"] .form-section .small,
+    [data-bs-theme="dark"] .form-section strong,
+    [data-bs-theme="dark"] .form-section p,
+    [data-bs-theme="dark"] .form-section .kostum-info,
+    [data-bs-theme="dark"] .form-section .form-control,
+    [data-bs-theme="dark"] textarea.form-control {
+        color: #dee2e6 !important;
+    }
+
+    /* Pernyataan isi - inherit section color */
     .form-section .alert-info p {
-        color: #2563eb !important;
+        color: inherit !important;
     }
 
     .required-label::after {
@@ -170,6 +188,10 @@
         <form method="POST" action="<?php echo e(route('formulir.penyewaan.submit')); ?>" enctype="multipart/form-data">
             <?php echo csrf_field(); ?>
 
+            <?php if(session('user_logged_in')): ?>
+                <input type="hidden" name="alamat" value="<?php echo e(old('alamat', App\Models\User::find(session('user_id'))->alamat ?? '')); ?>">
+            <?php endif; ?>
+
             <!-- Data Penyewa -->
             <div class="form-section">
                 <h4><i class="bi bi-person-fill"></i> Data Penyewa</h4>
@@ -195,9 +217,6 @@
                         <label class="form-label required-label">Nomor Telepon Pihak Kedua (Orang Tua/Wali/Tetangga/DLL)</label>
                         <input type="text" name="nomor_telepon_2" class="form-control" value="<?php echo e(old('nomor_telepon_2')); ?>" required placeholder="Contoh: 08xxx - Orang Tua" autocomplete="off">
                     </div>
-                    <?php if(session('user_logged_in')): ?>
-                        <input type="hidden" id="user_address" value="<?php echo e(App\Models\User::find(session('user_id'))->alamat ?? ''); ?>">
-                    <?php endif; ?>
                 </div>
             </div>
 
@@ -455,6 +474,7 @@ Apabila Saya Melanggar maka:
         const hargaInput = document.getElementById('harga_sewa');
         const ongkirInput = document.getElementById('ongkir');
         const totalInput = document.getElementById('total_harga');
+        const alamatInput = document.querySelector('input[name="alamat"]');
 
         function updateTotal() {
             const harga = parseFloat(hargaInput.value) || 0;
@@ -466,12 +486,10 @@ Apabila Saya Melanggar maka:
         ongkirInput.addEventListener('change', updateTotal);
         updateTotal();
 
-        // Fetch ongkir from user's profile address on page load
-        const userAddressInput = document.getElementById('user_address');
-        if (userAddressInput) {
-            const userAddress = userAddressInput.value.trim();
-            if (userAddress) {
-                fetch('<?php echo e(route('rajaongkir.shipping-cost')); ?>?address=' + encodeURIComponent(userAddress))
+        // Fetch ongkir from alamat profil on page load
+        function fetchOngkir() {
+            if (alamatInput && alamatInput.value.trim()) {
+                fetch('<?php echo e(route('rajaongkir.shipping-cost')); ?>?address=' + encodeURIComponent(alamatInput.value.trim()))
                     .then(response => response.json())
                     .then(data => {
                         if (data && typeof data.ongkir !== 'undefined') {
@@ -484,6 +502,9 @@ Apabila Saya Melanggar maka:
                     });
             }
         }
+
+        // Fetch on load
+        fetchOngkir();
     });
 </script>
 <?php $__env->stopSection(); ?>

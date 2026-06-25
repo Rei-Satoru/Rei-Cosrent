@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Denda;
 use App\Models\User;
+use App\Models\Formulir;
 use App\Models\ProfileContact;
 use Illuminate\Support\Facades\Storage;
 
@@ -173,11 +174,10 @@ class DendaController extends Controller
             return redirect()->route('login')->with('error', 'User tidak ditemukan.');
         }
 
-        // Try to match denda by common user identifiers (nick_name or username or email)
         $dendas = Denda::where(function($q) use ($user) {
-            $q->where('nama', $user->nick_name)
-              ->orWhere('nama', $user->username)
-              ->orWhere('nama', $user->email);
+            foreach ($this->getDendaIdentifiers($user) as $identifier) {
+                $q->orWhereRaw('LOWER(TRIM(nama)) = ?', [$identifier]);
+            }
         })->orderBy('created_at', 'desc')->get();
 
         return view('user.denda-saya', [
@@ -200,9 +200,7 @@ class DendaController extends Controller
 
         $denda = Denda::findOrFail($id);
 
-        // Ensure the denda belongs to the logged-in user (match by nama field)
-        $owns = ($denda->nama === $user->nick_name) || ($denda->nama === $user->username) || ($denda->nama === $user->email);
-        if (!$owns) {
+        if (!$this->dendaMatchesUser($denda, $user)) {
             return redirect()->route('user.denda-saya')->with('error', 'Anda tidak memiliki akses ke data denda ini.');
         }
 
@@ -228,8 +226,7 @@ class DendaController extends Controller
 
         $denda = Denda::findOrFail($id);
 
-        $owns = ($denda->nama === $user->nick_name) || ($denda->nama === $user->username) || ($denda->nama === $user->email);
-        if (!$owns) {
+        if (!$this->dendaMatchesUser($denda, $user)) {
             return redirect()->route('user.denda-saya')->with('error', 'Anda tidak memiliki akses ke data denda ini.');
         }
 
@@ -255,5 +252,31 @@ class DendaController extends Controller
         }
 
         return redirect()->route('user.denda-saya')->with('success', 'Bukti pembayaran berhasil diunggah dan status denda diperbarui menjadi Lunas.');
+    }
+
+    /**
+     * Build a normalized set of identifiers that may be used to match a user to denda.
+     */
+    private function getDendaIdentifiers(User $user): array
+    {
+        $nickName = strtolower(trim($user->nick_name ?? ''));
+        $username = strtolower(trim($user->username ?? ''));
+        $email = strtolower(trim($user->email ?? ''));
+        $identifiers = array_filter([$nickName, $username, $email]);
+
+        $formulirNames = Formulir::where('email', $user->email)
+            ->pluck('nama')
+            ->map(fn($value) => strtolower(trim($value)))
+            ->filter()
+            ->unique()
+            ->toArray();
+
+        return array_unique(array_merge($identifiers, $formulirNames));
+    }
+
+    private function dendaMatchesUser(Denda $denda, User $user): bool
+    {
+        $dendaNama = strtolower(trim($denda->nama ?? ''));
+        return in_array($dendaNama, $this->getDendaIdentifiers($user), true);
     }
 }

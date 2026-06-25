@@ -137,7 +137,7 @@
                     <?php echo csrf_field(); ?>
                     <div class="mb-3">
                         <label for="bukti_pembayaran" class="form-label">Upload Bukti Pembayaran</label>
-                        <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran" required>
+                        <input type="file" class="form-control" id="bukti_pembayaran" name="bukti_pembayaran" required style="background-color: #0b1220; color: #ffffff; border-color: rgba(148, 163, 184, 0.18);">
                     </div>
                     <button type="submit" class="btn btn-success">Kirim Bukti Pembayaran</button>
                 </form>

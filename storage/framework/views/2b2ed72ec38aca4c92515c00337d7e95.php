@@ -13,10 +13,26 @@
 
     .ulasan-card-body {
         background-color: #f8fbff;
+        color: #ffffff;
+    }
+
+    .ulasan-card-body {
+        background-color: #f8fbff;
+        color: #ffffff;
+    }
+
+    .ulasan-card-body,
+    .ulasan-card-body * {
+        color: #ffffff !important;
     }
 
     [data-bs-theme="dark"] .ulasan-card-body {
         background-color: #0f172af5;
+    }
+
+    [data-bs-theme="dark"] .ulasan-card-body,
+    [data-bs-theme="dark"] .ulasan-card-body * {
+        color: #ffffff !important;
     }
 
 
@@ -159,11 +175,11 @@
 <div class="modal fade" id="ulasanImagePreviewModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Foto Ulasan</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <div class="modal-header" style="background-color: #0d6efd; color: #ffffff;">
+                <h5 class="modal-title" style="color: #ffffff;">Foto Ulasan</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body text-center">
+            <div class="modal-body text-center" style="background-color: #0f172af5;">
                 <img id="ulasanImagePreview" src="" alt="Preview" class="img-fluid rounded">
             </div>
         </div>

@@ -253,6 +253,12 @@
         background: none !important;
     }
 
+    /* Force detail modal rows text to white for better contrast in dark-only site */
+    .costume-modal .modal-body .row.g-3,
+    .costume-modal .modal-body .row.g-3 * {
+        color: #ffffff !important;
+    }
+
     [data-bs-theme="light"] .costume-modal .text-secondary,
     [data-bs-theme="light"] .costume-modal .text-muted,
     [data-bs-theme="light"] .costume-modal .text-body-secondary {
@@ -297,7 +303,6 @@
                                             <div class="mt-3"><small class="text-muted">Jika ini adalah percobaan admin untuk mengisi formulir, pertimbangkan membuat akun pelanggan atau menggunakan akun pelanggan untuk memverifikasi alur pemesanan.</small></div>
                                         </div>
                             <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                             </div>
                         </div>
                     </div>
@@ -479,12 +484,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                         <a href="<?php echo e(route('lihat-ulasan', ['id_kostum' => $k->id_kostum])); ?>" class="btn btn-outline-warning">
                                             <i class="bi bi-star"></i> Lihat Ulasan
-                                        </a>
-                                        <a href="https://docs.google.com/spreadsheets/d/1Z3OneYIfDxKs0I0rX-_yZQfFLBb-UHf4TcC4P8oqZsI/edit?fbclid=PAZXh0bgNhZW0CMTEAc3J0YwZhcHBfaWQMMjU2MjgxMDQwNTU4AAGnnjkGZH13OPjB23XrUTuuZOd1TJ_ahNiYf7BzJYyJf2lT-rjeBQvIysJ4Dx0_aem_2v0rLLt0XGAhaE4v5iCgYQ&gid=0#gid=0" target="_blank" rel="noopener noreferrer" class="btn btn-outline-primary">
-                                            <i class="bi bi-calendar3"></i> Lihat Tanggal
                                         </a>
                                         <?php if(session('user_logged_in') || auth()->check()): ?>
                                             <?php if($isAdmin): ?>
@@ -531,7 +532,6 @@
                 <div class="modal-footer" style="background: var(--catalog-modal-bg) !important; color: var(--catalog-modal-text) !important; border-top: 1px solid var(--catalog-modal-border) !important;">
                     <a href="<?php echo e(route('login')); ?>" id="guestLoginModalLoginBtn" class="btn btn-primary">Masuk</a>
                     <a href="<?php echo e(route('register')); ?>" class="btn btn-primary">Daftar</a>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
                 </div>
             </div>
         </div>
@@ -540,13 +540,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var guestModal = document.getElementById('guestLoginModal');
-            if (!guestModal) return;
-            guestModal.addEventListener('show.bs.modal', function (event) {
-                var button = event.relatedTarget;
-                var loginUrl = button ? button.getAttribute('data-login-url') || '<?php echo e(route('login')); ?>' : '<?php echo e(route('login')); ?>';
-                var loginBtn = document.getElementById('guestLoginModalLoginBtn');
-                if (loginBtn) loginBtn.setAttribute('href', loginUrl);
-            });
+            if (guestModal) {
+                guestModal.addEventListener('show.bs.modal', function (event) {
+                    var button = event.relatedTarget;
+                    var loginUrl = button ? button.getAttribute('data-login-url') || '<?php echo e(route('login')); ?>' : '<?php echo e(route('login')); ?>';
+                    var loginBtn = document.getElementById('guestLoginModalLoginBtn');
+                    if (loginBtn) loginBtn.setAttribute('href', loginUrl);
+                });
+            }
             
             // Populate adminBlockModal with costume details from the triggering button's data-* attributes
             var adminBlockModal = document.getElementById('adminBlockModal');
@@ -568,6 +569,28 @@
                     if (domEl) domEl.textContent = domisili;
                 });
             }
+
+            // Force white text for costume detail modal rows when shown, and remove on hide
+            document.querySelectorAll('.costume-modal').forEach(function(modalEl) {
+                modalEl.addEventListener('show.bs.modal', function () {
+                    var modal = this;
+                    var elems = modal.querySelectorAll('.row.g-3, .row.g-3 * , .modal-body .col-7, .modal-body .col-5');
+                    elems.forEach(function(el) {
+                        try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) {}
+                    });
+                    // also ensure the modal title and any labels are white
+                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .kostum-domisili, .text-secondary, .text-muted');
+                    extras.forEach(function(el) { try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) {} });
+                });
+
+                modalEl.addEventListener('hide.bs.modal', function () {
+                    var modal = this;
+                    var elems = modal.querySelectorAll('.row.g-3, .row.g-3 * , .modal-body .col-7, .modal-body .col-5');
+                    elems.forEach(function(el) { try { el.style.removeProperty('color'); } catch(e) {} });
+                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .kostum-domisili, .text-secondary, .text-muted');
+                    extras.forEach(function(el) { try { el.style.removeProperty('color'); } catch(e) {} });
+                });
+            });
         });
     </script>
 <?php $__env->stopSection(); ?>

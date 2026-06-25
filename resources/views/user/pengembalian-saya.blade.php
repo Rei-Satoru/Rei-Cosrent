@@ -385,9 +385,32 @@
                                             <span class="badge {{ $statusData[1] }}">{{ $statusData[0] }}</span>
                                         </div>
                                     </div>
-                                    <button type="button" class="btn btn-sm btn-outline-info history-detail-btn" data-bs-toggle="modal" data-bs-target="#historyModal-{{ $request->id }}">
-                                        <i class="bi bi-card-list"></i> Detail
-                                    </button>
+                                    <div class="d-flex flex-column gap-2">
+                                        <button type="button" class="btn btn-sm btn-outline-info history-detail-btn" data-bs-toggle="modal" data-bs-target="#historyModal-{{ $request->id }}">
+                                            <i class="bi bi-card-list"></i> Detail
+                                        </button>
+                                        @if(($request->status ?? '') === 'ditolak' && data_get($request, 'formulir.id'))
+                                            @php
+                                                $formulir = data_get($request, 'formulir');
+                                                $g1 = $request->gambar1 ? asset('storage/' . $request->gambar1) : '';
+                                                $g2 = $request->gambar2 ? asset('storage/' . $request->gambar2) : '';
+                                                $g3 = $request->gambar3 ? asset('storage/' . $request->gambar3) : '';
+                                            @endphp
+                                            <button type="button"
+                                                class="btn btn-sm btn-outline-primary reapply-btn"
+                                                data-formulir-id="{{ data_get($formulir, 'id') }}"
+                                                data-action="{{ route('user.pengembalian.submit', data_get($formulir, 'id')) }}"
+                                                data-nama-kostum="{{ e(data_get($formulir, 'nama_kostum')) }}"
+                                                data-tanggal-pengembalian="{{ data_get($formulir, 'tanggal_pengembalian') }}"
+                                                data-catatan="{{ e($request->catatan ?? '') }}"
+                                                data-gambar1="{{ $g1 }}"
+                                                data-gambar2="{{ $g2 }}"
+                                                data-gambar3="{{ $g3 }}"
+                                            >
+                                                <i class="bi bi-arrow-counterclockwise"></i> Pengajuan Ulang
+                                            </button>
+                                        @endif
+                                    </div>
                                 </div>
                             @endforeach
                         </div>
@@ -588,6 +611,73 @@
     </div>
 </div>
 @endforeach
+
+            <!-- Dynamic return modal used for Pengajuan Ulang when a specific return modal is not present -->
+            <div class="modal fade" id="returnModalDynamic" tabindex="-1" aria-labelledby="returnModalDynamicLabel" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="returnModalDynamicLabel">Ajukan Pengembalian</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="returnModalDynamicForm" method="POST" action="" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-body">
+                                <div id="returnDynamicAlert" class="alert alert-info d-none"></div>
+
+                                <div class="row g-3 mb-3">
+                                    <div class="col-md-6">
+                                        <div class="small text-muted mb-1">Nama Kostum</div>
+                                        <div id="dynamicNamaKostum" class="fw-semibold">-</div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="small text-muted mb-1">Tanggal Pengembalian</div>
+                                        <div id="dynamicTanggalKembali" class="fw-semibold">-</div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mb-3" id="dynamicPreviousImagesRow">
+                                    <!-- injected previous images -->
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold" for="dynamic_gambar1">Gambar 1</label>
+                                    <input type="file" id="dynamic_gambar1" name="gambar1" class="form-control" accept="image/*" required>
+                                    <div class="form-text">Wajib diisi. Foto kelengkapan kostum sebelum dikemas.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold" for="dynamic_gambar2">Gambar 2</label>
+                                    <input type="file" id="dynamic_gambar2" name="gambar2" class="form-control" accept="image/*" required>
+                                    <div class="form-text">Wajib diisi. Foto kostum yang sudah dikemas.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold" for="dynamic_gambar3">Gambar 3</label>
+                                    <input type="file" id="dynamic_gambar3" name="gambar3" class="form-control" accept="image/*">
+                                    <div class="form-text">Opsional.</div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold" for="dynamic_catatan">Catatan Pengembalian</label>
+                                    <textarea id="dynamic_catatan" name="catatan" class="form-control" rows="4" placeholder="Contoh: Kostum sudah saya kembalikan hari ini dalam kondisi baik."></textarea>
+                                    <div class="form-text">Opsional.</div>
+                                </div>
+
+                                <div class="alert alert-warning mb-0">
+                                    Setelah dikirim, status pesanan akan <strong>diverifikasi admin</strong>.
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-circle"></i> Kirim Pengembalian
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
 @endsection
 
 @section('scripts')
@@ -603,6 +693,63 @@
                     alert.remove();
                 }
             }, 5000);
+        });
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const submitUrlTemplate = "{{ route('user.pengembalian.submit', '%FORMULIR_ID%') }}";
+
+        document.querySelectorAll('.reapply-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                const formulirId = this.dataset.formulirId;
+                if (!formulirId) {
+                    alert('Formulir tidak ditemukan untuk pengajuan ulang.');
+                    return;
+                }
+
+                // hide parent modal (history) if present
+                let parentModal = this.closest('.modal');
+                if (parentModal) {
+                    try { const inst = bootstrap.Modal.getInstance(parentModal); if (inst) inst.hide(); } catch (err) {}
+                }
+
+                // if there's a specific return modal for the order, open it
+                const specificModal = document.getElementById('returnModal-' + formulirId);
+                if (specificModal) {
+                    try { bootstrap.Modal.getOrCreateInstance(specificModal).show(); return; } catch (err) {}
+                }
+
+                // Otherwise, populate the dynamic modal with provided data attributes
+                const namaKostum = this.dataset.namaKostum || '-';
+                const tanggalKembali = this.dataset.tanggalPengembalian || '-';
+                const prevG1 = this.dataset.gambar1 || '';
+                const prevG2 = this.dataset.gambar2 || '';
+                const prevG3 = this.dataset.gambar3 || '';
+                const prevCatatan = this.dataset.catatan || '';
+
+                // set title and fields
+                document.getElementById('returnModalDynamicLabel').textContent = 'Ajukan Pengembalian - ' + namaKostum;
+                document.getElementById('dynamicNamaKostum').textContent = namaKostum;
+                document.getElementById('dynamicTanggalKembali').textContent = tanggalKembali ? tanggalKembali : '-';
+                document.getElementById('dynamic_catatan').value = prevCatatan;
+
+                const imagesRow = document.getElementById('dynamicPreviousImagesRow');
+                imagesRow.innerHTML = '';
+                if (prevG1) imagesRow.insertAdjacentHTML('beforeend', '<div class="col-md-4"><div class="small text-muted mb-1">Gambar 1 sebelumnya</div><img src="'+prevG1+'" class="img-fluid history-thumb"/></div>');
+                if (prevG2) imagesRow.insertAdjacentHTML('beforeend', '<div class="col-md-4"><div class="small text-muted mb-1">Gambar 2 sebelumnya</div><img src="'+prevG2+'" class="img-fluid history-thumb"/></div>');
+                if (prevG3) imagesRow.insertAdjacentHTML('beforeend', '<div class="col-md-4"><div class="small text-muted mb-1">Gambar 3 sebelumnya</div><img src="'+prevG3+'" class="img-fluid history-thumb"/></div>');
+
+                // update form action
+                const form = document.getElementById('returnModalDynamicForm');
+                form.action = submitUrlTemplate.replace('%FORMULIR_ID%', formulirId);
+
+                // ensure required attributes for reapply: make gambar1/gambar2 optional if previous images exist?
+                // We will keep fields required to encourage fresh photos; users can still submit without changing via backend handling.
+
+                // show modal
+                try { bootstrap.Modal.getOrCreateInstance(document.getElementById('returnModalDynamic')).show(); } catch (err) { console.error(err); alert('Gagal membuka modal pengajuan ulang.'); }
+            });
         });
     });
 </script>

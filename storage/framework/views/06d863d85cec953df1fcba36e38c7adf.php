@@ -63,6 +63,43 @@
     [data-bs-theme="dark"] .orders-table tbody tr:hover td {
         background: rgba(59, 130, 246, 0.14);
     }
+
+    #orderEditModal .modal-content,
+    #orderEditModal .modal-body,
+    #orderEditModal .modal-footer {
+        background-color: #0f172af5 !important;
+        color: #fff !important;
+    }
+
+    #orderEditModal .modal-body label,
+    #orderEditModal .modal-body .form-check-label,
+    #orderEditModal .modal-body .form-control::placeholder,
+    #orderEditModal .modal-body .form-text,
+    #orderEditModal .modal-body strong,
+    #orderEditModal .modal-body .form-check-input {
+        color: #fff !important;
+    }
+
+    #orderEditModal .form-control {
+        background-color: #0f172af5 !important;
+        color: #fff !important;
+        border-color: rgba(148, 163, 184, 0.3) !important;
+    }
+
+    #orderEditModal .order-edit-date-input {
+        box-sizing: border-box !important;
+        width: 100% !important;
+        max-width: 375px !important;
+        height: 38px !important;
+        min-height: 38px !important;
+        padding: 0.35rem 0.75rem !important;
+    }
+
+    #orderEditModal .form-control:focus {
+        background-color: #0f172af5 !important;
+        color: #fff !important;
+        box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+    }
 </style>
 <?php $__env->stopSection(); ?>
 
@@ -210,9 +247,21 @@
                                 <?php endif; ?>
 
                                 <?php if(in_array($order->status, ['proses', 'revisi'])): ?>
-                                    <a href="<?php echo e(route('user.pesanan.edit', ['id' => $order->id])); ?>" class="btn btn-sm btn-outline-primary w-100">
+                                    <button type="button" class="btn btn-sm btn-outline-primary w-100 order-edit-button" 
+                                        data-bs-toggle="modal" 
+                                        data-bs-target="#orderEditModal"
+                                        data-order-id="<?php echo e($order->id); ?>"
+                                        data-order-nama="<?php echo e($order->nama); ?>"
+                                        data-order-nomor_telepon="<?php echo e($order->nomor_telepon); ?>"
+                                        data-order-nomor_telepon_2="<?php echo e($order->nomor_telepon_2); ?>"
+                                        data-order-tanggal_pemakaian="<?php echo e($order->tanggal_pemakaian); ?>"
+                                        data-order-tanggal_pengembalian="<?php echo e($order->tanggal_pengembalian); ?>"
+                                        data-order-kartu_identitas="<?php echo e($order->kartu_identitas); ?>"
+                                        data-order-pernyataan="<?php echo e(e($order->pernyataan ?? '')); ?>"
+                                        data-order-nama_kostum="<?php echo e($order->nama_kostum); ?>"
+                                    >
                                         <i class="bi bi-pencil-square"></i> Edit
-                                    </a>
+                                    </button>
                                     <button type="button" class="btn btn-sm btn-outline-danger w-100" data-bs-toggle="modal" data-bs-target="#orderActionModal-<?php echo e($order->id); ?>">
                                         <i class="bi bi-x-octagon"></i> Batalkan/Hapus
                                     </button>
@@ -242,14 +291,13 @@
                         <div class="modal fade" id="orderDetailModal-<?php echo e($order->id); ?>" tabindex="-1" aria-labelledby="orderDetailLabel-<?php echo e($order->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
+                                    <div class="modal-header" style="background-color: #0d6efd; color: #fff;">
                                         <h5 class="modal-title" id="orderDetailLabel-<?php echo e($order->id); ?>">
-                                            <i class="bi bi-card-list"></i> Detail Pesanan #<?php echo e($order->id); ?>
-
+                                            <i class="bi bi-card-list"></i> Detail Pesanan
                                         </h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body text-white" style="background-color: #0f172af5; color: #fff;">
                                         <div class="row g-3">
                                             <div class="col-md-6">
                                                 <div class="mb-2"><strong>Nama Kostum:</strong><br><?php echo e($order->nama_kostum ?? '-'); ?></div>
@@ -274,7 +322,7 @@
                                                 <?php if($order->foto_kartu_identitas): ?>
                                                     <img src="<?php echo e(asset('storage/' . $order->foto_kartu_identitas)); ?>" alt="Foto Kartu Identitas" class="img-fluid rounded mt-2">
                                                 <?php else: ?>
-                                                    <div class="text-muted">Tidak tersedia</div>
+                                                    <div class="text-white">Tidak tersedia</div>
                                                 <?php endif; ?>
                                             </div>
                                             <div class="col-md-6">
@@ -282,13 +330,10 @@
                                                 <?php if($order->selfie_kartu_identitas): ?>
                                                     <img src="<?php echo e(asset('storage/' . $order->selfie_kartu_identitas)); ?>" alt="Selfie Kartu Identitas" class="img-fluid rounded mt-2">
                                                 <?php else: ?>
-                                                    <div class="text-muted">Tidak tersedia</div>
+                                                    <div class="text-white">Tidak tersedia</div>
                                                 <?php endif; ?>
                                             </div>
                                         </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="bi bi-x-circle"></i> Tutup</button>
                                     </div>
                                 </div>
                             </div>
@@ -298,11 +343,10 @@
                         <div class="modal fade" id="buktiModal-<?php echo e($order->id); ?>" tabindex="-1" aria-labelledby="buktiModalLabel-<?php echo e($order->id); ?>" aria-hidden="true">
                             <div class="modal-dialog modal-lg modal-dialog-centered">
                                 <div class="modal-content">
-                                    <div class="modal-header modal-header-surface">
-                                        <h5 class="modal-title" id="buktiModalLabel-<?php echo e($order->id); ?>">Bukti Pembayaran - Pesanan #<?php echo e($order->id); ?></h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <div class="modal-header" style="background-color: #0d6efd; color: #fff;">
+                                        <h5 class="modal-title" id="buktiModalLabel-<?php echo e($order->id); ?>">Bukti Pembayaran</h5>
                                     </div>
-                                    <div class="modal-body">
+                                    <div class="modal-body" style="background-color: #0f172af5; color: #fff;">
                                         <?php
                                             $displayBuktiPath = null;
                                             $displayExt = null;
@@ -331,9 +375,6 @@
                                         <?php else: ?>
                                             <div class="alert alert-secondary"><i class="bi bi-info-circle"></i> Belum ada bukti pembayaran untuk pesanan ini.</div>
                                         <?php endif; ?>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                     </div>
                                 </div>
                             </div>
@@ -365,11 +406,123 @@
                             </div>
                         </div>
                         <?php endif; ?>
-                        
-                        
                         <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                     </tbody>
                 </table>
+            </div>
+
+            <!-- Edit Pesanan Modal -->
+            <div class="modal fade" id="orderEditModal" tabindex="-1" aria-labelledby="orderEditLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header" style="background-color: #0d6efd; color: #fff;">
+                            <h5 class="modal-title" id="orderEditLabel"><i class="bi bi-pencil-square"></i> Edit Pesanan</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <form id="orderEditForm" method="POST" action="" enctype="multipart/form-data" data-base-action="<?php echo e(url('/pesanan-saya')); ?>/">
+                            <?php echo csrf_field(); ?>
+                            <div class="modal-body text-white" style="background-color: #0f172af5; color: #fff;">
+                                <input type="hidden" name="order_id" id="edit_order_id">
+                                <input type="hidden" name="_method" value="POST">
+                                <input type="hidden" name="pernyataan" id="edit_pernyataan">
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Nama Lengkap</label>
+                                        <input type="text" name="nama" id="edit_nama" class="form-control bg-dark text-white border-secondary" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Nomor Telepon</label>
+                                        <input type="text" name="nomor_telepon" id="edit_nomor_telepon" class="form-control bg-dark text-white border-secondary" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Nama Kostum</label>
+                                        <input type="text" id="edit_nama_kostum" class="form-control bg-dark text-white border-secondary" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Nomor Telepon Pihak Kedua</label>
+                                        <input type="text" name="nomor_telepon_2" id="edit_nomor_telepon_2" class="form-control bg-dark text-white border-secondary" required>
+                                    </div>
+                                </div>
+
+                                <hr class="border-secondary">
+
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Tanggal Pemakaian</label>
+                                        <input type="date" name="tanggal_pemakaian" id="edit_tanggal_pemakaian" class="form-control bg-dark text-white border-secondary order-edit-date-input" required>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Tanggal Pengembalian</label>
+                                        <input type="date" name="tanggal_pengembalian" id="edit_tanggal_pengembalian" class="form-control bg-dark text-white border-secondary order-edit-date-input" required>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-3">
+                                    <div class="col-md-12">
+                                        <label class="form-label text-white">Kartu Identitas</label>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_pelajar" value="Kartu Pelajar" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_pelajar">Kartu Pelajar</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_kia" value="KIA" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_kia">KIA</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_ktm" value="KTM" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_ktm">KTM</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_ktp" value="KTP" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_ktp">KTP</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_sim" value="SIM" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_sim">SIM</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="kartu_identitas" id="edit_identitas_lainnya" value="Lainnya" required>
+                                                    <label class="form-check-label text-white" for="edit_identitas_lainnya">Lainnya</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div id="edit_identitas_lainnya_input" style="display: none; margin-top: 1rem;">
+                                            <input type="text" name="kartu_identitas_lainnya" id="edit_kartu_identitas_lainnya" class="form-control bg-dark text-white border-secondary" placeholder="Sebutkan jenis identitas lainnya...">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="row g-3 mt-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Foto Kartu Identitas</label>
+                                        <input type="file" name="foto_kartu_identitas" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label text-white">Selfie Kartu Identitas</label>
+                                        <input type="file" name="selfie_kartu_identitas" class="form-control bg-dark text-white border-secondary" accept="image/*">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal-footer" style="background-color: #0f172af5;">
+
+                                <button type="submit" class="btn btn-success">Simpan Perubahan</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
         <?php endif; ?>
     </div>
@@ -392,6 +545,75 @@
                     }
                 }, 5000);
             } catch (e) {}
+        }
+
+        const orderEditModal = document.getElementById('orderEditModal');
+        if (orderEditModal) {
+            orderEditModal.addEventListener('show.bs.modal', function (event) {
+                const button = event.relatedTarget;
+                if (!button) return;
+
+                const orderId = button.dataset.orderId;
+                const baseAction = document.getElementById('orderEditForm').dataset.baseAction;
+                const form = document.getElementById('orderEditForm');
+                const action = baseAction + orderId + '/update';
+
+                form.action = action;
+                document.getElementById('edit_order_id').value = orderId || '';
+                document.getElementById('edit_nama').value = button.dataset.orderNama || '';
+                document.getElementById('edit_nomor_telepon').value = button.dataset.orderNomor_telepon || '';
+                document.getElementById('edit_nomor_telepon_2').value = button.dataset.orderNomor_telepon_2 || '';
+                document.getElementById('edit_pernyataan').value = button.dataset.orderPernyataan || '';
+                document.getElementById('edit_nama_kostum').value = button.dataset.orderNama_kostum || '';
+                document.getElementById('edit_tanggal_pemakaian').value = formatDateInputValue(button.dataset.orderTanggal_pemakaian || '');
+                document.getElementById('edit_tanggal_pengembalian').value = formatDateInputValue(button.dataset.orderTanggal_pengembalian || '');
+
+                const kartuValue = button.dataset.orderKartu_identitas || '';
+                const kartuKnown = ['Kartu Pelajar','KIA','KTM','KTP','SIM'];
+                const kartuButtons = document.querySelectorAll('#orderEditForm input[name="kartu_identitas"]');
+                kartuButtons.forEach(function(radio) {
+                    if (kartuKnown.includes(kartuValue)) {
+                        radio.checked = radio.value === kartuValue;
+                    } else {
+                        radio.checked = radio.value === 'Lainnya';
+                    }
+                });
+                const lainnyaContainer = document.getElementById('edit_identitas_lainnya_input');
+                const lainnyaInput = document.getElementById('edit_kartu_identitas_lainnya');
+                if (kartuKnown.includes(kartuValue) || kartuValue === '') {
+                    if (lainnyaContainer) lainnyaContainer.style.display = 'none';
+                    if (lainnyaInput) lainnyaInput.value = '';
+                } else {
+                    if (lainnyaContainer) lainnyaContainer.style.display = 'block';
+                    if (lainnyaInput) lainnyaInput.value = kartuValue;
+                }
+            });
+
+            const identitasRadios = document.querySelectorAll('#orderEditForm input[name="kartu_identitas"]');
+            const identitasLainnyaContainer = document.getElementById('edit_identitas_lainnya_input');
+            const identitasLainnyaInput = document.getElementById('edit_kartu_identitas_lainnya');
+            if (identitasRadios.length && identitasLainnyaContainer) {
+                identitasRadios.forEach(function(radio) {
+                    radio.addEventListener('change', function() {
+                        if (this.value === 'Lainnya') {
+                            identitasLainnyaContainer.style.display = 'block';
+                        } else {
+                            identitasLainnyaContainer.style.display = 'none';
+                            if (identitasLainnyaInput) {
+                                identitasLainnyaInput.value = '';
+                            }
+                        }
+                    });
+                });
+            }
+        }
+
+        function formatDateInputValue(value) {
+            if (!value) {
+                return '';
+            }
+            const normalized = value.split(' ')[0].split('T')[0];
+            return normalized;
         }
     });
 </script>
