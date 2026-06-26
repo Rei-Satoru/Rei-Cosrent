@@ -435,43 +435,48 @@
 <div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title" id="deleteAccountModalLabel">
-                    <i class="bi bi-exclamation-triangle"></i> Konfirmasi Hapus Akun
+            <div class="modal-header" style="background-color: #0d6efd !important; color: #ffffff !important; border-color: #0d6efd !important;">
+
+                <h5 class="modal-title" id="deleteAccountModalLabel" style="color: #ffffff !important;">
+                    <i class="bi bi-exclamation-triangle" style="color: #ffffff !important;"></i> Konfirmasi Hapus Akun
                 </h5>
                 <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <form method="POST" action="{{ route('user.account.delete') }}" id="deleteAccountForm">
                 @csrf
                 @method('DELETE')
-                <div class="modal-body">
-                    <div class="alert alert-warning mb-3">
+                <div class="modal-body" style="background-color: #0f172af5 !important; color: #ffffff !important;">
+                    <div class="alert alert-warning mb-3" style="background-color: #0f172af5 !important; border-color: rgba(255,255,255,0.15) !important; color: #ffffff !important;">
+
+
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         <strong>Peringatan!</strong> Tindakan ini tidak dapat dibatalkan. Semua data Anda akan dihapus secara permanen.
                     </div>
                     <div class="mb-3">
-                        <label for="delete_password" class="form-label fw-semibold">Masukkan Password untuk Konfirmasi</label>
+                        <label for="delete_password" class="form-label fw-semibold" style="color: #ffffff !important;">Masukkan Password untuk Konfirmasi</label>
                         <div class="password-wrapper">
-                            <input type="password" class="form-control" id="delete_password" name="password" required placeholder="Masukkan password Anda" style="padding-right: 40px;">
-                            <button type="button" class="password-toggle" onclick="togglePassword('delete_password')">
-                                <i class="bi bi-eye" id="delete_password-icon"></i>
+                            <input type="password" class="form-control" id="delete_password" name="password" required placeholder="Masukkan password Anda" style="padding-right: 40px; background-color: #0f172af5 !important; color: #ffffff !important; border-color: rgba(255, 255, 255, 0.15) !important;">
+
+                            <button type="button" class="password-toggle" onclick="togglePassword('delete_password')" style="color: #ffffff !important;">
+                                <i class="bi bi-eye" id="delete_password-icon" style="color: #ffffff !important;"></i>
                             </button>
                         </div>
-                        <small class="text-muted">Konfirmasi dengan memasukkan password Anda.</small>
+                        <small class="text-muted" style="color: #ffffff !important;">Konfirmasi dengan memasukkan password Anda.</small>
+
                     </div>
                     <div class="form-check">
-                        <input class="form-check-input" type="checkbox" id="confirmDelete" required>
-                        <label class="form-check-label" for="confirmDelete">
+                        <input class="form-check-input" type="checkbox" id="confirmDelete" required style="background-color: #0f172af5 !important; border-color: #0d6efd !important;" >
+                        <label class="form-check-label" for="confirmDelete" style="color: #ffffff !important;">
                             Saya memahami bahwa akun saya akan dihapus permanen
                         </label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle"></i> Batal
+                <div class="modal-footer" style="background-color: #0f172af5 !important; border-top-color: #0f172af5 !important; color: #ffffff !important;">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="color: #ffffff !important;">
+                        <i class="bi bi-x-circle" style="color: #ffffff !important;"></i> Batal
                     </button>
-                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled>
-                        <i class="bi bi-trash"></i> Hapus Akun Permanen
+                    <button type="submit" class="btn btn-danger" id="confirmDeleteBtn" disabled style="color: #ffffff !important; border-color: #0d6efd !important;">
+                        <i class="bi bi-trash" style="color: #ffffff !important;"></i> Hapus Akun Permanen
                     </button>
                 </div>
             </form>

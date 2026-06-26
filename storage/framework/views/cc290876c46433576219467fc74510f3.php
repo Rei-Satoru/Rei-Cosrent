@@ -3,6 +3,11 @@
 <?php $__env->startSection('title', 'Data Pesanan - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
+    /* Ensure modal detail text is always white */
+    [id^="pesananDetail"] * { color: #ffffff !important; }
+
+
+
     /* Admin dropdown colors */
     .form-select, select, .dropdown-menu {
         background-color: #0f172af5 !important;
@@ -211,6 +216,14 @@
                             <option value="7:string:asc">Status A–Z</option>
                             <option value="7:string:desc">Status Z–A</option>
                         </select>
+
+                        <select id="filter-admin-pesanan-tahun" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6; min-width: 130px;">
+                            <option value="">Semua Tahun</option>
+                        </select>
+
+                        <select id="filter-admin-pesanan-bulan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6; min-width: 130px;">
+                            <option value="">Semua Bulan</option>
+                        </select>
                     </div>
                     <div class="col-md-3 text-md-end">
                         <button id="reset-admin-pesanan" type="button" class="btn btn-light w-100">Reset Pencarian</button>
@@ -235,8 +248,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $__currentLoopData = $pesanan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                <tr>
+<?php $__currentLoopData = $pesanan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr data-date="<?php echo e($item->tanggal_pemakaian ? \Carbon\Carbon::parse($item->tanggal_pemakaian)->toDateString() : ($item->tanggal_pengembalian ? \Carbon\Carbon::parse($item->tanggal_pengembalian)->toDateString() : '')); ?>">
                                     <td><?php echo e($loop->iteration); ?></td>
                                     <td><?php echo e($item->nama_kostum); ?></td>
                                     <td class="d-none d-md-table-cell">
@@ -671,7 +684,103 @@
             updateRows();
         }
 
-        initAdminTableSearchSort('adminPesananTable','search-admin-pesanan','sort-admin-pesanan','reset-admin-pesanan');
+        // Apply Tahun/Bulan filter + Search/Sort
+        const yearSelect = document.getElementById('filter-admin-pesanan-tahun');
+        const monthSelect = document.getElementById('filter-admin-pesanan-bulan');
+        if (yearSelect && monthSelect) {
+            // populate Tahun/Minggu options based on data rows
+            const years = new Set();
+            const months = new Set();
+            Array.from(document.querySelectorAll('#adminPesananTable tbody tr[data-date]')).forEach(tr => {
+                const d = tr.getAttribute('data-date') || '';
+                if (!d) return;
+                // d expected: YYYY-MM-DD
+                const parts = d.split('-');
+                if (parts.length >= 2) {
+                    const y = parts[0];
+                    const m = parts[1];
+                    if (y) years.add(y);
+                    if (m) months.add(m);
+                }
+            });
+
+            const sortedYears = Array.from(years).sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+            yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+            sortedYears.forEach(y => {
+                yearSelect.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`);
+            });
+
+            const monthOrder = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+            const bulanName = { '01':'Januari','02':'Februari','03':'Maret','04':'April','05':'Mei','06':'Juni','07':'Juli','08':'Agustus','09':'September','10':'Oktober','11':'November','12':'Desember' };
+            monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+            monthOrder.forEach(m => {
+                if (months.has(m)) {
+                    monthSelect.insertAdjacentHTML('beforeend', `<option value="${m}">${bulanName[m]}</option>`);
+                }
+            });
+        }
+
+        // Re-init with year/month filter by wrapping existing behavior
+        const table = document.getElementById('adminPesananTable');
+        const searchInput = document.getElementById('search-admin-pesanan');
+        const sortSelect = document.getElementById('sort-admin-pesanan');
+        const resetButton = document.getElementById('reset-admin-pesanan');
+        if (table && searchInput && sortSelect && resetButton && yearSelect && monthSelect) {
+            const tbody = table.tBodies[0];
+            if (tbody) {
+                const originalRows = Array.from(tbody.rows);
+
+                function updateRows() {
+                    const query = normalizeText(searchInput.value);
+                    const yearVal = yearSelect.value;
+                    const monthVal = monthSelect.value;
+
+                    const filteredByYearMonth = originalRows.filter(row => {
+                        const date = row.getAttribute('data-date') || '';
+                        const parts = date ? date.split('-') : [];
+                        const y = parts.length >= 1 ? parts[0] : '';
+                        const m = parts.length >= 2 ? parts[1] : '';
+                        const okYear = (!yearVal) || (y === yearVal);
+                        const okMonth = (!monthVal) || (m === monthVal);
+                        return okYear && okMonth;
+                    });
+
+                    let filtered = filteredByYearMonth.filter(row => normalizeText(row.textContent).includes(query));
+
+                    const sortParts = (sortSelect.value || '').split(':');
+                    const colIndex = sortParts[0];
+                    const type = sortParts[1];
+                    const direction = sortParts[2];
+                    if (colIndex !== undefined && colIndex !== '' && type && direction) {
+                        const index = parseInt(colIndex, 10);
+                        filtered.sort((a, b) => compareValues(
+                            a.cells[index]?.textContent || '',
+                            b.cells[index]?.textContent || '',
+                            type,
+                            direction
+                        ));
+                    }
+
+                    tbody.innerHTML = '';
+                    filtered.forEach(r => tbody.appendChild(r));
+                }
+
+                searchInput.addEventListener('input', updateRows);
+                sortSelect.addEventListener('change', updateRows);
+                yearSelect.addEventListener('change', updateRows);
+                monthSelect.addEventListener('change', updateRows);
+
+                resetButton.addEventListener('click', () => {
+                    searchInput.value = '';
+                    sortSelect.value = '';
+                    yearSelect.value = '';
+                    monthSelect.value = '';
+                    updateRows();
+                });
+
+                updateRows();
+            }
+        }
     });
 </script><?php $__env->stopSection(); ?>
 

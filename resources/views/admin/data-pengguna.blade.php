@@ -366,10 +366,6 @@
                                                                     </table>
                                                                 </div>
                                                             </div>
-                                                            <hr class="detail-user-hr">
-                                                        </div>
-                                                        <div class="modal-footer">
-                                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Tutup</button>
                                                         </div>
                                                     </div>
                                                 </div>

@@ -3,7 +3,12 @@
 @section('title', 'Data Ulasan - Rei Cosrent')
 
 @section('styles')
+    /* Force all muted text (email/nick) to be white */
+    .text-muted,
+    .text-muted * { color: #ffffff !important; }
+
     /* Admin dropdown colors */
+
     .form-select, select, .dropdown-menu {
         background-color: #0f172af5 !important;
         color: #dee2e6 !important;
@@ -171,7 +176,7 @@
 
         <div class="card mb-3" style="background-color: #0f172af5; border: none;">
             <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
-                <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
+                    <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
                     <div class="input-group" style="background-color: #94a3b829; border-radius: 0.75rem; border: 1px solid rgba(148,163,184,0.35);">
                         <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
                         <input id="search-admin-ulasan" type="search" class="form-control border-0 bg-transparent" placeholder="Cari pesanan, pengguna, ulasan, rating..." aria-label="Cari ulasan">
@@ -184,6 +189,14 @@
                         <option value="2:numeric:asc">Rating Terendah</option>
                         <option value="3:string:asc">Ulasan A–Z</option>
                         <option value="3:string:desc">Ulasan Z–A</option>
+                    </select>
+
+                    <select id="filter-admin-ulasan-tahun" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6; min-width: 130px;">
+                        <option value="">Semua Tahun</option>
+                    </select>
+
+                    <select id="filter-admin-ulasan-bulan" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6; min-width: 130px;">
+                        <option value="">Semua Bulan</option>
                     </select>
                 </div>
                     <div class="col-md-3 text-md-end">
@@ -216,7 +229,7 @@
                                         }
                                     }
                                 @endphp
-                                <tr>
+                                <tr data-date="{{ $u->created_at ? $u->created_at->toDateString() : '' }}">
                                     <td class="fw-semibold">{{ $index + 1 }}</td>
                                     <td class="text-start">
                                         <div class="fw-semibold">{{ $u->nama_kostum ?? '-' }}</div>
@@ -427,7 +440,88 @@
             updateRows();
         }
 
-        initAdminTableSearchSort('adminUlasanTable','search-admin-ulasan','sort-admin-ulasan','reset-admin-ulasan');
+        // Apply Tahun/Bulan filter + Search/Sort
+        const yearSelect = document.getElementById('filter-admin-ulasan-tahun');
+        const monthSelect = document.getElementById('filter-admin-ulasan-bulan');
+        const table = document.getElementById('adminUlasanTable');
+        const searchInput = document.getElementById('search-admin-ulasan');
+        const sortSelect = document.getElementById('sort-admin-ulasan');
+        const resetButton = document.getElementById('reset-admin-ulasan');
+
+        if (table && searchInput && sortSelect && resetButton && yearSelect && monthSelect) {
+            const tbody = table.tBodies[0];
+            const originalRows = tbody ? Array.from(tbody.rows) : [];
+
+            const years = new Set();
+            const months = new Set();
+            originalRows.forEach(tr => {
+                const d = tr.getAttribute('data-date') || '';
+                const parts = d ? d.split('-') : [];
+                if (parts.length >= 2) {
+                    if (parts[0]) years.add(parts[0]);
+                    if (parts[1]) months.add(parts[1]);
+                }
+            });
+
+            const sortedYears = Array.from(years).sort((a,b)=>parseInt(a,10)-parseInt(b,10));
+            yearSelect.innerHTML = '<option value="">Semua Tahun</option>';
+            sortedYears.forEach(y => yearSelect.insertAdjacentHTML('beforeend', `<option value="${y}">${y}</option>`));
+
+            const monthOrder = ['01','02','03','04','05','06','07','08','09','10','11','12'];
+            const bulanName = { '01':'Januari','02':'Februari','03':'Maret','04':'April','05':'Mei','06':'Juni','07':'Juli','08':'Agustus','09':'September','10':'Oktober','11':'November','12':'Desember' };
+            monthSelect.innerHTML = '<option value="">Semua Bulan</option>';
+            monthOrder.forEach(m => {
+                if (months.has(m)) monthSelect.insertAdjacentHTML('beforeend', `<option value="${m}">${bulanName[m]}</option>`);
+            });
+
+            function updateRows() {
+                const query = normalizeText(searchInput.value);
+                const yearVal = yearSelect.value;
+                const monthVal = monthSelect.value;
+
+                let filtered = originalRows.filter(row => {
+                    const d = row.getAttribute('data-date') || '';
+                    const parts = d ? d.split('-') : [];
+                    const y = parts.length >= 1 ? parts[0] : '';
+                    const m = parts.length >= 2 ? parts[1] : '';
+                    const okYear = (!yearVal) || (y === yearVal);
+                    const okMonth = (!monthVal) || (m === monthVal);
+                    return okYear && okMonth;
+                }).filter(row => normalizeText(row.textContent).includes(query));
+
+                const sortParts = (sortSelect.value || '').split(':');
+                const colIndex = sortParts[0];
+                const type = sortParts[1];
+                const direction = sortParts[2];
+                if (colIndex !== undefined && colIndex !== '' && type && direction) {
+                    const index = parseInt(colIndex, 10);
+                    filtered.sort((a, b) => compareValues(
+                        a.cells[index]?.textContent || '',
+                        b.cells[index]?.textContent || '',
+                        type,
+                        direction
+                    ));
+                }
+
+                tbody.innerHTML = '';
+                filtered.forEach(r => tbody.appendChild(r));
+            }
+
+            searchInput.addEventListener('input', updateRows);
+            sortSelect.addEventListener('change', updateRows);
+            yearSelect.addEventListener('change', updateRows);
+            monthSelect.addEventListener('change', updateRows);
+
+            resetButton.addEventListener('click', () => {
+                searchInput.value = '';
+                sortSelect.value = '';
+                yearSelect.value = '';
+                monthSelect.value = '';
+                updateRows();
+            });
+
+            updateRows();
+        }
     });
 </script>
 @endsection

@@ -132,15 +132,23 @@
         .modal-content .modal-body .form-select:focus,
         .modal-content .modal-body .form-control[readonly],
         .modal-content .modal-body .form-control[disabled] {
+
             background-color: #0f172af5 !important;
             color: var(--bs-body-color) !important;
             border-color: rgba(148, 163, 184, 0.12) !important;
             box-shadow: none !important;
         }
 
-        .modal-content .modal-body ::placeholder {
-            color: rgba(148, 163, 184, 0.6) !important;
-        }
+    .modal-content .modal-body ::placeholder {
+        color: rgba(148, 163, 184, 0.6) !important;
+    }
+
+    /* Modal edit: semua teks harus putih */
+    #editModal *,
+    #editModal *:not(i):not(button) {
+        color: #ffffff !important;
+    }
+
 
         [data-bs-theme="dark"] .orders-table thead th,
         [data-bs-theme="dark"] .orders-table tbody td {

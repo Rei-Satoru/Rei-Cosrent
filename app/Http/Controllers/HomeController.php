@@ -347,7 +347,18 @@ class HomeController extends Controller
             }
 
             $username = $user->username;
-            $user->delete();
+
+            // Anonymize user instead of hard-deleting it, so admin recap data (pesanan/pengembalian/denda/ulasan)
+            // that is linked via FK (or shared-key) does not disappear when account is removed.
+            $deletedAt = now()->format('YmdHis');
+            $uniqueSuffix = $user->id . '_' . $deletedAt;
+
+            $user->username = 'deleted_' . $uniqueSuffix;
+            $user->nick_name = null;
+            $user->email = 'deleted_' . $uniqueSuffix . '@example.com';
+
+            // Keep password hash & other fields as-is (not required for recap), but remove avatar.
+            $user->save();
 
             session()->flush();
 
