@@ -252,7 +252,7 @@ table td {
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
                 <h2 class="fw-bold mb-0">Data Kostum</h2>
-                <p class="text-muted mb-0 small">Kelola daftar kostum yang tersedia untuk disewa.</p>
+                <p class="text-muted mb-0 small" style="color:#ffffff !important;">Kelola daftar kostum yang tersedia untuk disewa.</p>
             </div>
             <div class="d-grid d-sm-block">
                 <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">

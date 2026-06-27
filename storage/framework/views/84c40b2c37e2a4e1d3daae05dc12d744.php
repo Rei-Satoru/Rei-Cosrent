@@ -191,7 +191,7 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
                 <h2 class="fw-bold mb-0">Data Pengguna</h2>
-                <p class="text-muted mb-0 small">Edit password atau hapus akun pengguna</p>
+                <p class="text-muted mb-0 small" style="color:#ffffff !important;">Edit atau hapus akun pengguna</p>
             </div>
             <div class="d-grid d-sm-block">
                 <a href="<?php echo e(route('admin.profile')); ?>" class="btn btn-outline-primary">

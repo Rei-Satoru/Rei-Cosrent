@@ -1,8 +1,6 @@
-# TODO
-
-- [x] Identifikasi proses hapus akun di `HomeController::deleteAccount()` (anonymize, bukan delete).
-- [x] Verifikasi potensi penyebab rekap admin hilang: cek FK/cascade di tabel rekap.
-- [x] Tambahkan migration untuk memastikan `formulir.user_id` tidak memakai cascade delete (gunakan `SET NULL`).
-- [ ] Jalankan `php artisan migrate`.
-- [ ] Uji manual: buat pesanan/pengembalian/denda/ulasan -> hapus akun -> pastikan halaman admin `data-tanggal`, `data-pesanan`, `data-pengembalian`, `data-denda`, `data-ulasan` tetap tampil.
-
+- [ ] Read admin dashboard view to locate sidebar + manage-data cards/buttons styling
+- [ ] Create edit plan to change sidebar text colors to #ffffff except main sidebar title "Kelola Data"
+- [ ] Apply CSS changes in the Blade file (sidebar styles section)
+- [ ] Verify no unintended changes to "Kelola Data" title
+- [ ] (Optional) Quick grep/scan for conflicting inline styles within dashboard sidebar
+- [ ] Finalize and report modifications

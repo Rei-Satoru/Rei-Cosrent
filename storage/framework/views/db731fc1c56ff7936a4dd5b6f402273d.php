@@ -157,7 +157,7 @@
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-start align-items-sm-center gap-2 mb-4">
             <div>
                 <h2 class="fw-bold mb-0">Data Aturan</h2>
-                <p class="text-muted mb-0 small">Kelola syarat ketentuan dan larangan/denda sewa kostum.</p>
+                <p class="text-muted mb-0 small" style="color:#ffffff !important;">Kelola syarat ketentuan dan larangan/denda sewa kostum.</p>
             </div>
             <div class="d-grid d-sm-block">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">

@@ -1,6 +1,6 @@
 
 
-<?php $__env->startSection('title', 'Kelola Profil & Kontak - Rei Cosrent'); ?>
+<?php $__env->startSection('title', 'Profil & Kontak Admin - Rei Cosrent'); ?>
 
 <?php $__env->startSection('styles'); ?>
     :root {

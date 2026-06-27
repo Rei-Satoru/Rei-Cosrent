@@ -196,8 +196,8 @@
         <div class="card shadow-sm mb-4" style="background-color: rgba(37, 99, 235, 0.06); border: 1px solid rgba(37, 99, 235, 0.12);">
             <div class="card-body d-flex flex-column flex-lg-row align-items-lg-center justify-content-between gap-3">
                 <div>
-                    <h5 class="fw-bold mb-1">Pilih Tahun & Bulan</h5>
-                    <p class="mb-0 small">Tampilkan kalender booking berdasarkan tahun dan bulan yang dipilih.</p>
+                    <h5 class="fw-bold mb-1" style="color:#ffffff !important;">Pilih Tahun & Bulan</h5>
+                    <p class="mb-0 small" style="color:#ffffff !important;">Tampilkan kalender booking berdasarkan tahun dan bulan yang dipilih.</p>
                 </div>
                 <form method="GET" class="d-flex gap-2 align-items-center">
                     <label class="visually-hidden">Tahun</label>

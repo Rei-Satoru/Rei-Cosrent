@@ -393,12 +393,14 @@
 
                             <div class="mb-3">
                                 <label for="nomor_telepon" class="form-label fw-semibold">Nomor Telepon</label>
+
                                 <input type="text" class="form-control @error('nomor_telepon') is-invalid @enderror" id="nomor_telepon" name="nomor_telepon" value="{{ old('nomor_telepon', $user->nomor_telepon) }}" placeholder="08xxxxxxxxxx" pattern="08[0-9]{8,13}" title="Nomor telepon harus diawali 08 dan berisi 10-15 digit">
                                 <small class="text-muted">Format: 08xxxxxxxxxx.</small>
                                 @error('nomor_telepon')
                                     <div class="invalid-feedback d-block">{{ $message }}</div>
                                 @enderror
                             </div>
+
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold d-block">Jenis Kelamin</label>

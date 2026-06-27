@@ -475,6 +475,7 @@ unset($__errorArgs, $__bag); ?>
 
                             <div class="mb-3">
                                 <label for="nomor_telepon" class="form-label fw-semibold">Nomor Telepon</label>
+
                                 <input type="text" class="form-control <?php $__errorArgs = ['nomor_telepon'];
 $__bag = $errors->getBag($__errorArgs[1] ?? 'default');
 if ($__bag->has($__errorArgs[0])) :
@@ -495,6 +496,7 @@ if (isset($__messageOriginal)) { $message = $__messageOriginal; }
 endif;
 unset($__errorArgs, $__bag); ?>
                             </div>
+
 
                             <div class="mb-4">
                                 <label class="form-label fw-semibold d-block">Jenis Kelamin</label>

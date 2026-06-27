@@ -236,10 +236,12 @@ class HomeController extends Controller
             'alamat' => 'nullable|string|max:1000',
 
 
+
             'nomor_telepon' => 'nullable|regex:/^08[0-9]{8,13}$/',
             'jenis_kelamin' => 'nullable|in:Pria,Wanita',
             'gambar_profil' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
             'remove_photo' => 'nullable|boolean',
+
         ], [
             'username.required' => 'Username wajib diisi.',
             'username.unique' => 'Username sudah digunakan oleh user lain.',
@@ -271,6 +273,7 @@ class HomeController extends Controller
             // Normalize Instagram handle: trim and remove any leading '@' characters
             $instagramRaw = trim((string) $request->input('instagram'));
             $instagramClean = $instagramRaw !== '' ? ltrim($instagramRaw, '@') : null;
+
             $user->instagram = $instagramClean;
 
             if (trim((string) $user->instagram) !== '') {

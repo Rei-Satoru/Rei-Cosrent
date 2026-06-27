@@ -157,7 +157,7 @@
             </div>
             <div class="d-flex gap-2">
                 <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="bi bi-plus-lg"></i> Tambah
+                    <i class="bi bi-plus-circle"></i> Tambah Denda
                 </button>
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali

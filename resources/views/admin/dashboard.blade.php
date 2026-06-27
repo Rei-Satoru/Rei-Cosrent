@@ -780,11 +780,11 @@
     </div>
     <div class="p-3">
         <div class="d-grid gap-3">
-            <a href="{{ route('admin.data-tanggal') }}" aria-label="Kelola Data Tanggal" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
+            <a href="{{ route('admin.data-tanggal') }}" aria-label="Data Tanggal" class="card menu-card shadow-sm border-0 rounded-xl text-decoration-none">
                 <div class="card-body p-3 d-flex align-items-center">
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-calendar2-week"></i></div>
                     <div class="flex-grow-1">
-                        <h6 class="fw-semibold mb-0">Kelola Data Tanggal</h6>
+                        <h6 class="fw-semibold mb-0">Data Tanggal</h6>
                     </div>
                 </div>
             </a>
@@ -844,7 +844,7 @@
                     <div class="menu-icon me-3 mb-0"><i class="bi bi-arrow-counterclockwise"></i></div>
                     <div class="flex-grow-1">
                         <h6 class="fw-semibold mb-0">Data Pengembalian</h6>
-                        <small class="text-muted">Menunggu Verifikasi: {{ $pengembalian_count ?? 0 }}</small>
+                        <small class="text-muted">Total: {{ $pengembalian_count }}</small>
                     </div>
                 </div>
             </a>
@@ -954,13 +954,23 @@
         color: var(--bs-primary);
         margin-bottom: 0 !important;
     }
-    .app-sidebar h6 {
-        color: var(--admin-main-text);
+.app-sidebar h5 {
     }
+
+    .app-sidebar .menu-card h6 {
+        color: #ffffff !important;
+    }
+    .app-sidebar .menu-card small {
+        color: #ffffff !important;
+        opacity: 0.9;
+    }
+
+    /* fallback untuk elemen lain di sidebar */
     .app-sidebar small {
         color: var(--admin-sub-text);
         opacity: 0.8;
     }
+
 
     @media (max-width: 768px) {
         #pageWrapper.shifted {

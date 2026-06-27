@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Kelola Profil & Kontak - Rei Cosrent')
+@section('title', 'Profil & Kontak Admin - Rei Cosrent')
 
 @section('styles')
     :root {
