@@ -160,9 +160,11 @@
                 <p class="text-muted mb-0 small" style="color:#ffffff !important;">Kelola syarat ketentuan dan larangan/denda sewa kostum.</p>
             </div>
             <div class="d-grid d-sm-block">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    <i class="bi bi-plus-circle"></i> Tambah Aturan
-                </button>
+                @if($aturan->count() == 0)
+                    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
+                        <i class="bi bi-plus-circle"></i> Tambah Aturan
+                    </button>
+                @endif
                 <a href="{{ route('admin.profile') }}" class="btn btn-outline-primary">
                     <i class="bi bi-arrow-left"></i> Kembali
                 </a>
@@ -208,9 +210,11 @@
                                         <button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editModal{{ $item->id }}">
                                             <i class="bi bi-pencil"></i> Edit
                                         </button>
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $item->id }}">
-                                            <i class="bi bi-trash"></i> Hapus
-                                        </button>
+                                        @if($aturan->count() == 0)
+                                            <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ $item->id }}">
+                                                <i class="bi bi-trash"></i> Hapus
+                                            </button>
+                                        @endif
                                     </div>
                                 </td>
                             </tr>

@@ -108,10 +108,56 @@
 
     .action-buttons {
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
         gap: 8px;
-        flex-wrap: wrap;
+        min-width: 180px;
+    }
+
+    .action-cell {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+    }
+
+    .action-cell form {
+        width: 100%;
+        margin: 0;
+    }
+
+    .action-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-cell .btn,
+    .action-cell select.form-select {
+        width: 100%;
+        min-height: 40px;
+        padding-top: 0;
+        padding-bottom: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        border-radius: 0.75rem;
+        line-height: 1;
+        margin: 0;
+    }
+
+    .action-cell .btn.btn-sm,
+    .action-cell select.form-select {
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+    }
+
+    .action-form select.form-select {
+        width: 100% !important;
     }
 
     .table-responsive { overflow-x: auto; }
@@ -166,6 +212,7 @@
         width: 100%;
         min-width: 260px;
         min-height: 48px;
+        height: 48px;
         background-color: #0f172af5 !important;
         color: #dee2e6 !important;
         border: 1px solid rgba(148,163,184,0.35) !important;
@@ -330,30 +377,43 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pesananDetail{{ $item->id }}" title="Detail">
-                                                <i class="bi bi-info-circle"></i> Detail
-                                            </button>
-                                            <form id="updateForm-{{ $item->id }}" action="{{ route('admin.pesanan.update-status', $item->id) }}" method="POST" class="d-flex gap-2 align-items-center">
-                                                @csrf
-                                                <input type="hidden" name="keterangan" id="hidden-keterangan-{{ $item->id }}" value="{{ $item->keterangan }}">
-                                                <select name="status" class="form-select form-select-sm w-100 w-md-auto" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
-                                                    @foreach($statusOptions as $status)
-                                                        <option value="{{ $status }}" {{ $item->status === $status ? 'selected' : '' }}>
-                                                            {{ ucfirst($status) }}
-                                                        </option>
-                                                    @endforeach
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">
-                                                    <i class="bi bi-save"></i>
+                                            {{-- Baris 1: Detail --}}
+                                            <div class="action-cell">
+                                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pesananDetail{{ $item->id }}" title="Detail">
+                                                    <i class="bi bi-info-circle"></i> Detail
                                                 </button>
-                                            </form>
-                                            <form action="{{ route('admin.pesanan.delete', $item->id) }}" method="POST" style="display:inline; margin-left:6px;">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">
-                                                    <i class="bi bi-trash"></i> Hapus
-                                                </button>
-                                            </form>
+                                            </div>
+
+                                            {{-- Baris 2: Status (select) --}}
+                                            <div class="action-cell">
+                                                <form id="updateForm-{{ $item->id }}" action="{{ route('admin.pesanan.update-status', $item->id) }}" method="POST" class="action-form">
+                                                    @csrf
+                                                    <input type="hidden" name="keterangan" id="hidden-keterangan-{{ $item->id }}" value="{{ $item->keterangan }}">
+
+                                                    <select name="status" class="form-select form-select-sm" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
+                                                        @foreach($statusOptions as $status)
+                                                            <option value="{{ $status }}" {{ $item->status === $status ? 'selected' : '' }}>
+                                                                {{ ucfirst($status) }}
+                                                            </option>
+                                                        @endforeach
+                                                    </select>
+
+                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-save"></i> Simpan
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            {{-- Baris 4: Hapus --}}
+                                            <div class="action-cell">
+                                                <form action="{{ route('admin.pesanan.delete', $item->id) }}" method="POST">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">
+                                                        <i class="bi bi-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

@@ -108,10 +108,56 @@
 
     .action-buttons {
         display: flex;
-        justify-content: center;
-        align-items: center;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
         gap: 8px;
-        flex-wrap: wrap;
+        min-width: 180px;
+    }
+
+    .action-cell {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 40px;
+    }
+
+    .action-cell form {
+        width: 100%;
+        margin: 0;
+    }
+
+    .action-form {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .action-cell .btn,
+    .action-cell select.form-select {
+        width: 100%;
+        min-height: 40px;
+        padding-top: 0;
+        padding-bottom: 0;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        white-space: nowrap;
+        border-radius: 0.75rem;
+        line-height: 1;
+        margin: 0;
+    }
+
+    .action-cell .btn.btn-sm,
+    .action-cell select.form-select {
+        padding-left: 0.875rem;
+        padding-right: 0.875rem;
+    }
+
+    .action-form select.form-select {
+        width: 100% !important;
     }
 
     .table-responsive { overflow-x: auto; }
@@ -166,6 +212,7 @@
         width: 100%;
         min-width: 260px;
         min-height: 48px;
+        height: 48px;
         background-color: #0f172af5 !important;
         color: #dee2e6 !important;
         border: 1px solid rgba(148,163,184,0.35) !important;
@@ -332,31 +379,44 @@
                                     </td>
                                     <td>
                                         <div class="action-buttons">
-                                            <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pesananDetail<?php echo e($item->id); ?>" title="Detail">
-                                                <i class="bi bi-info-circle"></i> Detail
-                                            </button>
-                                            <form id="updateForm-<?php echo e($item->id); ?>" action="<?php echo e(route('admin.pesanan.update-status', $item->id)); ?>" method="POST" class="d-flex gap-2 align-items-center">
-                                                <?php echo csrf_field(); ?>
-                                                <input type="hidden" name="keterangan" id="hidden-keterangan-<?php echo e($item->id); ?>" value="<?php echo e($item->keterangan); ?>">
-                                                <select name="status" class="form-select form-select-sm w-100 w-md-auto" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
-                                                    <?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
-                                                        <option value="<?php echo e($status); ?>" <?php echo e($item->status === $status ? 'selected' : ''); ?>>
-                                                            <?php echo e(ucfirst($status)); ?>
+                                            
+                                            <div class="action-cell">
+                                                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#pesananDetail<?php echo e($item->id); ?>" title="Detail">
+                                                    <i class="bi bi-info-circle"></i> Detail
+                                                </button>
+                                            </div>
 
-                                                        </option>
-                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
-                                                </select>
-                                                <button type="submit" class="btn btn-sm btn-primary">
-                                                    <i class="bi bi-save"></i>
-                                                </button>
-                                            </form>
-                                            <form action="<?php echo e(route('admin.pesanan.delete', $item->id)); ?>" method="POST" style="display:inline; margin-left:6px;">
-                                                <?php echo csrf_field(); ?>
-                                                <?php echo method_field('DELETE'); ?>
-                                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">
-                                                    <i class="bi bi-trash"></i> Hapus
-                                                </button>
-                                            </form>
+                                            
+                                            <div class="action-cell">
+                                                <form id="updateForm-<?php echo e($item->id); ?>" action="<?php echo e(route('admin.pesanan.update-status', $item->id)); ?>" method="POST" class="action-form">
+                                                    <?php echo csrf_field(); ?>
+                                                    <input type="hidden" name="keterangan" id="hidden-keterangan-<?php echo e($item->id); ?>" value="<?php echo e($item->keterangan); ?>">
+
+                                                    <select name="status" class="form-select form-select-sm" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35);">
+                                                        <?php $__currentLoopData = $statusOptions; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                            <option value="<?php echo e($status); ?>" <?php echo e($item->status === $status ? 'selected' : ''); ?>>
+                                                                <?php echo e(ucfirst($status)); ?>
+
+                                                            </option>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    </select>
+
+                                                    <button type="submit" class="btn btn-sm btn-primary">
+                                                        <i class="bi bi-save"></i> Simpan
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                            
+                                            <div class="action-cell">
+                                                <form action="<?php echo e(route('admin.pesanan.delete', $item->id)); ?>" method="POST">
+                                                    <?php echo csrf_field(); ?>
+                                                    <?php echo method_field('DELETE'); ?>
+                                                    <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Yakin ingin menghapus pesanan ini?')">
+                                                        <i class="bi bi-trash"></i> Hapus
+                                                    </button>
+                                                </form>
+                                            </div>
                                         </div>
                                     </td>
                                 </tr>

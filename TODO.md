@@ -1,6 +1,0 @@
-- [ ] Read admin dashboard view to locate sidebar + manage-data cards/buttons styling
-- [ ] Create edit plan to change sidebar text colors to #ffffff except main sidebar title "Kelola Data"
-- [ ] Apply CSS changes in the Blade file (sidebar styles section)
-- [ ] Verify no unintended changes to "Kelola Data" title
-- [ ] (Optional) Quick grep/scan for conflicting inline styles within dashboard sidebar
-- [ ] Finalize and report modifications

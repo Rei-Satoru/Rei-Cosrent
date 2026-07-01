@@ -303,7 +303,7 @@ table td {
                     <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2 w-100">
                         <div class="input-group" style="background-color: #94a3b829; border-radius: 0.75rem; border: 1px solid rgba(148,163,184,0.35);">
                             <span class="input-group-text bg-transparent border-0"><i class="bi bi-search"></i></span>
-                            <input id="search-admin-kostum" type="search" class="form-control border-0 bg-transparent" placeholder="Cari nama, kategori, brand, domisili..." aria-label="Cari kostum">
+                            <input id="search-admin-kostum" type="search" class="form-control border-0 bg-transparent" placeholder="Cari nama, kategori, brand..." aria-label="Cari kostum">
                         </div>
                         <select id="sort-admin-kostum" class="form-select" style="background-color: #94a3b829; border: 1px solid rgba(148,163,184,0.35); color: #dee2e6;">
                             <option value="">Urutkan data kostum</option>
@@ -319,8 +319,6 @@ table td {
                             <option value="6:currency:desc">Harga Tertinggi</option>
                             <option value="7:string:asc">Durasi A–Z</option>
                             <option value="7:string:desc">Durasi Z–A</option>
-                            <option value="11:string:asc">Domisili A–Z</option>
-                            <option value="11:string:desc">Domisili Z–A</option>
                         </select>
                     </div>
                     <div class="col-md-3 text-md-end">
@@ -348,7 +346,6 @@ table td {
                                 <th class="d-none d-md-table-cell">Ukuran</th>
                                 <th class="d-none d-lg-table-cell">Include</th>
                                 <th class="d-none d-lg-table-cell">Exclude</th>
-                                <th class="d-none d-md-table-cell">Domisili</th>
                                 <th>Aksi</th>
                             </tr>
                         </thead>
@@ -397,7 +394,6 @@ table td {
                                 <td class="d-none d-md-table-cell"><?php echo e($sizes ? implode(' ', $sizes) : '-'); ?></td>
                                 <td class="d-none d-lg-table-cell" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="<?php echo e($item->include); ?>"><?php echo e($item->include); ?></td>
                                 <td class="d-none d-lg-table-cell" style="max-width:200px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="<?php echo e($item->exclude); ?>"><?php echo e($item->exclude ?? '-'); ?></td>
-                                <td class="d-none d-md-table-cell"><?php echo e(!empty($item->domisili) ? $item->domisili : '-'); ?></td>
                                 <td>
                                     <div class="action-buttons">
                                         <button class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#detailModal<?php echo e($item->id_kostum); ?>" title="Detail">
@@ -484,7 +480,6 @@ table td {
                                                     </div>
                                                     <div class="row mb-2"><div class="col-5 text-muted">Include</div><div class="col-7">: <?php echo nl2br(e($item->include)); ?></div></div>
                                                     <div class="row mb-2"><div class="col-5 text-muted">Exclude</div><div class="col-7">: <?php echo nl2br(e($item->exclude)); ?></div></div>
-                                                    <div class="row"><div class="col-5 text-muted">Domisili</div><div class="col-7">: <?php echo e($item->domisili ?: '-'); ?></div></div>
                                                 </div>
                                             </div>
                                         </div>
@@ -567,10 +562,6 @@ table td {
                                                 <div class="mb-3">
                                                     <label class="form-label">Exclude (Opsional)</label>
                                                     <textarea name="exclude" class="form-control" rows="3"><?php echo e($item->exclude); ?></textarea>
-                                                </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label">Domisili</label>
-                                                    <input type="text" name="domisili" class="form-control" value="<?php echo e($item->domisili ?? ''); ?>" placeholder="Kota/Kabupaten, Provinsi" required>
                                                 </div>
                                             </div>
                                             <div class="modal-footer">
@@ -692,10 +683,6 @@ table td {
                     <div class="mb-3">
                         <label class="form-label">Exclude (Opsional)</label>
                         <textarea name="exclude" class="form-control" rows="3" placeholder="Yang tidak termasuk"></textarea>
-                    </div>
-                    <div class="mb-3">
-                        <label class="form-label">Domisili</label>
-                        <input type="text" name="domisili" class="form-control" placeholder="Kota/Kabupaten, Provinsi" required>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -141,7 +141,6 @@
                         <p class="mb-1"><strong>Brand:</strong> {{ $kostum->brand ?: '-' }}</p>
                         <p class="mb-1"><strong>Ukuran:</strong> {{ $kostum->ukuran_kostum }}</p>
                         <p class="mb-1"><strong>Harga Sewa:</strong> <span class="fw-bold">Rp {{ number_format((float)$kostum->harga_sewa, 0, ',', '.') }}</span> / {{ $kostum->durasi_penyewaan }}</p>
-                        <p class="mb-1"><strong>Domisili:</strong> {{ $kostum->domisili ?: '-' }}</p>
                     </div>
                 </div>
             </div>

@@ -6,7 +6,6 @@
 
     :root {
         --catalog-title-color: #0f172a;
-        --brand-domisili-color: #000;
 
         --catalog-card-bg: #f8fbff;
         --catalog-card-border: rgba(37, 99, 235, 0.12);
@@ -21,7 +20,6 @@
 
     [data-bs-theme="dark"] {
         --catalog-title-color: #ffffff;
-        --brand-domisili-color: #fff;
         --catalog-card-bg: #0f172a;
         --catalog-card-border: rgba(96, 165, 250, 0.16);
         --catalog-text: #ffffff;
@@ -64,7 +62,7 @@
     .jk-pria { color: #2563eb !important; }
     .jk-wanita { color: #ec4899 !important; }
     .kostum-price { color: #16a34a !important; font-weight: 700; }
-    .kostum-brand, .kostum-domisili { color: var(--brand-domisili-color) !important; }
+    .kostum-brand { color: inherit !important; }
     .costume-modal .modal-body .label-col { color: var(--catalog-modal-muted) !important; }
 
     [data-bs-theme="light"] .costume-modal .modal-footer {
@@ -190,8 +188,14 @@
         transition: background-color 0s ease, color 0s ease;
     }
 
+    .costume-card-body .fw-bold,
+    .costume-card-body .text-secondary,
+    .costume-card-body .kostum-brand {
+        color: #ffffff !important;
+    }
+
     .costume-card-body .text-secondary {
-        color: var(--brand-blue) !important;
+        color: #ffffff !important;
         transition: color 0s ease;
     }
 
@@ -296,7 +300,6 @@
                                                         <tr><th scope="row" style="width:140px;">Nama Kostum</th><td id="adminBlockName">-</td></tr>
                                                         <tr><th scope="row">Brand</th><td id="adminBlockBrand">-</td></tr>
                                                         <tr><th scope="row">Harga</th><td id="adminBlockPrice">-</td></tr>
-                                                        <tr><th scope="row">Domisili</th><td id="adminBlockDomisili">-</td></tr>
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -441,9 +444,6 @@
                                     </p>
                                     <p class="mb-1 kostum-brand" style="font-size:0.75rem; font-weight: 600;"><i class="bi bi-tag"></i> <?php echo e($k->brand ?: '-'); ?></p>
                                     
-                                    <?php if(!empty($k->domisili)): ?>
-                                        <p class="mb-1 kostum-domisili" style="font-size:0.75rem;"><i class="bi bi-geo-alt-fill"></i> <?php echo e($k->domisili); ?></p>
-                                    <?php endif; ?>
                                 </div>
                             </a>
                         </div>
@@ -479,7 +479,6 @@
                                                 <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Ukuran</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: <?php echo e($k->ukuran_kostum); ?></div></div>
                                                 <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Include</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: <?php echo nl2br(e($k->include)); ?></div></div>
                                                 <div class="row mb-2"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Exclude</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: <?php echo nl2br(e($k->exclude)); ?></div></div>
-                                                <div class="row"><div class="col-5 text-muted" style="color:var(--catalog-modal-muted) !important;">Domisili</div><div class="col-7" style="color:var(--catalog-modal-text) !important;">: <?php echo e($k->domisili ?: '-'); ?></div></div>
                                             </div>
                                         </div>
                                     </div>
@@ -494,7 +493,6 @@
                                                     data-kostum-name="<?php echo e($k->nama_kostum); ?>"
                                                     data-kostum-brand="<?php echo e($k->brand ?: '-'); ?>"
                                                     data-kostum-price="Rp <?php echo e(number_format((float)$k->harga_sewa, 0, ',', '.')); ?>"
-                                                    data-kostum-domisili="<?php echo e($k->domisili ?: '-'); ?>"
                                                 >
                                                     <i class="bi bi-clipboard-check"></i> Isi Formulir Penyewaan
                                                 </button>
@@ -558,15 +556,12 @@
                     var name = button.getAttribute('data-kostum-name') || '-';
                     var brand = button.getAttribute('data-kostum-brand') || '-';
                     var price = button.getAttribute('data-kostum-price') || '-';
-                    var domisili = button.getAttribute('data-kostum-domisili') || '-';
                     var nameEl = adminBlockModal.querySelector('#adminBlockName');
                     var brandEl = adminBlockModal.querySelector('#adminBlockBrand');
                     var priceEl = adminBlockModal.querySelector('#adminBlockPrice');
-                    var domEl = adminBlockModal.querySelector('#adminBlockDomisili');
                     if (nameEl) nameEl.textContent = name;
                     if (brandEl) brandEl.textContent = brand;
                     if (priceEl) priceEl.textContent = price;
-                    if (domEl) domEl.textContent = domisili;
                 });
             }
 
@@ -579,7 +574,7 @@
                         try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) {}
                     });
                     // also ensure the modal title and any labels are white
-                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .kostum-domisili, .text-secondary, .text-muted');
+                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .text-secondary, .text-muted');
                     extras.forEach(function(el) { try { el.style.setProperty('color', '#ffffff', 'important'); } catch(e) {} });
                 });
 
@@ -587,7 +582,7 @@
                     var modal = this;
                     var elems = modal.querySelectorAll('.row.g-3, .row.g-3 * , .modal-body .col-7, .modal-body .col-5');
                     elems.forEach(function(el) { try { el.style.removeProperty('color'); } catch(e) {} });
-                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .kostum-domisili, .text-secondary, .text-muted');
+                    var extras = modal.querySelectorAll('.modal-title, .label-col, .kostum-price, .kostum-brand, .text-secondary, .text-muted');
                     extras.forEach(function(el) { try { el.style.removeProperty('color'); } catch(e) {} });
                 });
             });

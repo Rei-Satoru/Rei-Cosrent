@@ -20,7 +20,6 @@ class DataKostum extends Model
         'jenis_kelamin',
         'include',
         'exclude',
-        'domisili',
         'brand',
         'gambar'
     ];

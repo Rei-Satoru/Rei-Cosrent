@@ -685,7 +685,6 @@ class AdminController extends Controller
             'jenis_kelamin' => 'nullable|in:Pria,Wanita,Unisex',
             'include' => 'nullable|string|max:1000',
             'exclude' => 'nullable|string|max:1000',
-            'domisili' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
         ]);
 
@@ -729,7 +728,6 @@ class AdminController extends Controller
             'jenis_kelamin' => 'nullable|in:Pria,Wanita,Unisex',
             'include' => 'nullable|string|max:1000',
             'exclude' => 'nullable|string|max:1000',
-            'domisili' => 'nullable|string|max:255',
             'brand' => 'nullable|string|max:255',
         ]);
 
