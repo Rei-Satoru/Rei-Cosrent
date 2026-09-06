@@ -216,6 +216,7 @@
                             <th>Ulasan</th>
                             <th class="d-none d-md-table-cell" style="width: 160px;">Gambar</th>
                             <th class="d-none d-md-table-cell" style="width: 360px;">Balasan Admin</th>
+                            <th style="width: 190px;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -289,16 +290,25 @@
                                         @endif
                                     </td>
                                     <td class="d-none d-md-table-cell text-start">
-                                        <form method="POST" action="{{ route('admin.ulasan.balas') }}">
+                                        <form id="balas-ulasan-{{ $u->id }}" method="POST" action="{{ route('admin.ulasan.balas') }}">
                                             @csrf
                                             <input type="hidden" name="formulir_id" value="{{ $u->id }}">
                                             <textarea name="balasan" class="form-control balasan-textarea" placeholder="Tulis balasan admin...">{{ old('balasan', $u->balasan) }}</textarea>
-                                            <div class="d-flex justify-content-end mt-2">
-                                                <button type="submit" class="btn btn-success btn-sm">
-                                                    <i class="bi bi-send"></i> Simpan Balasan
-                                                </button>
-                                            </div>
                                         </form>
+                                    </td>
+                                    <td>
+                                        <div class="action-buttons">
+                                            <button type="submit" form="balas-ulasan-{{ $u->id }}" class="btn btn-success btn-sm">
+                                                <i class="bi bi-save"></i> Simpan
+                                            </button>
+                                            <form method="POST" action="{{ route('admin.ulasan.delete', $u->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Yakin ingin menghapus ulasan ini?')">
+                                                    <i class="bi bi-trash"></i> Hapus
+                                                </button>
+                                            </form>
+                                        </div>
                                     </td>
                                 </tr>
                             @endforeach

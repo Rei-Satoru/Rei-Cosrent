@@ -110,6 +110,7 @@ Route::get('/admin/data-pesanan', [AdminController::class, 'dataPesanan'])->name
 // Data Pengembalian Routes
 Route::get('/admin/data-pengembalian', [AdminController::class, 'dataPengembalian'])->name('admin.data-pengembalian');
 Route::post('/admin/pengembalian/{id}/verifikasi', [AdminController::class, 'verifikasiPengembalian'])->name('admin.pengembalian.verifikasi');
+Route::delete('/admin/pengembalian/{id}/delete', [AdminController::class, 'deletePengembalian'])->name('admin.pengembalian.delete');
 // Data Denda & Kerusakan Routes
 Route::get('/admin/data-denda', [AdminController::class, 'dataDenda'])->name('admin.data-denda');
 // CRUD for denda (store/update/destroy used by embedded UI on /admin/data-denda)
@@ -134,6 +135,7 @@ Route::post('/admin/pengguna/delete/{id}', [AdminController::class, 'deletePengg
 // Data Ulasan Routes
 Route::get('/admin/data-ulasan', [AdminController::class, 'dataUlasan'])->name('admin.data-ulasan');
 Route::post('/admin/ulasan/balas', [AdminController::class, 'balasUlasan'])->name('admin.ulasan.balas');
+Route::delete('/admin/ulasan/{id}/delete', [AdminController::class, 'deleteUlasan'])->name('admin.ulasan.delete');
 
 // Pembayaran Pesanan
 Route::get('/pembayaran/{id}', [PembayaranController::class, 'show'])->name('pembayaran');

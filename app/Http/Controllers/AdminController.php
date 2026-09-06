@@ -52,8 +52,8 @@ class AdminController extends Controller
         $denda_count = Denda::count();
         $total_denda = Denda::sum('jumlah_denda');
         $ulasan_count = Ulasan::count();
-        // Count pending pengembalian requests (use Pengembalian.status instead of polluting formulir.status)
-        $pengembalian_count = Pengembalian::where('status', 'proses')->count();
+        // Count all pengembalian records, regardless of verification status.
+        $pengembalian_count = Pengembalian::count();
         $profile_contact = ProfileContact::find(1);
         session(['admin_profile_photo' => $profile_contact->photo ?? null]);
         
@@ -211,6 +211,30 @@ class AdminController extends Controller
             return redirect()->route('admin.data-ulasan')->with('success', 'Balasan berhasil disimpan.');
         } catch (\Exception $e) {
             return redirect()->route('admin.data-ulasan')->with('error', 'Gagal menyimpan balasan: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteUlasan($id)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        try {
+            $ulasan = Ulasan::findOrFail($id);
+
+            for ($i = 1; $i <= 5; $i++) {
+                $field = 'gambar_' . $i;
+                if ($ulasan->$field) {
+                    Storage::disk('public')->delete($ulasan->$field);
+                }
+            }
+
+            $ulasan->delete();
+
+            return redirect()->route('admin.data-ulasan')->with('success', 'Ulasan berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.data-ulasan')->with('error', 'Gagal menghapus ulasan: ' . $e->getMessage());
         }
     }
 
@@ -1257,6 +1281,29 @@ class AdminController extends Controller
             return redirect()->route('admin.data-pengembalian')->with('success', 'Pengembalian berhasil diverifikasi.');
         } catch (\Exception $e) {
             return redirect()->route('admin.data-pengembalian')->with('error', 'Gagal memverifikasi: ' . $e->getMessage());
+        }
+    }
+
+    public function deletePengembalian($id)
+    {
+        if (!session('admin_logged_in')) {
+            return redirect()->route('admin.login');
+        }
+
+        try {
+            $pengembalian = Pengembalian::findOrFail($id);
+
+            foreach (['gambar1', 'gambar2', 'gambar3'] as $field) {
+                if ($pengembalian->$field) {
+                    Storage::disk('public')->delete($pengembalian->$field);
+                }
+            }
+
+            $pengembalian->delete();
+
+            return redirect()->route('admin.data-pengembalian')->with('success', 'Data pengembalian berhasil dihapus.');
+        } catch (\Exception $e) {
+            return redirect()->route('admin.data-pengembalian')->with('error', 'Gagal menghapus data pengembalian: ' . $e->getMessage());
         }
     }
 

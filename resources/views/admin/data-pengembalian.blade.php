@@ -280,6 +280,13 @@
                                             <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#verifyModal-{{ $item->id }}" data-action="revisi">
                                                 <i class="bi bi-x-circle"></i> Ditolak
                                             </button>
+                                            <form method="POST" action="{{ route('admin.pengembalian.delete', $item->id) }}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-sm btn-outline-danger" onclick="return confirm('Yakin ingin menghapus data pengembalian ini?')">
+                                                    <i class="bi bi-trash"></i> Hapus
+                                                </button>
+                                            </form>
                                         </div>
                                     </td>
                                 </tr>

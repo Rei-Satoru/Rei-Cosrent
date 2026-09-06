@@ -181,10 +181,6 @@
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-end mb-3">
-                                <a href="{{ route('password.request') }}" class="text-decoration-none small fw-semibold">Lupa password?</a>
-                            </div>
-
                             <div class="d-grid mb-3">
                                 <button type="submit" class="btn btn-primary btn-lg">
                                     <i class="bi bi-box-arrow-in-right"></i> Login
